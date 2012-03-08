@@ -31,7 +31,7 @@ int main() {
 		copy(cur, cur + (1 << n), pre);
 		fill(cur, cur + (1 << n), INF);
 		cur[0] = 0;
-		
+
 		sh[0] = sv[0] = 0;
 		for (int j = 1; j < (1 << n); ++j) {
 			int k = __builtin_ctz(j);
