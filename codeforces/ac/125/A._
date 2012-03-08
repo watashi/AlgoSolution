@@ -1,0 +1,8 @@
+l=0;gets.scan(/.*?>/){v=$&<'<0';v&&l-=2;puts" "*l+$&;v||l+=2}
+
+l=0
+gets.scan(/<(\/)?[a-z]+>/){l-=2 if $1;puts " "*l+$&;l+=2 unless $1}
+
+    import re
+    l=0
+    for q in re.findall('.*?>',raw_input()):l-=q<'<0';print" "*l*2+q;l+=q>'<0'

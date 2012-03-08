@@ -1,0 +1,31 @@
+l,r = [],0
+for b in raw_input().replace(',','')[:-1].split('.'):
+    if b: l.extend(b.split(':'))
+    r+=l.count(l.pop())
+print r
+
+
+
+
+import Data.Char
+
+data Node = Node String [Node] deriving Show
+
+parseChildren (c:s) | c == ':' || c == ',' = (c1:cs, s'')
+                    | otherwise = ([], s)
+  where
+    (c1, s') = parseEmp s
+    (cs, s'') = parseChildren s'
+
+parseEmp s = (Node name ch, s'')
+  where
+    (name, s') = span isAlpha s
+    (ch, s'') = parseChildren s'
+
+visit (Node name children) = ((sum cnts) + c', name:names')
+  where
+    (cnts, names) = unzip$ map visit children
+    names' = concat names
+    c' = length$ filter (==name) names'
+
+main = getLine >>= (putStrLn.show.fst.visit.fst.parseEmp)

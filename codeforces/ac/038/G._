@@ -1,0 +1,487 @@
+// deque
+// 169806 	Nov 1, 2010 7:16:22 PM 	ciprianfarcasanu 	G - Queue 	GNU C++ 	Accepted 	280 ms 	3684 KB 
+
+#include <stdio.h>
+#include <algorithm>
+using namespace std;
+#include <math.h>
+#define NMAX 100030
+#define NSQRT 320
+int A[NSQRT * 2][NSQRT * 2], S[NSQRT*2];
+int f[NMAX], v[NMAX];
+int n, nsqrt;
+void add_in_bucata(int buc,int p, int import, int pasi){
+	int i;
+	for(i = A[buc][0]; i && pasi && f[A[buc][i]] < import; --i, --pasi)
+		A[buc][i+1] = A[buc][i];
+	A[buc][i+1] = p;
+	A[buc][0]++;
+	if(S[buc] < import) S[buc] = import;
+}
+void add(int p, int import, int pasi){
+	int buc = (p - 1) / nsqrt + 1;
+	int nr = pasi;
+	for(int i = buc; i; --i)
+		if(i != 1 && nr - A[i][0] > 0 && S[i] < import) 
+			nr -= A[i][0];
+		else {
+			add_in_bucata(i,p,import,nr);
+			break;
+		}
+
+}
+void optimize(){
+	v[0] = 0;
+	for(int i = 1; i <= nsqrt; ++i){
+		if(A[i][0] == 0) break;
+		for(int j = 1; j <= A[i][0]; ++j)
+			v[++v[0]] = A[i][j];
+	}
+	for(int i = 1; i <= nsqrt; ++i){
+		S[i] = 0;
+		for(int j = 1; j <= nsqrt && j + (i-1)*nsqrt <= v[0]; ++j){
+			A[i][j] = v[j + (i-1)*nsqrt];
+			A[i][0] = j;
+			if(S[i] < f[A[i][j]]) S[i] = f[A[i][j]];
+		}
+	}
+}
+int main(){
+	//      freopen("G.in", "r", stdin);
+	//      freopen("G.out", "w", stdout);
+	scanf("%d", &n);
+	nsqrt = (int)sqrt(n) + 1;
+	for(int i = 1; i <= n; ++i){
+		int x, y;
+		scanf("%d%d", &x, &y);
+		f[i] = x;
+		add(i, x, y);
+		if(i % nsqrt == 0) optimize();
+	}
+	for(int i = 1; i <= nsqrt; ++i)
+		for(int j = 1; j <= A[i][0]; ++j)
+			printf("%d ", A[i][j]);
+	printf("\n");
+	return 0;
+}
+
+// BST (treap?)
+// 168011 	Oct 30, 2010 7:30:39 PM 	zbwmqlw 	G - Queue 	GNU C++ 	Accepted 	170 ms 	4032 KB
+
+#include <cstdio>
+#include <cstdlib>
+#define max(a, b) ((a) > (b) ? (a) : (b))
+const int N = 100050;
+
+struct Tnode;
+typedef Tnode *Tlink;
+struct Tnode {
+	int size;
+	int key, val, rp;
+	Tlink lch, rch;
+} nodebuf[N], *null, *root;
+int orz[N];
+int n, cnodebuf;
+
+Tlink newnode()
+{
+	Tlink ret = &nodebuf[++cnodebuf];
+	return ret;
+}
+
+void update(Tlink t)
+{
+	t->size = t->lch->size + t->rch->size + 1;
+	t->val = max(t->lch->val, max(t->rch->val, t->key));
+}
+
+void zig(Tlink &x)
+{
+	Tlink y = x->rch;
+	x->rch = y->lch; y->lch = x;
+	update(x);
+	update(y);
+	x = y;
+}
+
+void zag(Tlink &x)
+{
+	Tlink y = x->lch;
+	x->lch = y->rch; y->rch = x;
+	update(x);
+	update(y);
+	x = y;
+}
+
+void add(Tlink &t, int imp, int c)
+{
+	if (t == null) {
+		t = newnode();
+		t->size = 1;
+		t->key = t->val = imp;
+		t->lch = t->rch = null;
+		t->rp = rand() * 32768 + rand();
+		return;
+	}
+	if (max(t->rch->val, t->key) > imp || c <= t->rch->size) {
+		add(t->rch, imp, c);
+		update(t);
+		if (t->rch->rp < t->rp) zig(t);
+	} else {
+		add(t->lch, imp, c - t->rch->size - 1);
+		update(t);
+		if (t->lch->rp < t->rp) zag(t);
+	}
+}
+
+void dfs(Tlink t)
+{
+	if (t == null) return;
+	dfs(t->lch);
+	printf("%d ", orz[t->key]);
+	dfs(t->rch);
+}
+
+int main()
+{
+	//freopen("G.in", "r", stdin);
+	scanf("%d", &n);
+	null = newnode();
+	null->lch = null->rch = null;
+	null->size = 0;
+	null->key = null->val = -0x3f3f3f3f;
+	root = null;
+	for (int i = 1; i <= n; ++i) {
+		int imp, c;
+		scanf("%d%d", &imp, &c);
+		orz[imp] = i;
+		add(root, imp, c);
+	}
+	dfs(root);
+	printf("\n");
+}
+
+// split && random join
+// 169207 	Oct 31, 2010 2:52:45 PM 	UESTC_Defense 	G - Queue 	GNU C++ 	Accepted 	190 ms 	23192 KB 
+
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+#include <algorithm>
+
+using namespace std;
+
+const int MAX=1000100;
+const int oo=0x3f3f3f3f;
+struct Node{
+	int l,r;
+	int val,ma,size;
+
+	Node(){
+		l=r=0;
+		val=ma=size=0;
+	}
+}node[MAX];
+
+int find(int k,int val){
+	if(k==0){
+		return 0;
+	}
+	if(val<=node[node[k].r].ma){
+		return node[node[k].l].size+1+find(node[k].r,val);
+	}else if(val<=node[k].val){
+		return node[node[k].l].size+1;
+	}else{
+		return find(node[k].l,val);
+	}
+}
+
+void update(int k){
+	node[k].size=node[node[k].l].size+node[node[k].r].size+1;
+	node[k].ma=max(node[k].val,max(node[node[k].l].ma,node[node[k].r].ma));
+}
+
+void split(int k,int id,int& l,int& r){
+	if(k==0){
+		l=r=0;
+		return;
+	}
+	if(node[node[k].l].size>=id){
+		split(node[k].l,id,l,node[k].l);
+		r=k;
+	}else if(node[node[k].l].size+1<id){
+		split(node[k].r,id-node[node[k].l].size-1,node[k].r,r);
+		l=k;
+	}else{
+		l=node[k].l;
+		r=k;
+		node[k].l=0;
+	}
+	update(k);
+}
+
+int join(int x,int y){
+	if(x==0){
+		return y;
+	}else if(y==0){
+		return x;
+	}else{
+		if(rand()%1000<500){	// *rand!!!!*
+			node[x].r=join(node[x].r,y);
+			update(x);
+			return x;
+		}else{
+			node[y].l=join(x,node[y].l);
+			update(y);
+			return y;
+		}
+	}
+}
+
+bool done;
+void dfs(int k){
+	if(node[k].l){
+		dfs(node[k].l);
+	}
+	if(done){
+		putchar(' ');
+	}else{
+		done=true;
+	}
+	printf("%d",k);
+	if(node[k].r){
+		dfs(node[k].r);
+	}
+}
+
+int main(){
+	int n,root=0;
+	int id,x;
+	int l,r;
+
+	node[0].ma=node[0].val=-oo;
+	scanf("%d",&n);
+	for(int i=1;i<=n;i++){
+		scanf("%d%d",&id,&x);
+		x=max(i-x,find(root,id)+1);
+		split(root,x,l,r);
+		node[i].val=id;
+		update(i);
+		l=join(l,i);
+		root=join(l,r);
+	}
+	done=false;
+	dfs(root);
+	puts("");
+
+	return 0;
+}
+
+// split && merge (random_shuffle priority)
+// 182355 	Nov 8, 2010 9:40:38 PM 	kormak 	G - Queue 	GNU C++ 	Accepted 	250 ms 	5648 KB 
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <cstdio>
+using namespace std;
+
+class item {
+public:
+  int maximp;
+  int cnt;
+  int chelnum;
+  int imp;
+  int prior;
+  item * l, *r;
+  item(int importance, int numb, int prior_)
+    : maximp(importance), cnt(1), chelnum(numb),
+      imp(importance), prior(prior_), l(NULL), r(NULL) {};
+};
+
+typedef item * pitem;
+
+int getc(pitem i) {
+  if (i == NULL)
+    return 0;
+  else
+    return i->cnt;
+}
+
+int getmaximp(pitem i) {
+  if (NULL == i)
+    return 0;
+  else
+    return i->maximp;
+}
+
+void upd(pitem i) {
+  if (i != NULL) {
+    i->cnt = getc(i->l) + 1 + getc(i->r);
+    i->maximp = max(i->imp, max(getmaximp(i->l), getmaximp(i->r)));
+  }
+}
+
+void merge(pitem & t, pitem l, pitem r) {
+  if (!l || !r) {t = l ? l : r; return;}
+  if (l->prior > r->prior) {
+    t = l;
+    merge(t->r, t->r, r);
+  } else {
+    t = r;
+    merge(t->l, l, t->l);
+  }
+  upd(t);
+}
+
+void smartSplit(int importance, int maxkey, pitem t, pitem & l, pitem & r) {
+  if (t == NULL) {
+    l = r = NULL;
+    return;
+  }
+  int rootkey = getc(t->l);
+  if (maxkey <= rootkey || importance <= max(t->imp, getmaximp(t->l))) {
+    r = t;
+    smartSplit(importance, maxkey, t->l, l, r->l);
+  } else {
+    l = t;
+    smartSplit(importance, maxkey - (rootkey+1), t->r, l->r, r);
+  }
+  upd(t);
+}
+
+void printtree(pitem t) {
+  if (t == NULL) return;
+
+  printtree(t->r);
+  printf("%d ", t->chelnum);
+  printtree(t->l);
+
+}
+
+int main() {
+  int n;
+  cin >> n;
+  vector<int> priors(n);
+  for (int i = 0; i < n; ++i)
+    priors[i] = i + 1;
+  random_shuffle(priors.begin(), priors.end());
+  pitem tree = NULL;
+  for (int i = 0; i < n; ++i) {
+    int impor, key;
+    scanf("%d%d", &impor, &key);
+    pitem l,r;
+    smartSplit(impor, key, tree, l, r);
+    pitem newitem = new item(impor, i+1, priors[i]);
+    merge(l, l, newitem);
+    merge(tree, l, r);
+
+
+  }
+  printtree(tree);
+  printf("\n");
+        return 0;
+}
+
+// BST: (SBT?)
+// 169639 	Nov 1, 2010 10:35:27 AM 	qlyzpqz 	G - Queue 	GNU C++ 	Accepted 	160 ms 	3644 KB 
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+
+const int MAXN = 100005;
+const int INF = 0x3fffffff;
+
+struct node {
+    int size, val, maxVal;
+    struct node * lch, * rch;
+}tbuf[MAXN];
+
+int id;
+struct node *root, *null = &tbuf[0];
+
+struct node * newNode () {
+    return &tbuf[++id];
+}
+
+void update (struct node *p) {
+    p->size = p->lch->size + p->rch->size + 1;
+    p->maxVal = max(max(p->lch->maxVal, p->rch->maxVal), p->val);
+}
+
+void zig (struct node *&x) {  //右子树的size较大时
+    struct node *y = x->rch;
+    x->rch = y->lch;
+    y->lch = x;
+    update(x);
+    update(y);
+    x = y;
+}
+
+void zag (struct node *&x) {  //左子树的size较大时
+    struct node *y = x->lch;
+    x->lch = y->rch;
+    y->rch = x;
+    update(x);
+    update(y);
+    x = y;
+}
+
+void insert (struct node *&p, int val, int c) {
+    if (p == null) {
+        p = newNode();
+        p->size = 1;
+        p->lch = p->rch = null;
+        p->val = p->maxVal = val;
+        return;
+    }
+    if (max(p->rch->maxVal, p->val) > val || p->rch->size >= c) {
+        insert(p->rch, val, c);
+        update(p);
+        if (p->rch->size - 1 > p->lch->size) {
+            zig(p);
+        }
+    }
+    else {
+        insert(p->lch, val, c - p->rch->size - 1);
+        update(p);
+        if (p->lch->size - 1 > p->rch->size) {
+            zag(p);
+        }
+    }
+}
+
+int map[MAXN];
+
+void dfs (struct node * p) {
+    if (p == null) return;
+    dfs(p->lch);
+    printf("%d ", map[p->val]);
+    dfs(p->rch);
+}
+
+int main () {
+    //freopen("input.txt", "r", stdin);
+
+    int n, a, c;
+
+    null->lch = null->rch = null;
+    null->maxVal = null->val = -INF;
+    null->size = 0;
+
+    root = null;
+    id = 1;
+
+    scanf("%d", &n);
+    for (int i = 1; i <= n; ++i) {
+        scanf("%d%d", &a, &c);
+        map[a] = i;
+        insert(root, a, c);
+    }
+
+    dfs(root);
+    putchar('\n');
+
+    return 0;
+}
+
+

@@ -1,0 +1,9 @@
+gets
+p gets(p).split.select{|_|(%w(ABSINTH BEER BRANDY CHAMPAGNE GIN RUM SAKE TEQUILA VODKA WHISKEY WINE)+[*?0.."17"]).include? _}.size
+
+print len(filter((['ABSINTH', 'BEER', 'BRANDY', 'CHAMPAGNE', 'GIN', 'RUM', 'SAKE', 'TEQUILA', 'VODKA', 'WHISKEY', 'WINE']+map(str,range(18))).__contains__,(raw_input()for i in range(input()))))
+
+main = interact $ show . solve . tail . lines
+solve = length . filter (\x -> elem x alc)
+alc = ["ABSINTH", "BEER", "BRANDY", "CHAMPAGNE", "GIN", "RUM", "SAKE",
+  "TEQUILA", "VODKA", "WHISKEY", "WINE"] ++ map show [0..17]

@@ -1,0 +1,8 @@
+# ruby1.9
+x=gets(p).split
+[1,2,3].permutation(3){|a,b,c|f=->(_){eval _.downcase}
+if x.all?(&f)
+$><<[*?A..?C].sort_by(&f)*""
+exit
+end}
+$><<:Impossible

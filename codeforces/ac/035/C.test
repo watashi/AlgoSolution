@@ -1,0 +1,1137 @@
+By watashi, contest: Codeforces Beta Round #35 (Div. 2), problem: (C) Fire Again, Accepted
+
+class Rect
+        def initialize(x, y, z)
+                @a1 = x + y - z
+                @a2 = x + y + z
+                @b1 = x - y - z
+                @b2 = x - y + z
+                @valid = z >= 0
+        end
+
+        [:a1, :a2, :b1, :b2].each do |i|
+                class_eval <<-"end_eval"
+                        def #{i}
+                                @#{i}
+                        end
+
+                        attr_writer :#{i}
+                end_eval
+        end
+
+        def valid?
+                @valid &&= (@a1 <= @a2 && @b1 <= @b2)
+        end
+
+        def invalid!
+                @valid = false
+        end
+
+        def cut!(x1, y1, x2, y2)
+                @a1 = [@a1, x1 + y1].max
+                @a2 = [@a2, x2 + y2].min
+                @b1 = [@b1, x1 - y2].max
+                @b2 = [@b2, x2 - y1].min
+        end
+
+        def **(o)
+                !(@a2 <= o.a1 || o.a2 <= @a1) && !(@b2 <= o.b1 || o.b2 <= @b1)
+        end
+
+        def /(o)
+                r = []
+                if @a1 <= o.a1
+                        r << self.clone
+                        r[-1].a2 = o.a1
+                        @a1 = o.a1
+                end
+                if @a2 >= o.a2
+                        r << self.clone
+                        r[-1].a1 = o.a2
+                        @a2 = o.a2
+                end
+                if @b1 <= o.b1
+                        r << self.clone
+                        r[-1].b2 = o.b1
+                        @b1 = o.b1
+                end
+                if @b2 >= o.b2
+                        r << self.clone
+                        r[-1].b1 = o.b2
+                        @b2 = o.b2
+                end
+                r
+        end
+end
+
+def gao(n, m, s, a)
+        b = [Rect.new(0, 0, 10000)]
+        a.each do |x, y|
+                c = Rect.new(x, y, s)
+                b.size.times do |j|
+                        next unless b[j] ** c
+                        b += b[j] / c
+                        b[j].invalid!
+                end
+                b.reject!{|_| !_.valid?}
+        end
+        b.map!{|_| _ / _}.flatten!
+        b.each do |_|
+                if _.a1 == _.a2
+                        s = _.a1
+                        _.cut!([1, s - m].max, [1, s - n].max, [n, s - 1].min, [m, s - 1].min)
+                        _.b1 += 1 unless s.odd? == _.b1.odd?    ## !!
+                        _.b2 -= 1 unless s.odd? == _.b2.odd?
+                else
+                        s = _.b1
+                        _.cut!([1, 1 + s].max, [1, 1 - s].max, [n, m + s].min, [m, n - s].min)
+                        _.a1 += 1 unless s.odd? == _.a1.odd?    ## !!
+                        _.a2 -= 1 unless s.odd? == _.a2.odd?
+                end
+        end
+        b.reject!{|_| !_.valid?}
+end
+
+I = open('input.txt')
+O = open('output.txt', 'w')
+
+n, m = I.gets.split.map(&:to_i)
+k = I.gets.to_i
+t = I.gets.split.map(&:to_i)
+a = k.times.map{|i| [t[i + i], t[i + i + 1]]}
+
+l = 0
+r = n + m
+while l < r do
+        s = (l + r) / 2
+        b = gao(n, m, s, a)
+        unless b.empty? then
+                l = s + 1
+        else
+                r = s
+        end
+end
+r -= 1
+
+if r == 0
+        # RE8
+        O.puts "1 1"
+else
+        q = []
+        gao(n, m, r, a).each do |_|
+                _.a1.upto(_.a2) do |i|
+                        _.b1.upto(_.b2) do |j|
+                        #       q << [(i + j) / 2, (i - j) / 2] if (i + j).even? && (i - j).even?
+                                if (i + j).even? && (i - j).even?
+                                        O.puts "#{(i + j) / 2} #{(i - j) / 2}"
+                                        exit
+                                end
+                        end
+                end
+        end
+end
+# q.sort!.uniq!
+# O.puts "#{q[0][0]} #{q[0][1]}"
+
+→Judgement Protocol
+Test: #1, time: 50 ms., memory: 2180 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+3 3
+1
+2 2
+
+Output
+
+1 1
+
+Answer
+
+1 1
+
+Checker Log
+
+ok ok
+
+
+Test: #2, time: 50 ms., memory: 3048 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+3 3
+1
+1 1
+
+Output
+
+3 3
+
+Answer
+
+3 3
+
+Checker Log
+
+ok ok
+
+
+Test: #3, time: 30 ms., memory: 2192 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+3 3
+2
+1 1 3 3
+
+Output
+
+1 3
+
+Answer
+
+1 3
+
+Checker Log
+
+ok ok
+
+
+Test: #4, time: 10 ms., memory: 2172 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+1 1
+1
+1 1
+
+Output
+
+1 1
+
+Answer
+
+1 1
+
+Checker Log
+
+ok ok
+
+
+Test: #5, time: 30 ms., memory: 2160 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2 2
+1
+2 2
+
+Output
+
+1 1
+
+Answer
+
+1 1
+
+Checker Log
+
+ok ok
+
+
+Test: #6, time: 60 ms., memory: 3048 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2 2
+2
+1 1 2 1
+
+Output
+
+1 2
+
+Answer
+
+1 2
+
+Checker Log
+
+ok ok
+
+
+Test: #7, time: 60 ms., memory: 3048 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2 2
+3
+1 2 2 1 1 1
+
+Output
+
+2 2
+
+Answer
+
+2 2
+
+Checker Log
+
+ok ok
+
+
+Test: #8, time: 50 ms., memory: 3048 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2 2
+4
+2 1 2 2 1 1 1 2
+
+Output
+
+1 1
+
+Answer
+
+1 1
+
+Checker Log
+
+ok ok
+
+
+Test: #9, time: 10 ms., memory: 2192 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+10 10
+1
+5 5
+
+Output
+
+10 10
+
+Answer
+
+10 10
+
+Checker Log
+
+ok ok
+
+
+Test: #10, time: 80 ms., memory: 3052 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+10 10
+2
+7 8 1 9
+
+Output
+
+10 1
+
+Answer
+
+3 1
+
+Checker Log
+
+ok ok
+
+
+Test: #11, time: 80 ms., memory: 3060 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+10 10
+3
+3 9 6 3 3 5
+
+Output
+
+10 10
+
+Answer
+
+10 7
+
+Checker Log
+
+ok ok
+
+
+Test: #12, time: 60 ms., memory: 3036 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+10 10
+4
+5 3 4 7 7 5 8 5
+
+Output
+
+10 10
+
+Answer
+
+10 10
+
+Checker Log
+
+ok ok
+
+
+Test: #13, time: 50 ms., memory: 2308 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+10 10
+5
+2 7 10 6 5 3 9 5 2 9
+
+Output
+
+1 1
+
+Answer
+
+1 1
+
+Checker Log
+
+ok ok
+
+
+Test: #14, time: 80 ms., memory: 3040 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+10 10
+6
+5 1 4 6 3 9 9 9 5 7 7 2
+
+Output
+
+1 3
+
+Answer
+
+1 3
+
+Checker Log
+
+ok ok
+
+
+Test: #15, time: 80 ms., memory: 3036 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+10 10
+7
+5 8 4 6 4 1 6 2 1 10 3 2 7 10
+
+Output
+
+10 5
+
+Answer
+
+10 5
+
+Checker Log
+
+ok ok
+
+
+Test: #16, time: 50 ms., memory: 3044 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+10 10
+8
+9 4 9 10 5 8 6 5 1 3 2 5 10 6 2 1
+
+Output
+
+1 10
+
+Answer
+
+1 10
+
+Checker Log
+
+ok ok
+
+
+Test: #17, time: 60 ms., memory: 3040 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+10 10
+9
+10 1 10 4 8 4 6 6 1 9 10 10 7 7 6 5 7 10
+
+Output
+
+1 1
+
+Answer
+
+1 1
+
+Checker Log
+
+ok ok
+
+
+Test: #18, time: 80 ms., memory: 3040 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+10 10
+10
+7 2 1 9 5 8 6 10 9 4 10 8 6 8 8 7 4 1 9 5
+
+Output
+
+1 3
+
+Answer
+
+1 3
+
+Checker Log
+
+ok ok
+
+
+Test: #19, time: 10 ms., memory: 2212 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+100 100
+1
+44 3
+
+Output
+
+100 100
+
+Answer
+
+100 100
+
+Checker Log
+
+ok ok
+
+
+Test: #20, time: 10 ms., memory: 2280 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+100 100
+2
+79 84 76 63
+
+Output
+
+1 1
+
+Answer
+
+1 1
+
+Checker Log
+
+ok ok
+
+
+Test: #21, time: 60 ms., memory: 3036 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+100 100
+3
+89 93 99 32 32 82
+
+Output
+
+1 1
+
+Answer
+
+1 1
+
+Checker Log
+
+ok ok
+
+
+Test: #22, time: 80 ms., memory: 3040 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+100 100
+4
+72 12 1 66 57 67 25 67
+
+Output
+
+100 100
+
+Answer
+
+100 100
+
+Checker Log
+
+ok ok
+
+
+Test: #23, time: 30 ms., memory: 2340 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+100 100
+5
+22 41 82 16 6 3 20 6 69 78
+
+Output
+
+1 100
+
+Answer
+
+1 100
+
+Checker Log
+
+ok ok
+
+
+Test: #24, time: 50 ms., memory: 2328 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+100 100
+6
+92 32 90 80 32 40 24 19 36 37 39 13
+
+Output
+
+1 100
+
+Answer
+
+1 100
+
+Checker Log
+
+ok ok
+
+
+Test: #25, time: 50 ms., memory: 2328 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+100 100
+7
+30 32 29 63 86 78 88 2 86 50 41 60 54 28
+
+Output
+
+1 100
+
+Answer
+
+1 100
+
+Checker Log
+
+ok ok
+
+
+Test: #26, time: 80 ms., memory: 3040 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+100 100
+8
+40 43 96 8 17 63 61 59 16 69 4 95 30 62 12 91
+
+Output
+
+100 100
+
+Answer
+
+100 100
+
+Checker Log
+
+ok ok
+
+
+Test: #27, time: 50 ms., memory: 2328 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+100 100
+9
+18 16 41 71 25 1 43 38 78 92 77 70 99 8 33 54 76 78
+
+Output
+
+1 100
+
+Answer
+
+1 100
+
+Checker Log
+
+ok ok
+
+
+Test: #28, time: 80 ms., memory: 3044 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+100 100
+10
+58 98 33 62 75 13 94 86 81 42 14 53 12 66 7 14 3 63 87 37
+
+Output
+
+41 1
+
+Answer
+
+40 1
+
+Checker Log
+
+ok ok
+
+
+Test: #29, time: 90 ms., memory: 3040 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2000 2000
+1
+407 594
+
+Output
+
+2000 2000
+
+Answer
+
+2000 2000
+
+Checker Log
+
+ok ok
+
+
+Test: #30, time: 80 ms., memory: 3036 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2000 2000
+2
+1884 43 1235 1111
+
+Output
+
+1 2000
+
+Answer
+
+1 2000
+
+Checker Log
+
+ok ok
+
+
+Test: #31, time: 30 ms., memory: 2312 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2000 2000
+3
+1740 1797 1279 1552 329 756
+
+Output
+
+2000 1
+
+Answer
+
+2000 1
+
+Checker Log
+
+ok ok
+
+
+Test: #32, time: 80 ms., memory: 3040 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2000 2000
+4
+1844 1342 171 1810 1558 1141 1917 1999
+
+Output
+
+530 1
+
+Answer
+
+530 1
+
+Checker Log
+
+ok ok
+
+
+Test: #33, time: 90 ms., memory: 3036 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2000 2000
+5
+1846 327 1911 1534 134 1615 1664 682 1982 1112
+
+Output
+
+346 1
+
+Answer
+
+346 1
+
+Checker Log
+
+ok ok
+
+
+Test: #34, time: 90 ms., memory: 3044 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2000 2000
+6
+1744 1102 852 723 409 179 89 1085 997 1433 1082 1680
+
+Output
+
+2000 1
+
+Answer
+
+2000 1
+
+Checker Log
+
+ok ok
+
+
+Test: #35, time: 90 ms., memory: 3044 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2000 2000
+7
+1890 22 288 1729 383 831 1192 1206 721 1376 969 492 510 1699
+
+Output
+
+2000 2000
+
+Answer
+
+2000 2000
+
+Checker Log
+
+ok ok
+
+
+Test: #36, time: 30 ms., memory: 2328 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2000 2000
+8
+286 381 572 1849 1703 1574 622 1047 1507 941 871 663 1930 120 1084 1830
+
+Output
+
+1 1423
+
+Answer
+
+1 1423
+
+Checker Log
+
+ok ok
+
+
+Test: #37, time: 80 ms., memory: 3040 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2000 2000
+9
+226 531 56 138 722 405 1082 608 1355 1426 83 544 275 1268 683 412 1880 1049
+
+Output
+
+1702 1
+
+Answer
+
+1701 1
+
+Checker Log
+
+ok ok
+
+
+Test: #38, time: 50 ms., memory: 2332 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2000 2000
+10
+763 851 1182 571 1758 389 247 1907 730 881 531 1970 1430 667 169 765 1729 120 129 967
+
+Output
+
+2000 1793
+
+Answer
+
+2000 1793
+
+Checker Log
+
+ok ok
+
+
+Test: #39, time: 60 ms., memory: 2340 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2000 2000
+10
+655 95 1640 1656 1344 79 666 1677 968 1180 522 1394 1850 1568 336 130 412 920 29 1664
+
+Output
+
+2000 570
+
+Answer
+
+2000 570
+
+Checker Log
+
+ok ok
+
+
+Test: #40, time: 50 ms., memory: 2328 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+10 1
+10
+4 1 6 1 10 1 9 1 1 1 7 1 5 1 2 1 8 1 3 1
+
+Output
+
+1 1
+
+Answer
+
+1 1
+
+Checker Log
+
+ok ok
+
+
+Test: #41, time: 50 ms., memory: 2324 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+1 10
+10
+1 10 1 4 1 3 1 7 1 6 1 1 1 8 1 2 1 9 1 5
+
+Output
+
+1 1
+
+Answer
+
+1 1
+
+Checker Log
+
+ok ok
+
+
+Test: #42, time: 90 ms., memory: 3040 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+1 100
+10
+1 68 1 18 1 43 1 12 1 64 1 34 1 23 1 70 1 46 1 33
+
+Output
+
+1 100
+
+Answer
+
+1 100
+
+Checker Log
+
+ok ok
+
+
+Test: #43, time: 80 ms., memory: 3044 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+100 1
+10
+62 1 63 1 57 1 76 1 35 1 69 1 73 1 95 1 96 1 21 1
+
+Output
+
+1 1
+
+Answer
+
+1 1
+
+Checker Log
+
+ok ok
+
+
+Test: #44, time: 80 ms., memory: 3044 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+1 2000
+10
+1 1730 1 1374 1 831 1 1076 1 580 1 914 1 123 1 668 1 1288 1 160
+
+Output
+
+1 2000
+
+Answer
+
+1 2000
+
+Checker Log
+
+ok ok
+
+
+Test: #45, time: 60 ms., memory: 3036 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2000 1
+10
+1058 1 1779 1 1995 1 1398 1 96 1 1599 1 1496 1 1659 1 385 1 1485 1
+
+Output
+
+722 1
+
+Answer
+
+721 1
+
+Checker Log
+
+ok ok
+
+
+Test: #46, time: 60 ms., memory: 3048 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+5 5
+1
+1 1
+
+Output
+
+5 5
+
+Answer
+
+5 5
+
+Checker Log
+
+ok ok
+
+
+Test: #47, time: 60 ms., memory: 3044 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+2 5
+10
+1 1 1 2 1 3 1 4 1 5 2 1 2 2 2 3 2 4 2 5
+
+Output
+
+1 1
+
+Answer
+
+1 1
+
+Checker Log
+
+ok ok
+
+
+Test: #48, time: 50 ms., memory: 2332 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+1 10
+9
+1 1 1 2 1 3 1 4 1 6 1 7 1 8 1 9 1 10
+
+Output
+
+1 5
+
+Answer
+
+1 5
+
+Checker Log
+
+ok ok
+
+
+Test: #49, time: 50 ms., memory: 2268 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+3 3
+5
+1 1 1 3 2 2 3 1 3 3
+
+Output
+
+1 2
+
+Answer
+
+1 2
+
+Checker Log
+
+ok ok
+
+
+Test: #50, time: 50 ms., memory: 2340 KB, exit code: 0, checker exit code: 0, verdict: OK
+Input
+
+999 999
+4
+1 499 499 1 499 999 999 499
+
+Output
+
+999 999
+
+Answer
+
+500 500
+
+Checker Log
+
+ok ok
+
+
+

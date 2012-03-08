@@ -1,0 +1,30 @@
+-- 229027 	Dec 23, 2010 12:52:55 AM 	adamax 	A - Shell Game 	Haskell 	Accepted 	30 ms 	1548 KB 
+
+import qualified Data.ByteString.Lazy.Char8 as LB
+import qualified Data.ByteString as SB
+import Data.ByteString.Internal (inlinePerformIO)
+import Foreign.C.String (CString)
+import Foreign.C (CDouble)
+import Data.Maybe (fromJust)
+import Data.List (foldl')
+
+foreign import ccall unsafe "stdlib.h atof" c_atof :: CString -> IO Double
+unsafeReadDouble = inlinePerformIO . flip SB.useAsCString c_atof
+{-# INLINE unsafeReadDouble #-}
+readDouble = unsafeReadDouble . SB.concat . LB.toChunks
+readInt = fst . fromJust . LB.readInt
+
+main = readFile "input.txt" >>= (writeFile "output.txt" . show . solve . parse . lines)
+
+parse :: [String] -> (Int, [[Int]])
+parse str =
+  let n = read (head str)
+      lst = map (map read . words) . tail $ str
+  in (n, lst)
+
+solve (n, lst) = foldl' f n lst
+    where f acc [x,y]  | acc == x = y
+                       | acc == y = x
+                       | otherwise = acc
+
+

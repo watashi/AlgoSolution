@@ -1,0 +1,8 @@
+#ruby
+puts [*1..a=gets.to_i].any?{|n|-~n*n/2==a}?:YES:"NO"
+
+#python
+print"YES"if input()*2in[x*x+x for x in range(99)]else"NO"
+
+
+

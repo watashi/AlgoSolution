@@ -1,0 +1,46 @@
+.verdict-accepted {
+    color: #0a0;
+    font-weight: bold;
+}
+
+.verdict-accepted-challenged {
+    color: #0a0;
+}
+
+.verdict-failed {
+    color: red;
+}
+
+.verdict-rejected {
+    color: #00a;
+}
+
+.verdict-waiting {
+    color: gray;
+}
+
+.verdict-successful-challenge {
+    font-weight: bold;
+    color: #0a0;
+}
+
+.verdict-unsuccessful-challenge {
+    color: #00a;
+}
+
+.verdict-challenged {
+    color: red;
+    font-weight: bold;
+}
+
+.status-verdict {
+    font-size: 11px !important;
+}
+
+.status-problem {
+    font-size: 11px !important;
+}
+
+.status-small {
+    font-size: 11px !important;
+}

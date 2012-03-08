@@ -1,0 +1,5 @@
+By nab, contest: Codeforces Round #102 (Div. 2), problem: (A) Help Vasilisa the Wise 2, Accepted, #
+
+    I=gets(p).split.map &:to_i
+    [*1..9].permutation(4){|a,b,c,d|(puts"%d %d\n%d %d"%[a,b,c,d];exit)if[a+b,c+d,a+c,b+d,a+d,b+c]==I}
+    p -1

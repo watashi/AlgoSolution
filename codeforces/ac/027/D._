@@ -1,0 +1,52 @@
+--144714 	Oct 16, 2010 1:24:00 AM 	Schrodi 	D - Ring Road 2 	Haskell 	Accepted 	50 ms 	2028 KB
+
+import Data.Array.MArray (newArray, writeArray, readArray)
+import List (tails)
+import Array (Array, bounds, elems, indices, accumArray, (!))
+import Data.Array.MArray (unsafeFreeze)
+import Data.Array.ST (STArray)
+import Control.Monad (forM, when)
+import Control.Monad.ST.Lazy (ST, runST)
+
+edges :: [(Int, Int)] -> [(Int, Int)]
+edges xs = 
+  concatMap (\ ((a, (_, _)), (b, (_, _))) -> [(a, b), (b, a)]) $ 
+            filter crossing [(x, y) | x:xs <- tails indexed, y <- xs]
+  where
+  indexed = zip [1..] $ map (\ (a, b) -> (min a b, max a b)) xs
+  crossing ((_, (a, b)), (_, (c, d))) = a < c && c < b && b < d ||
+                                        c < a && a < d && d < b
+
+bicolor g = runST $ do
+  colors <- newArray (bounds g) Nothing :: ST s (STArray s Int (Maybe Bool))
+  flags <- forM (indices g) $ \v -> do
+    c <- readArray colors v
+    result <- dfs colors v True
+    return (c /= Nothing || result)
+  result <- unsafeFreeze colors
+  return (all id flags, result) 
+  where
+  dfs colors v color = do
+    c <- readArray colors v
+    case c of
+      Nothing -> do
+        writeArray colors v (Just color) 
+        flags <- forM (g ! v) $ \v' -> dfs colors v' (not color)
+        return (all id flags)
+      Just c -> return (c == color)  
+                            
+answer :: Int -> [(Int, Int)] -> String
+answer n xs =
+  case bicolor $ accumArray (flip (:)) [] (1, n) (edges xs) of
+    (True, a) -> map (\ (Just c) -> if c then 'i' else 'o') $ elems a
+    _ -> "Impossible"
+
+solve xs = answer n roads
+  where
+  n = read $ (!! 1) $ words $ head ls
+  roads = map ((\ [a, b] -> (read a, read b)) . words) $ tail ls
+  ls = lines xs
+         
+main = interact solve
+
+

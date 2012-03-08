@@ -1,0 +1,12 @@
+# 142919 	Oct 12, 2010 10:56:41 AM 	itchyny 	B - Sale 	Python 	Accepted 	60 ms 	2688 KB 
+
+m,a=map(lambda x:map(int,x.split()),(raw_input(),raw_input()))
+print-sum(sorted(min(i,0)for i in a)[:m[1]])
+
+
+# 142291 	Oct 11, 2010 8:34:07 PM 	adamax 	B - Sale 	Ruby 	Accepted 	50 ms 	3792 KB 
+
+n, m = gets.split.map{|s| s.to_i}
+prices = gets.split.map {|s| s.to_i}.select {|j| j < 0}.sort
+print -prices[0...m].reduce(0, :+)
+

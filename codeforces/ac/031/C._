@@ -1,0 +1,13 @@
+-- 144052 	Oct 14, 2010 12:31:24 PM 	KTR 	C - Schedule 	Haskell 	Accepted 	340 ms 	3072 KB 
+main = interact (ans)
+ans theInput = output $ answer $ intersect schedule where
+        inputs = map (map (read::String->Int))(map words $ lines theInput)
+        [n] = head inputs
+        schedule = zip [1..n] [(l,r)|[l,r]<-take n $ tail inputs]
+        intersect [_] = []
+        intersect ((i,(a,b)):xs) = [(i,j)|(j,(c,d))<-xs,(a<=c && c<b)||(c<=a && a<d)] ++ intersect xs
+        answer [] = [1..n]
+        answer ((i,j):xs) = [k|k<-[i,j],elem k $ answer xs]
+        output x = unlines $ map unwords $ map (map show) [[length x],x]
+
+

@@ -1,0 +1,122 @@
+# 174158 	Nov 5, 2010 9:49:55 PM 	mfkhr 	C - Berland Square 	Ruby 	Accepted 	420 ms 	2260 KB 
+n,x,m,y = gets.chomp.split(/ /).map!{|x| x.to_i}
+if x > y
+        x,y = y,x
+        n,m = m,n
+end
+
+ret = n+1
+for i in 1..m
+    ly=y-i-x
+        ry=y+i-x
+    if (ly>=n || ly<=-n)
+                ret+=1
+        elsif (ly>=0 && ry>=0)
+          ry=[n,ry-1].min
+      ret+=2*(ry-ly)
+    else
+      ry=[n,ry-1].min
+      ret +=2*(ry+ly)+1
+    end
+end
+
+puts ret
+
+// 173161 	Nov 5, 2010 8:08:04 PM 	Ra16bit 	C - Berland Square 	GNU C++ 	Accepted 	30 ms 	1292 KB 
+
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+int n,x,m,y,ly,ry,i;
+long long r;
+int main() {
+  scanf("%d%d%d%d",&n,&x,&m,&y);
+  if (x>y) { swap(x,y); swap(n,m); }
+  for (r=n+1,i=1; i<=m; i++) {
+    ly=y-i-x; ry=y+i-x;
+    if (ly>=n || ly<=-n) r++; else if (ly>=0 && ry>=0) {
+      ry=min(n,ry-1);
+      r+=2*(ry-ly);
+    } else {
+      ry=min(n,ry-1);
+      r+=2*(ry+ly)+1;
+    }
+  }
+  printf("%I64d\n",r);
+  return 0;
+}
+
+-- 184935 	Nov 13, 2010 2:46:32 AM 	KTR 	C - Berland Square 	Haskell 	Accepted 	50 ms 	5660 KB 
+
+main = interact solve
+solve input = output where
+  [n,x,m,y] = map (read::String->Integer) $ words input
+  output = show $ answer l s
+  d = abs (x-y)
+  l = max n m
+  s = min n m
+  answer v w
+    | d == 0             = v + 1
+    | v + w <= d         = v + w + 1
+    | v <= d             = v + w + 1 + (v+w-d)^2
+    | v == w             = answer (v-1) (w-1) + 4*d
+    | v <= w + d         = answer (v-1) w + 2*(w-v+d)+1
+    | otherwise          = answer (v-1) w + 1
+
+// 179272 	Nov 7, 2010 11:53:40 PM 	etendren 	C - Berland Square 	GNU C++ 	Accepted 	30 ms 	1320 KB 
+
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int main() {
+    long long n,m,x,y;
+    cin >> n >> x >> m >> y;
+    long long a = max(x-y, y-x);
+    if(a == 0) {
+        cout << max(m,n) + 1;
+        return 0;
+    }
+long long res = n+1;
+    for(long long r=1; r<=m; ++r) {
+        if(a-r >= n || a-r <= -n)
+            ++res;
+                else
+                        if(a+r<=n)
+                                res += (a-r >= 0) ? 4*r-2 : 4*a-1;
+                        else
+                                res += (a-r >= 0) ? (n-a+r)*2 : (n-r+a+1)*2-1;
+    }
+cout << res;
+    return 0;
+}
+
+(*173338 	Nov 5, 2010 8:19:37 PM 	tourist 	C - Berland Square 	Delphi 	Accepted 	30 ms 	788 KB *)
+
+{$R+,S+,Q+,I+,O-}
+{R-,S-,Q-,I-,O+}
+var
+  lg,rg,n,x,m,y,d,i,j: longint;
+  ans: int64;
+begin
+//  assign(input,'in'); reset(input);
+//  assign(output,'out'); rewrite(output);
+  read(n,x,m,y);
+  ans:=n+m+1; d:=abs(x-y);
+  for i:=1 to n do
+  begin
+    j:=d-i+1;
+    if (j >= 1) and (j <= m) then inc(ans);
+    lg:=j+1; rg:=m;
+    if i-d+1 > lg then lg:=i-d+1;
+    if i+d-1 < rg then rg:=i+d-1;
+    if lg <= rg then inc(ans,(rg-lg+1)*2);
+  end;
+  writeln(ans);
+  close(input);
+  close(output);
+end.
+
+
+

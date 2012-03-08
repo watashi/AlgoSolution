@@ -1,0 +1,70 @@
+{ vim: ft=pascal }
+program task;
+const
+	m=1000000007;
+var
+	a:array[-1000..1000,-1000..1000]of boolean;
+	x,y:array[0..10000000]of integer;
+	i,p,l,k:integer;
+	n,cnt,precnt,preinc:int64;
+procedure eset(cx,cy:integer);
+begin
+	if a[cx,cy] then exit;
+	a[cx,cy]:=true;
+	inc(cnt);
+	inc(l);
+	x[l]:=cx;
+	y[l]:=cy;
+end;
+begin
+{$IFDEF DEBUG}
+	reset(input,'test.in');
+	rewrite(output,'test.out');
+{$ENDIF}
+	read(n,k);
+	for i:=1 to k do
+	begin
+		read(p,l);
+		a[p,l]:=true;
+	end;
+	cnt:=1;
+	precnt:=0;
+	a[0,0]:=true;
+	x[0]:=0;
+	y[0]:=0;
+	x[1]:=0;
+	y[1]:=0;
+	p:=0;
+	l:=1;
+	k:=10;
+	while (k>0)and(n>0) do
+begin
+	preinc:=cnt-precnt;
+	precnt:=cnt;
+	repeat
+		eset(x[p]-2,y[p]-1);
+		eset(x[p]-2,y[p]+1);
+		eset(x[p]-1,y[p]-2);
+		eset(x[p]-1,y[p]+2);
+		eset(x[p]+1,y[p]-2);
+		eset(x[p]+1,y[p]+2);
+		eset(x[p]+2,y[p]-1);
+		eset(x[p]+2,y[p]+1);
+		inc(p);
+	until (x[p]=0)and(y[p]=0);
+	inc(p);
+	inc(l);
+	x[l]:=0;
+	y[l]:=0;
+	if cnt-precnt-preinc=28 then dec(k);
+	dec(n);
+	if cnt=precnt then n:=0;
+end;
+if n>0 then
+begin
+	preinc:=cnt-precnt;
+	n:=n mod m;
+	cnt:=(cnt+(preinc+14*(n+1))mod m*n)mod m;
+end;
+writeln(cnt);
+	end.

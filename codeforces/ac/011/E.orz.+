@@ -1,0 +1,248 @@
+// vim: ft=cpp
+// By vepifanov, contest: Codeforces Beta Round #11, problem: (E) Forward, march!, Accepted
+
+#include <cstdio>
+#include <iostream>
+#include <vector>
+#include <set>
+#include <cstring>
+#include <string>
+#include <map>
+#include <cmath>
+#include <ctime>
+#include <algorithm>
+#include <bitset>
+#include <queue>
+#include <sstream>
+
+using namespace std;
+
+#define mp make_pair
+#define pb push_back
+#define rep(i,n) for(int i = 0; i < n; i++)
+#define re return
+#define fi first
+#define se second
+#define sz(x) ((int) (x).size())
+#define all(x) (x).begin(), (x).end()
+#define sqr(x) ((x) * (x))
+#define y0 y3487465
+#define y1 y8687969
+
+typedef vector<int> vi;
+typedef long long ll;
+typedef long double ld;
+typedef pair<int, int> ii;
+typedef vector<ii> vii;
+typedef vector<string> vs;
+typedef vector<vi> vvi;
+
+template<class T> T abs(T x) {
+        re x > 0 ? x : -x;
+}
+
+int n;
+int m;
+
+char w[1000010];
+int x[1000010];
+
+int main() {
+        gets (w);
+        int n = strlen (w);
+        int m = int (w[0] == 'R' && w[n - 1] == 'R'), k = 0, r = 0;
+        for (int i = 0; i < n; i++) {
+                if (i > 0 && w[i] == w[i - 1] && w[i] != 'X') m++;
+                if (w[i] != 'X') { x[r++] = 1 - (int (w[i] == 'R') == (m & 1)); m += x[r - 1];}
+                m++;
+        }
+        int M = m;
+        if (M % 2 == 0) M++;
+        long double ans = r / (2.0 * M);
+        M = m;
+        int R = r;
+        if (M & 1) { x[r++] = 1; M++; }
+        for (int i = 0; i < r; i++)
+                if (x[i] == 1 && x[i + 1] == 1)
+                        if ((long long)R * (M - 2) <= (long long)(R - 1) * M) {
+                                M -= 2;
+                                R--;
+                                i++;
+                        }
+        if ((long double)R / M > ans) ans = (long double)R / M;
+        long long ANS = ans * 100000000 + 0.0000001;
+        printf ("%.6f\n", ANS / 1000000.0);
+        return 0;
+}
+
+
+// By krijgertje, contest: Codeforces Beta Round #11, problem: (E) Forward, march!, Accepted
+
+#include <algorithm> 
+#include <iostream> 
+#include <sstream> 
+#include <string> 
+#include <vector> 
+#include <queue> 
+#include <set> 
+#include <map> 
+#include <cstdio> 
+#include <cstdlib> 
+#include <cctype> 
+#include <cmath> 
+#include <list>
+#include <cassert>
+using namespace std; 
+
+#define PB push_back 
+#define MP make_pair 
+#define SZ(v) ((int)(v).size()) 
+#define FOR(i,a,b) for(int i=(a);i<(b);++i) 
+#define REP(i,n) FOR(i,0,n) 
+#define FORE(i,a,b) for(int i=(a);i<=(b);++i) 
+#define REPE(i,n) FORE(i,0,n) 
+#define FORSZ(i,a,v) FOR(i,a,SZ(v)) 
+#define REPSZ(i,v) REP(i,SZ(v)) 
+typedef long long ll; 
+
+char buff[1000001];
+
+int calc(string s) {
+        int p=0,q=0,ones=0; bool flippedsingle=false;
+        REPSZ(i,s) {
+                char want=(q%2==0)?'L':'R';
+                if(s[i]=='X') ++q;
+                else if(s[i]==want) ++p,++q,flippedsingle=false;
+                else {
+                        ++q;
+                        ++p,++q;
+                        if(flippedsingle) ++ones; flippedsingle=!flippedsingle;
+                }
+        }
+        if(q%2==1) {
+                ++q;
+                if(flippedsingle) ++ones;
+        }
+        if(2*p>q) p-=ones,q-=2*ones;
+        
+        return (ll)p*100*1000000/q;
+}
+
+void run() {
+        scanf("%s",buff);
+        string s;
+        for(int i=0;buff[i]!='\0';++i) { if(i>0&&buff[i-1]==buff[i]&&buff[i]!='X') s+='X'; s+=buff[i]; }
+        
+        int res;
+        if(s[0]==s[SZ(s)-1]&&s[0]!='X') {
+                res=max(calc(s+'X'),calc('X'+s));
+        } else {
+                res=calc(s);
+        }
+        printf("%d.%06d\n",res/1000000,res%1000000);
+}
+
+int main() {
+        run();
+        return 0;
+}
+
+
+// By Coder, contest: Codeforces Beta Round #11, problem: (E) Forward, march!, Accepted
+
+#include <string.h>
+#include <stdio.h>
+#include <algorithm>
+
+using namespace std;
+
+const long long BIG = 100000000;
+char p[1000005], s[2000005];
+long long D[2000005];
+
+
+int main() {
+    gets(p);
+    int sz = 0, g = 0, n = 0, i;
+
+    for (i = 0; p[i]; i++) {
+        s[n++] = p[i];
+        if (p[i] != 'X' && p[i] == p[i+1])
+            s[n++] = 'X';
+    }
+    if (s[0] == s[n-1]) {
+        if (s[0] == 'L') s[n++] = 'X';
+        if (s[0] == 'R') {
+            for (i = n; i >= 1; i--)
+                s[i] = s[i - 1];
+            s[0] = 'X';
+            n++;
+        }
+    }
+
+    int L = 0, R = BIG, M;
+    while (L < R) {
+        M = (L + R + 1) / 2;
+        for (i = 1; i <= n; i++) {
+            D[i] = D[i-1] + BIG * ( s[i-1] != 'X' ) - 2 * M;
+            if (i >= 2) {
+                D[i] = max(D[i], D[i-2] + BIG * ((s[i-2] == 'L') + (s[i-1] == 'R')) - 2 * M);
+            }
+        }
+        if (D[n] >= 0) L = M; else R = M - 1;
+    }
+    printf("%.6lf\n", L / 1000000.0);
+    return 0;
+}
+
+// By sevenkplus, contest: Codeforces Beta Round #11, problem: (E) Forward, march!, Accepted
+
+#include<cstdio>
+#include<cstring>
+#include<cstdlib>
+#include<algorithm>
+#include<iostream>
+using namespace std;
+typedef long long ll;
+#define N 1000010
+char t[N];
+int cc(string s)
+{
+    int n=s.size(),p=0,q=0,o=0,f=0;
+    char w;
+    for(int i=0;i<n;i++)
+    {
+        w=(q&1)?'R':'L';
+        if(s[i]=='X')
+            q++;
+        else
+            if(s[i]==w)
+                p++,q++,f=0;
+            else
+                p++,q+=2,o+=f,f=!f;
+    }
+    if(q&1)
+        q++,o+=f;
+    if(p*2>q)
+        p-=o,q-=o*2;
+    return (ll)p*100000000/q;
+}
+int main()
+{
+    string s="";
+    scanf("%s",t);
+    int n=strlen(t);
+    for(int i=0;i<n;i++)
+    {
+        if(i>0&&t[i]==t[i-1]&&t[i]!='X')
+            s+='X';
+        s+=t[i];
+    }
+    int R;
+    if(s[0]==s[s.size()-1]&&s[0]!='X')
+        R=max(cc(s+'X'),cc('X'+s));
+    else
+        R=cc(s);
+    printf("%d.%06d\n",R/1000000,R%1000000);
+    return 0;
+}

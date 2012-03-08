@@ -1,0 +1,11 @@
+2 10
+add 1 3
+add 2 10
+add 3 11
+decay
+add 2 10
+decay
+add 4 5
+add 5 7
+add 7 1
+decay

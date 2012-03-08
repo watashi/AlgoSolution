@@ -1,0 +1,4 @@
+$_ = <>;
+($_, $b) = split;
+++$_ until s/[^47]//gr eq $b;
+print

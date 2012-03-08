@@ -1,0 +1,2 @@
+#!/usr/bin/ruby
+$><<gets.scan(/.{10}/).map{|s|$a||=gets(p).split;$a.index s}*""

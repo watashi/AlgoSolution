@@ -1,0 +1,10 @@
+# 128979 	Oct 2, 2010 11:25:46 AM 	urutom 	B - Borze 	Ruby 	Accepted 	60 ms 	3784 KB 
+
+puts gets.scan(/\.|-\.|--/).map{|_|_=="." ? "0" : _=="-." ? "1" : "2"}*""
+
+# 130041 	Oct 2, 2010 1:25:50 PM 	itchyny 	B - Borze 	Python 	Accepted 	60 ms 	2696 KB
+
+import re
+print re.sub(r'-1', '20', re.sub(r'\.', '0', re.sub(r'--', '2', re.sub(r'-\.', '1', raw_input()))))
+
+

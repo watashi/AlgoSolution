@@ -1,0 +1,80 @@
+// vim: ft=cpp
+// By SKARAMYLLI, contest: Codeforces Beta Round #8, problem: (C) Looking for Order, Accepted
+
+//#include <abacaba>
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <vector>
+#include <queue>
+#include <deque>
+#include <set>
+#include <algorithm>
+using namespace std;
+
+struct point
+{
+    int x,y;
+};
+
+int dist(int x,int y,int x1,int y1)
+{
+    return (x1-x)*(x1-x)+(y1-y)*(y1-y);
+}
+
+int best(int x,int y,int x1,int y1,int x0,int y0)
+{
+    return min(dist(x,y,x1,y1),dist(x,y,x0,y0)+dist(x1,y1,x0,y0));
+}
+
+point a[100];
+vector <int> v;
+int n,summ,q,minim,first,second,used[100];
+
+int main()
+{
+    int x,y,x0,y0;
+    scanf("%d %d",&x0,&y0);
+    scanf("%d",&n);
+    for (int i=0; i<n; i++)
+    {
+        scanf("%d %d",&x,&y);
+        a[i].x=x;
+        a[i].y=y;
+    }
+    for (int t=0; t<n/2; t++) 
+    {
+        minim=10000000;
+        for (int i=0; i<n; i++)
+            for (int j=i+1; j<n; j++)
+                if (best(a[i].x,a[i].y,a[j].x,a[j].y,x0,y0)<minim 
+                    && used[i]==0 && used[j]==0)
+                {
+                    first=i;
+                    second=j;
+                    minim=best(a[i].x,a[i].y,a[j].x,a[j].y,x0,y0);
+                }
+        summ=summ+minim+dist(a[first].x,a[first].y,x0,y0)
+            +dist(a[second].x,a[second].y,x0,y0);
+        v.push_back(first);
+        if (dist(a[first].x,a[first].y,a[second].x,a[second].y)
+            !=best(a[first].x,a[first].y,a[second].x,a[second].y,x0,y0))
+            v.push_back(-1);
+        v.push_back(second);
+        v.push_back(-1);
+        used[first]=1;
+        used[second]=1;
+    }
+    if ((n%2)==1)
+    {
+        for (int i=0; i<n; i++)
+            if (used[i]==0) q=i;
+        summ=summ+dist(a[q].x,a[q].y,x0,y0)*2;
+        v.push_back(q);
+        v.push_back(-1);
+    }
+    printf("%d\n",summ);
+    printf("0 ");
+    for (int i=0; i<v.size(); i++)
+        printf("%d ",v[i]+1);
+}

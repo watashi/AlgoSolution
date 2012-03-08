@@ -1,0 +1,252 @@
+// vim: ft=cpp
+// dynamic trees ?
+
+// By balroginfire, contest: Codeforces Beta Round #13, problem: (E) Holes, Accepted
+#include<cstdio>
+
+const int maxn=100000+10;
+struct node
+{
+    int ls,rs,father,cnt;
+} t[maxn];
+int lnk[maxn];
+int n,m;
+
+void renew(int u)
+{
+    t[u].cnt=t[t[u].ls].cnt+t[t[u].rs].cnt+1;
+}
+
+void zig(int u)
+{
+    int v=t[u].father;
+    if (t[v].father)
+    {
+        if (t[t[v].father].ls==v) t[t[v].father].ls=u;
+        else t[t[v].father].rs=u;
+    }
+    t[v].ls=t[u].rs;t[u].rs=v;
+    t[u].father=t[v].father;t[v].father=u;
+    if (t[v].ls) t[t[v].ls].father=v;
+    renew(v);//renew(u);
+}
+
+void zag(int u)
+{
+    int v=t[u].father;
+    if (t[v].father)
+    {
+        if (t[t[v].father].ls==v) t[t[v].father].ls=u;
+        else t[t[v].father].rs=u;
+    }
+    t[v].rs=t[u].ls;t[u].ls=v;
+    t[u].father=t[v].father;t[v].father=u;
+    if (t[v].rs) t[t[v].rs].father=v;
+    renew(v);//renew(u);
+}
+
+void Splay(int u)
+{
+    while (t[u].father)
+    {
+        int v=t[u].father;
+        int w=t[v].father;
+        if (!w)
+        {
+            if (t[v].ls==u) zig(u);
+            else zag(u);
+        } else
+        if (t[v].ls==u)
+        {
+            if (t[w].ls==v) {zig(v);zig(u);}
+            else {zig(u);zag(u);}
+        } else
+        {
+            if (t[w].rs==v) {zag(v);zag(u);}
+            else {zag(u);zig(u);}
+        }
+    }
+    renew(u);
+}
+
+void Access(int u)
+{
+    for (;;)
+    {
+        Splay(u);while (t[u].ls) u=t[u].ls;
+        if (lnk[u]>n) 
+            break;
+        int v=lnk[u];
+        Splay(v);t[t[v].rs].father=0;t[v].rs=0;renew(v);
+        t[u].ls=v;t[v].father=u;renew(u);
+        u=v;
+    }
+}
+
+int read()
+{
+    char ch;
+    bool ok=0;
+    int res=0;
+    for (;;)
+    {
+        ch=getchar();
+        if (ch>='0' && ch<='9') res=res*10+ch-'0',ok=1;
+        else if (ok) return res;
+    }
+}
+
+int main()
+{
+    //freopen("input.txt","r",stdin);
+
+    //scanf("%d%d",&n,&m);
+    n=read();m=read();
+    for (int i=1;i<=n;i++) 
+    {
+        //scanf("%d",&lnk[i]);
+        lnk[i]=read();
+        lnk[i]+=i;
+    }
+    for (;m--;)
+    {
+        int sign,a,b;
+        //scanf("%d%d",&sign,&a);
+        sign=read();a=read();
+        if (!sign)
+        {
+            Splay(a);
+            t[t[a].ls].father=0;t[a].ls=0;
+            renew(a);
+            //scanf("%d",&lnk[a]);
+            lnk[a]=read();lnk[a]+=a;
+        } else
+        {
+            Access(a);Splay(a);
+            int w=a;while (t[w].ls) w=t[w].ls;
+            printf("%d %d\n",w,t[t[a].ls].cnt+1);
+        }
+    }
+}
+
+
+
+
+// By oimaster, contest: Codeforces Beta Round #13, problem: (E) Holes, Accepted
+// Program  :  Codeforces Round #13 Problem E Holes
+
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+
+using namespace std;
+
+struct node
+  {
+    int size ,kind;
+    node *ch[2], *pre;
+  } tree[100001], *fa[100001], *Null;
+
+int top = 0;
+
+int getint()
+  {
+    char ch = getchar();
+    for ( ; '0' > ch || ch > '9'; ch = getchar());
+    int res = 0;
+    for ( ; '0' <= ch && ch <= '9'; ch = getchar())
+      res = res * 10 + int(ch) - 48;
+    return res;
+  }
+
+node *New_Node()
+  {
+    node *p = &tree[top ++];
+    p->size = 1, p->kind = 0;
+    p->ch[0] = p->ch[1] = p->pre = Null;
+    return p;
+  }
+
+void Rotate(node *x, int c)
+  {
+    node *y = x->pre;
+    y->ch[! c] = x->ch[c], x->pre = y->pre;
+    if (x->ch[c] != Null) x->ch[c]->pre = y;
+    if (y->kind) y->pre->ch[y == y->pre->ch[1]] = x;
+    x->ch[c] = y, y->pre = x;
+    y->size = y->ch[0]->size + y->ch[1]->size + 1;
+    if (! y->kind) x->kind = 0, y->kind = 1;
+  }
+
+void Splay(node *x)
+  {
+    for ( ; x->kind; )
+      if (! x->pre->kind)
+        Rotate(x, x == x->pre->ch[0]);
+      else
+        {
+          node *y = x->pre, *z = y->pre;
+          if (y == z->ch[0])
+            if (x == y->ch[0])
+              Rotate(y, 1), Rotate(x, 1);
+            else
+              Rotate(x, 0), Rotate(x, 1);
+          else
+            if (x == y->ch[1])
+              Rotate(y, 0), Rotate(x, 0);
+            else
+              Rotate(x, 1), Rotate(x, 0);
+        }
+    x->size = x->ch[0]->size + x->ch[1]->size + 1;
+  }
+
+void Expose(node *x)
+  {
+    for (node *u = x, *v = Null; u != Null; v = u, u = u->pre)
+      {
+        Splay(u), u->ch[1]->kind = 0, u->ch[1] = v;
+        if (v != Null) v->kind = 1;
+        u->size = u->ch[0]->size + u->ch[1]->size + 1;
+      }
+  }
+
+void Set_Father(int a, int b, int n)
+  {
+    if (fa[a] != Null) Expose(fa[a]);
+    Splay(&tree[a]);
+    tree[a].pre = fa[a] = (a + b <= n) ? &tree[a+b] : Null;
+  }
+
+int main()
+  {
+    int n, q, i, x, a, ctrl;
+    node *now;
+    
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
+    
+    n = getint(), q = getint();
+    Null = New_Node(), Null->size = 0;
+    Null->ch[0] = Null->ch[1] = Null->pre = Null;
+    for (i = 1; i <= n; i ++) New_Node(), fa[i] = Null;
+    for (i = 1; i <= n; i ++) Set_Father(i, getint(), n);
+    
+    for ( ; q; q --)
+      if (ctrl = getint(), a = getint(), ctrl)
+        {
+          Expose(&tree[a]), Splay(&tree[a]), now = &tree[a];
+          for ( ; now->ch[0] != Null; now = now->ch[0]);
+          printf("%d %d\n", now - tree, tree[a].ch[0]->size + 1);
+        }
+      else
+        Set_Father(a, getint(), n);
+    
+    return 0;
+  }
+
+
+
+
+
+
+

@@ -1,0 +1,9 @@
+# By nab
+
+    q,x,*y=[*$<].map{|i|i.scan(/./).permutation.map{|j|j.join.to_i}};p x.zip(*y).map{|l|l.max-l.min}.min
+
+    from itertools import *
+    r=raw_input
+    print min(max(i)-min(i)for i in zip(*[map(int,map("".join,permutations(r())))for i in[0]*int(r()[0])]))
+
+

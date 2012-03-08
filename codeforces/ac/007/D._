@@ -1,0 +1,47 @@
+//# 	When 	Who 	Problem 	Lang 	Verdict 	Time 	Memory
+//33551 	Apr 25, 2010 1:22:32 PM 	Ra16bit 	7D - Palindrome Degree 	GNU C++ 	Accepted 	610 ms 	25700 KB 
+// hash
+#include <cstdio>
+#include <cstring>
+using namespace std;
+long long a,b,c,r,e=89,md=7420738134811LL;
+int f[5000100],n,i;
+char s[5000100];
+int main() {
+  gets(s+1); n=strlen(s+1);
+  for (c=i=1; i<=n; i++, c=(c*e)%md) {
+    a=a*e+s[i]-'0';  a%=md;
+    b+=(s[i]-'0')*c; b%=md;
+    if (a==b) f[i]=f[i/2]+1;
+    r+=f[i];
+  }
+  printf("%I64d\n",r);
+  return 0;
+}
+
+
+//By kohyatoh, contest: Codeforces Beta Round #7, problem: (D) Palindrome Degree, Accepted
+#include <stdio.h>
+#include <iostream>
+#include <string>
+using namespace std;
+
+char s[5000001];
+int dp[5000000];
+
+int main() {
+    gets(s);
+    unsigned long long a=0, l=0, r=0, t=1;
+    for(int i=0; s[i]; i++) {
+        l = (l*109)+s[i];
+        r = r+s[i]*t; t *= 109;
+        if(l==r) dp[i+1] = dp[(i+1)/2] + 1;
+        a += dp[i+1];
+    }
+    cout << a << endl;
+    return 0;
+}
+
+
+
+

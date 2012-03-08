@@ -1,0 +1,9 @@
+# 142224 	Oct 11, 2010 8:14:59 PM 	adamax 	A - Reconnaissance 2 	Ruby 	Accepted 	50 ms 	3792 KB 
+
+n = gets.to_i
+h = gets.split(" ").map{|s| s.to_i}
+h << h[0]
+best = (0 ... n).min_by { |i| (h[i] - h[i+1]).abs }
+print (best%n)+1, " ", ((best+1)%n) + 1
+
+# 

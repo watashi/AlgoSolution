@@ -1,0 +1,9 @@
+# 169217 	Oct 31, 2010 3:15:27 PM 	urutom 	A - Army 	Ruby 	Accepted 	50 ms 	2132 KB # ORZ
+
+_=gets(p).split.map(&:to_i)
+p eval _[_[-2]..._[-1]]*?+
+
+# 168629 	Oct 30, 2010 8:55:08 PM 	Chortos-2 	A - Army 	Ruby 	Accepted 	50 ms 	2072 KB 
+
+n,d,(a,b)=(1..3).map{gets.split.map &:to_i};p d[a-1,b-a].inject:+
+

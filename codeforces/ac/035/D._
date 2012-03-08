@@ -1,0 +1,25 @@
+
+<?php
+//147429 	Oct 19, 2010 12:33:39 PM 	apostol.vlz 	D - Animals 	PHP 	Accepted 	30 ms 	2652 KB 
+$input = @fopen("input.txt", "r");
+$output = @fopen("output.txt", "w");
+list($n, $x) = explode(' ', trim(fgets($input)));
+$c = explode(' ', trim(fgets($input)));
+for ($i = 0; $i < $n; $i++) {
+    $a[$i] = $c[$i] * ($n - $i);
+}
+sort($a);
+$k = 0;
+$t = 0;
+for ($i = 0; $i < $n; $i++) {
+    $t += $a[$i];
+    if ($t > $x) {
+        $k = $i;
+        break;
+    }
+}
+if ($t <= $x) {
+    $k = $n;
+}
+fwrite($output, "$k\n");
+fclose($output);

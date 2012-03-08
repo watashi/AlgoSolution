@@ -1,0 +1,25 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. SOLUTION.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 DEC      PIC 9(36)   VALUE ZEROES.
+       01 DIV      PIC 9(36)   VALUE ZEROES.
+       01 MOD      PIC 9(36)   VALUE ZEROES.
+       01 EXP      PIC 9(36)   VALUE ZEROES.
+       01 BIN      PIC 9(36)   VALUE ZEROES.
+       01 STR      PIC z(36).
+
+       PROCEDURE DIVISION.
+           MOVE 1 TO EXP
+           ACCEPT DEC
+           PERFORM UNTIL DEC EQUAL TO 0
+               DIVIDE DEC BY 2 GIVING DIV REMAINDER MOD
+               MULTIPLY MOD BY EXP GIVING MOD
+               MULTIPLY EXP BY 10 GIVING EXP
+               ADD MOD TO BIN
+               MOVE DIV TO DEC
+           END-PERFORM
+           MOVE BIN TO STR
+           DISPLAY STR
+           STOP RUN.

@@ -1,0 +1,12 @@
+#!ruby -parprime
+p=Prime
+eval'$_=p.each(%d).reject{|i|!p.each(i).each_cons(2).any?{|q,r|i==q+r+1}}.size>=%d?"YES": :NO'%$F
+
+
+
+n,k = map(int,raw_input().split())
+pr = filter(lambda p: not any(p%x==0 for x in range(2,p)), range(2,n+50))
+pr2 = filter(lambda p: any(p<=n and 1+pr[ind]+pr[ind+1]==p for ind in range(0,len(pr)-1)), pr)
+print "YES" if len(pr2)>=k else "NO"
+
+
