@@ -1,0 +1,63 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><p>
+You are given vector &lt;string&gt; <b>photo</b>, representing a satellite photo of a military base. Photo contains two types of characters - '.' characters represent an empty area, and '*' characters represent parts of buildings.
+Two non-empty squares A and B on photo belong to the same building if and only if there exist a chain of squares where the first square is A, 
+the last square is B, and each pair of consecutive squares in the chain shares a common side or angle.
+</p>
+<p>
+There are some school buildings on the photo. The distinguishing feature of the school buildings is the shape. 
+Each such building is a rectangular frame (in other words, it is the result of subtracting non-empty solid rectangle A from solid rectange B, and rectangle A lies completely inside B without touching by borders).
+Each side of the frame must be <b>k</b> cells thick and must be parallel to an edge of the photo (see examples for clarification). 
+Note that a school building can't contain any other buidings inside its internal part (see example 2 for clarification).
+</p>
+<p>
+Return the number of school buildings on the photo.
+</p>
+</td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>MilitaryBase</td></tr><tr><td>Method:</td><td>getSchoolBuildingCount</td></tr><tr><td>Parameters:</td><td>vector &lt;string&gt;, int</td></tr><tr><td>Returns:</td><td>int</td></tr><tr><td>Method signature:</td><td>int getSchoolBuildingCount(vector &lt;string&gt; photo, int k)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td>&#160;&#160;&#160;&#160;</td></tr><tr><td></td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>photo</b> will contain between 1 and 50 elements, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>photo</b> will contain between 1 and 50 characters, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>photo</b> will contain the same number of characters.</td></tr><tr><td align="center" valign="top">-</td><td><b>k</b> will be between 1 and 24, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>photo</b> will contain only '.' or '*' characters.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;***......&quot;,
+ &quot;*.*......&quot;,
+ &quot;***.*****&quot;,
+ &quot;....*****&quot;,
+ &quot;....**.**&quot;,
+ &quot;....**.**&quot;,
+ &quot;....**.**&quot;,
+ &quot;....*****&quot;,
+ &quot;....*****&quot;}</pre></td></tr><tr><td><pre>1</pre></td></tr></table></td></tr><tr><td><pre>Returns: 1</pre></td></tr><tr><td><table><tr><td colspan="2">The topleft building at the photo is a school. The other one looks similar to a school, but its sides are too thick.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;*****.*****&quot;,
+ &quot;*****.*****&quot;,
+ &quot;**.**.**.**&quot;,
+ &quot;*****.*****&quot;,
+ &quot;*****.*****&quot;,
+ &quot;...........&quot;,
+ &quot;*****.*****&quot;,
+ &quot;**.**.*****&quot;,
+ &quot;*****.**.**&quot;,
+ &quot;...........&quot;,
+ &quot;****.......&quot;,
+ &quot;****.......&quot;,
+ &quot;**.........&quot;,
+ &quot;**.........&quot;}</pre></td></tr><tr><td><pre>2</pre></td></tr></table></td></tr><tr><td><pre>Returns: 2</pre></td></tr><tr><td><table><tr><td colspan="2">Two top buildings are schools. The left building in the middle row is a rectangle frame, but its top and bottom sides are of incorrect thickness. The two remaining buildings are not rectangle frames at all.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;*********&quot;,
+ &quot;*.......*&quot;,
+ &quot;*.*****.*&quot;,
+ &quot;*.*...*.*&quot;,
+ &quot;*.*...*.*&quot;,
+ &quot;*.*****.*&quot;,
+ &quot;*.......*&quot;,
+ &quot;*********&quot;}</pre></td></tr><tr><td><pre>1</pre></td></tr></table></td></tr><tr><td><pre>Returns: 1</pre></td></tr><tr><td><table><tr><td colspan="2">Only the inner building is a school.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;..........&quot;,
+ &quot;.****.....&quot;,
+ &quot;.*..*.....&quot;,
+ &quot;.****.....&quot;,
+ &quot;.....****.&quot;,
+ &quot;.....*..*.&quot;,
+ &quot;.....****.&quot;,
+ &quot;..........&quot;}</pre></td></tr><tr><td><pre>1</pre></td></tr></table></td></tr><tr><td><pre>Returns: 0</pre></td></tr><tr><td><table><tr><td colspan="2">Here we have only one building and it's not a school (remember that two squares sharing a commong angle belong to the same building). </td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;*********.&quot;,
+ &quot;*.......*.&quot;,
+ &quot;*.***...*.&quot;,
+ &quot;*.*.*.*.*.&quot;,
+ &quot;*.***...*.&quot;,
+ &quot;*.......*.&quot;,
+ &quot;*********.&quot;,
+ &quot;*********.&quot;}</pre></td></tr><tr><td><pre>1</pre></td></tr></table></td></tr><tr><td><pre>Returns: 1</pre></td></tr><tr><td><table><tr><td colspan="2">This photo contains one school building and two buildings which are not a school.
+</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">5)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;*******&quot;,
+ &quot;*.....*&quot;,
+ &quot;*.**..*&quot;,
+ &quot;*..**.*&quot;,
+ &quot;*.....*&quot;,
+ &quot;*******&quot;}</pre></td></tr><tr><td><pre>1</pre></td></tr></table></td></tr><tr><td><pre>Returns: 0</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>

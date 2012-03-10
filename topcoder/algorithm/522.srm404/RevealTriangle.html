@@ -1,0 +1,45 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><p>
+	Suppose there is a triangle of digits like the following:
+</p>
+<pre>74932
+1325
+457
+92
+1</pre>
+<p>
+	Each digit, with the exception of those in the top row, is equal to the last digit of the sum of 
+	its upper and upper-right neighboring digits.
+</p>
+<p>
+	You will be given a vector &lt;string&gt; <b>questionMarkTriangle</b> containing a triangle where 
+	only one digit in each row is known and all others are represented by '?'s 
+	(see example 0 for clarification).
+	Each element of <b>questionMarkTriangle</b> represents a row of the triangle, and the rows are given 
+	from top to bottom. Each element contains exactly one digit ('0'-'9') and 
+	the remaining characters are all '?'s. Restore the triangle and return it as a 
+	vector &lt;string&gt; without '?'s.
+</p>
+</td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>RevealTriangle</td></tr><tr><td>Method:</td><td>calcTriangle</td></tr><tr><td>Parameters:</td><td>vector &lt;string&gt;</td></tr><tr><td>Returns:</td><td>vector &lt;string&gt;</td></tr><tr><td>Method signature:</td><td>vector &lt;string&gt; calcTriangle(vector &lt;string&gt; questionMarkTriangle)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td>&#160;&#160;&#160;&#160;</td></tr><tr><td></td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>questionMarkTriangle</b> will contain between 1 and 50 elements, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Element i (0 indexed) of <b>questionMarkTriangle</b> will contain exactly n-i characters, where n is the number of elements in <b>questionMarkTriangle</b>.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>questionMarkTriangle</b> will contain exactly one digit ('0'-'9') and all others characters will be '?'s.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;4??&quot;, 
+ &quot;?2&quot;, 
+ &quot;1&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: {&quot;457&quot;, &quot;92&quot;, &quot;1&quot; }</pre></td></tr><tr><td><table><tr><td colspan="2">Let's substitute '?'s with unknown variables:
+<pre>
+4ab 
+c2 
+1
+</pre>
+
+Having done that, we start solving for the variables from the bottom to the top. First, we know that the last digit of (c + 2) is 1. Therefore, c must be 9:
+
+<pre>
+4ab 
+92 
+1
+</pre>
+Now we know that the last digit of (4 + a) is 9, which means a is 5:
+<pre>
+45b 
+92 
+1
+</pre>
+
+And, finally, the last digit of (5 + b) is 2, so b is 7.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;1&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: {&quot;1&quot; }</pre></td></tr><tr><td></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;???2&quot;, &quot;??2&quot;, &quot;?2&quot;, &quot;2&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: {&quot;0002&quot;, &quot;002&quot;, &quot;02&quot;, &quot;2&quot; }</pre></td></tr><tr><td></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;??5?&quot;, &quot;??9&quot;, &quot;?4&quot;, &quot;6&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: {&quot;7054&quot;, &quot;759&quot;, &quot;24&quot;, &quot;6&quot; }</pre></td></tr><tr><td></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>

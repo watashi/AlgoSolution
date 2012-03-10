@@ -1,0 +1,40 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td>You are given two matrices <b>A</b> and <b>B</b>. Each matrix is represented by a vector &lt;string&gt; containing only '0' and '1' digits.  The j-th character of the i-th element is the value at cell (i, j). Your goal is to transform matrix <b>A</b> into matrix <b>B</b> using a series of swaps. On each swap, you choose two adjacent (horizontally, vertically or diagonally) cells in matrix <b>A</b> and swap their values.<br></br>
+
+There is a limit to the number of times each cell in matrix <b>A</b> can be used. You are given a third matrix <b>count</b> as a vector &lt;string&gt; containing only digits ('0'-'9').  Cell (i, j) in matrix <b>A</b> can be used in a maximum of <b>count</b>(i, j) swaps. Return the fewest number of swaps required to achieve your goal, or return -1 if it is impossible.</td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>TransformMatrix</td></tr><tr><td>Method:</td><td>transform</td></tr><tr><td>Parameters:</td><td>vector &lt;string&gt;, vector &lt;string&gt;, vector &lt;string&gt;</td></tr><tr><td>Returns:</td><td>int</td></tr><tr><td>Method signature:</td><td>int transform(vector &lt;string&gt; A, vector &lt;string&gt; B, vector &lt;string&gt; count)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td>&#160;&#160;&#160;&#160;</td></tr><tr><td></td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>A</b> will contain between 1 and 20 elements, inclusive.<br></br></td></tr><tr><td align="center" valign="top">-</td><td><b>A</b>, <b>B</b> and <b>count</b> will contain the same number of elements.<br></br></td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>A</b>, <b>B</b> and <b>count</b> will contain between 1 and 20 digits, inclusive.<br></br></td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>A</b>, <b>B</b> and <b>count</b> will contain the same number of characters.<br></br></td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>count</b> will contain only digits ('0' to '9').<br></br></td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>A</b> and <b>B</b> will contain only '0' (zero) and '1' (one) digits.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;110&quot;, 
+ &quot;000&quot;,
+ &quot;001&quot;}</pre></td></tr><tr><td><pre>{&quot;000&quot;,
+ &quot;110&quot;,
+ &quot;100&quot;}</pre></td></tr><tr><td><pre>{&quot;222&quot;,
+ &quot;222&quot;,
+ &quot;222&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 4</pre></td></tr><tr><td><table><tr><td colspan="2">Here is one of the ways:<br></br>
+(0,0) - (1,1)<br></br>
+(0,1) - (1,0)<br></br>
+(2,2) - (2,1)<br></br>
+(2,1) - (2,0)</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;10&quot;}</pre></td></tr><tr><td><pre>{&quot;01&quot;}</pre></td></tr><tr><td><pre>{&quot;11&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 1</pre></td></tr><tr><td><table><tr><td colspan="2">Just swap the values in the two cells of the matrix.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;111&quot;,
+ &quot;000&quot;,
+ &quot;111&quot;}</pre></td></tr><tr><td><pre>{&quot;111&quot;,
+ &quot;000&quot;,
+ &quot;111&quot;}</pre></td></tr><tr><td><pre>{&quot;013&quot;,
+ &quot;537&quot;,
+ &quot;136&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 0</pre></td></tr><tr><td><table><tr><td colspan="2">Matrix A is already equal to matrix B, so no swaps are required.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;001&quot;,
+ &quot;110&quot;}</pre></td></tr><tr><td><pre>{&quot;000&quot;,
+ &quot;111&quot;}</pre></td></tr><tr><td><pre>{&quot;000&quot;,
+ &quot;111&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: -1</pre></td></tr><tr><td><table><tr><td colspan="2">Here we can't use any cell from row 0.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;100&quot;,
+ &quot;000&quot;}</pre></td></tr><tr><td><pre>{&quot;000&quot;,
+ &quot;000&quot;}</pre></td></tr><tr><td><pre>{&quot;999&quot;,
+ &quot;999&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: -1</pre></td></tr><tr><td><table><tr><td colspan="2">The two matrices contain a different number of '1's, so it is impossible to transform one into the other.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">5)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;011101&quot;,
+ &quot;110000&quot;,
+ &quot;000011&quot;,
+ &quot;000000&quot;,
+ &quot;100000&quot;}</pre></td></tr><tr><td><pre>{&quot;110100&quot;,
+ &quot;000011&quot;,
+ &quot;000000&quot;,
+ &quot;110001&quot;,
+ &quot;000010&quot;}</pre></td></tr><tr><td><pre>{&quot;305713&quot;,
+ &quot;537211&quot;,
+ &quot;352421&quot;,
+ &quot;242212&quot;,
+ &quot;333313&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 10</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">6)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;10&quot;,
+ &quot;00&quot;}</pre></td></tr><tr><td><pre>{&quot;00&quot;,
+ &quot;01&quot;}</pre></td></tr><tr><td><pre>{&quot;11&quot;,
+ &quot;11&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 1</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>
