@@ -52,7 +52,15 @@ struct Rect {
         x2 += x0;
         y2 += y0;
     }
+/*
+    int width() const {
+        return x2 - x1;
+    }
 
+    int height() const {
+        return y2 - y1;
+    }
+*/
     static void show(int x, char ch) {
         printf("%d.%d", x / 10, x % 10);
         putchar(ch);
@@ -372,7 +380,9 @@ inline void trycol_(const vector<HVRec>& p, const vector<HVRec>& q, int& s, vect
     }
 }
 
-inline int common_(bool flag, int offy, const vector<pair<int, Rect> >& lhs, const vector<pair<int, Rect> >& rhs) {
+inline int common_(bool flag,
+        int hl, const vector<pair<int, Rect> >& lhs,
+        int hr, const vector<pair<int, Rect> >& rhs) {
     int ret = 0, pos = 0;
     for (auto i = lhs.begin(), j = rhs.begin(); i != lhs.end() && j != rhs.end(); ) {
         if (i->second.x2 <= pos) {
@@ -383,7 +393,7 @@ inline int common_(bool flag, int offy, const vector<pair<int, Rect> >& lhs, con
             flag = !flag;
         } else {
             int tmp = min(i->second.x2, j->second.x2);
-            if (i->second.y2 == offy) {
+            if (i->second.y2 >= hl && j->second.y2 >= hr) {
                 if (flag) {
                     ret += tmp - pos;
                 } else {
@@ -406,6 +416,7 @@ inline void trycol() {
     if (rand(2) == 0) {
         sort(v.rbegin(), v.rend());
     }
+    // int zebratype = rand(5);
 #ifdef DEBUG_WITH_LOG
        printf("[%d]", m);
        for (int i: v) {
@@ -414,10 +425,14 @@ inline void trycol() {
        puts("");
 #endif
     temp.clear(n);
-    bool fpre = false, fcur;
-    vector<pair<int, Rect> > pre, cur;
-    int offy = 0;
-    for (int i = 0, k = 0; i < (int)v.size() && k < n; ++i) {
+    // bool fpre = false, fcur;
+    // vector<pair<int, Rect> > pre, cur;
+    vector<bool> heads;
+    vector<int> heights;
+    vector<vector<pair<int, Rect> > > rows;
+    // int offy = 0;
+    for (int i = 0, k = 0; i < (int)v.size(); ++i) {
+        vector<pair<int, Rect> > cur;
         int vi = v[i] - 1;
         vector<HVRec> p, q;
         for (int j = k; j < n; ++j) {
@@ -438,15 +453,21 @@ inline void trycol() {
         sort(q.begin(), q.end(),
             [](const HVRec& lhs, const HVRec& rhs){ return lhs.first < rhs.first; });
 
-        int pq, qp;
+        int pq = -1, qp = -1;
         vector<pair<int, Rect> > pp, qq;
-        trycol_(p, q, pq, pp);
-        trycol_(q, p, qp, qq);
+        // if (zebratype >= 2 || i % 2 == zebratype) {
+            trycol_(p, q, pq, pp);
+        // }
+        // if (zebratype >= 2 || i % 2 != zebratype) {
+            trycol_(q, p, qp, qq);
+        // }
         if (pq > qp) {
-            fcur = false;
+            heads.push_back(false);
+            // fcur = false;
             cur.swap(pp);
         } else {
-            fcur = true;
+            heads.push_back(true);
+            // fcur = true;
             cur.swap(qq);
         }
 
@@ -457,35 +478,77 @@ inline void trycol() {
             offx = x.second.x2;
             vi = max(vi, x.second.y2);
         }
+        heights.push_back(vi);
 
         temp.score += max(pq, qp);
-        int tmp = common_(fpre != fcur, offy, pre, cur);
+        // int tmp = common_(fpre != fcur, offy, pre, cur);
+        int tmp = i == 0 ? 0 : common_(heads[i - 1] != heads[i],
+            heights[i - 1], rows.back(),
+            0, cur);
         if (i == 0) {
         } else if (tmp < 0) {
-            ++offy;
+            // ++offy;
         } else {
             if (i + 1 < (int)v.size()) {
                 ++v[i + 1];
             }
-            temp.score += tmp;
+            // temp.score += tmp;
         }
-        for (auto& x: cur) {
-            x.second.shift(0, offy);
-        }
-        fpre = fcur;
-        pre = cur;
+
+        // pre = cur;
         sort(cur.begin(), cur.end(),
             [](const pair<int, Rect>& lhs, const pair<int, Rect>& rhs){ return lhs.first < rhs.first; });
         for (auto& x: cur) {
             swap(r[k], r[x.first]);
-            temp.r[r[k].id] = x.second;
+            x.first = r[k].id;
+            // temp.r[r[k].id] = x.second;
             ++k;
         }
-        offy += vi;
+        sort(cur.begin(), cur.end(),
+            [](const pair<int, Rect>& lhs, const pair<int, Rect>& rhs){ return lhs.second.x1 < rhs.second.x1; });
+        rows.push_back(cur);
+        // offy += vi;
 #ifdef DEBUG_WITH_LOG
         printf("#%d h=%d [%d|%d|%d] => %d\n", i, vi, p.size(), q.size(), cur.size(), temp.score);
 #endif
     }
+
+    int dp[MAXR][2], pre[MAXR][2];
+
+    dp[0][0] = dp[0][1] = 0;
+    for (int i = 1; i < m; ++i) {
+        for (int j = 0; j < 2; ++j) {
+            dp[i][j] = max(dp[i - 1][0], dp[i - 1][1]);
+            pre[i][j] = dp[i - 1][0] >= dp[i - 1][1] ? 2 : 3;
+            for (int k = 0; k < 2; ++k) {
+                int tmp = common_(heads[i - 1] != heads[i],
+                    k == 0 ? heights[i - 1] : 0, rows[i - 1],
+                    j == 0 ? 0 : heights[i], rows[i]);
+                if (dp[i][j] <= dp[i - 1][k] + tmp) {
+                    dp[i][j] = dp[i - 1][k] + tmp;
+                    pre[i][j] = k;
+                }
+            }
+        }
+    }
+
+    int jj = dp[m - 1][0] >= dp[m - 1][1] ? 0 : 1;
+    temp.score += dp[m - 1][jj];
+#ifdef DEBUG_WITH_LOG
+    fprintf(stderr, "score = %d\n", temp.score);
+#endif
+    int offy = h;
+    for (int i = m - 1, j = jj; i >= 0; j = pre[i][j] % 2, --i) {
+        for (auto& x: rows[i]) {
+            x.second.shift(0, j == 0 ? offy - heights[i] : offy - x.second.y2);
+            temp.r[x.first] = x.second;
+        }
+        offy -= heights[i];
+        if (pre[i][j] >= 2) {
+            --offy;
+        }
+    }
+
     upd();
 }
 
