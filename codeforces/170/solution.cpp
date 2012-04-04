@@ -710,44 +710,6 @@ int main() {
     fprintf(stderr, "score = %d; counter0 = %d\n", best.score, counter);
 
     if (false && !bestheads.empty()) {
-        int m = (int)bestheads.size();
-        vector<int> perm;
-        for (int i = 0; i < m; ++i) {
-            perm.push_back(i);
-        }
-        while (!timeout2()) {
-            ++counter;
-            random_shuffle(perm.begin(), perm.end());
-            vector<bool> heads;
-            vector<int> heights;
-            vector<vector<pair<int, Rect> > > rows;
-            for (int i: perm) {
-                heads.push_back(bestheads[i]);
-                heights.push_back(bestheights[i]);
-                rows.push_back(bestrows[i]);
-                vector<pair<int, Rect> >& row = rows.back();
-                if (rand(2) == 0) {
-                    if (row.size() % 2 == 0) {
-                        heads.back() = !heads.back();
-                        for (int t = 0; t < (int)row.size(); t += 2) {
-                            int w1 = row[t].second.width();
-                            int w2 = row[t + 1].second.width();
-                            row[t].second.shift(w2, 0);
-                            row[t + 1].second.shift(-w1, 0);
-                            swap(row[t], row[t + 1]);
-                        }
-                    } else if (rand(3) == 0) {
-                        heads.back() = !heads.back();
-                        int w = row[0].second.width();
-                        row.erase(row.begin());
-                        for (auto& x: row) {
-                            x.second.shift(-w, 0);
-                        }
-                    }
-                }
-            }
-            tryoptcol(heads, heights, rows);
-        }
     }
     fprintf(stderr, "score = %d; counter = %d\n", best.score, counter);
 
