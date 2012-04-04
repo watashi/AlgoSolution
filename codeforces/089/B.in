@@ -1,0 +1,13 @@
+12
+Widget me(50,40)
+VBox grandpa
+HBox father
+grandpa.pack(father)
+father.pack(me)
+grandpa.set_border(10)
+grandpa.set_spacing(20)
+Widget brother(30,60)
+father.pack(brother)
+Widget friend(20,60)
+Widget uncle(100,20)
+grandpa.pack(uncle)

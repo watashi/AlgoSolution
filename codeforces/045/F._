@@ -1,0 +1,85 @@
+// vim: ft=cpp
+// By rng_58, contest: School Team Contest #3 (Winter Computer School 2010/11), problem: (F) Goats and Wolves, Accepted
+
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <deque>
+#include <queue>
+#include <set>
+#include <map>
+#include <algorithm>
+#include <functional>
+#include <utility>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+#include <cstdio>
+#include <stack>
+
+
+using namespace std;
+
+
+#define REP(i,n) for((i)=0;(i)<(int)(n);(i)++)
+#define foreach(c,itr) for(__typeof((c).begin()) itr=(c).begin();itr!=(c).end();itr++)
+
+
+map <vector <int>, int> dist;
+queue <vector <int> > q;
+
+
+void add(vector <int> v, int d){
+	if(dist.find(v) == dist.end()){
+		dist[v] = d;
+		q.push(v);
+	}
+}
+
+
+int main(void){
+	int N,C,i;
+
+	cin >> N >> C;
+
+	vector <int> start;
+	REP(i,3) start.push_back(0);
+	add(start,0);
+
+	vector <int> goal;
+	REP(i,2) goal.push_back(N); goal.push_back(1);
+
+	while(!q.empty()){
+		vector <int> v = q.front(); int d = dist[v]; q.pop();
+		if(v == goal) {cout << d << endl; return 0;}
+
+		//  cout << v[0] << ' ' << v[1] << ' ' << v[2] << ' ' << d << endl;
+
+		if(v[2] == 0){
+			vector <int> w(3);
+			int sum = v[0] + v[1] + C, x = v[0], y = v[1];
+
+			w[0] = 0; w[1] = min(N,sum); w[2] = 1;
+			if(w[0] >= x && w[1] >= y) add(w,d+1);
+			w[0] = N; w[1] = min(N,sum-N); w[2] = 1;
+			if(w[0] >= x && w[1] >= y) add(w,d+1);
+			w[0] = w[1] = sum/2; w[2] = 1;
+			if(w[0] >= x && w[1] >= y) add(w,d+1);
+		} else {
+			vector <int> w(3);
+			int sum = max(v[0] + v[1] - C, 0), x = v[0], y = v[1];
+
+			w[0] = 0; w[1] = ((x == 0) ? y-1 : y); w[2] = 0;
+			if(w[0] >= 0 && w[1] >= 0) add(w,d+1);
+			w[0] = N; w[1] = y-1; w[2] = 0;
+			if(x == N && w[0] >= 0 && w[1] >= 0) add(w,d+1);
+			w[0] = w[1] = min(x,y) - ((x == y) ? 1 : 0); w[2] = 0;
+			if(w[0] >= 0 && w[1] >= 0) add(w,d+1);
+		}
+	}
+
+	cout << -1 << endl;
+
+	return 0;
+}

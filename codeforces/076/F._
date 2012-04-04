@@ -1,0 +1,12 @@
+from bisect import bisect_right as br
+I = 1000000000
+n = input()
+a = [map(int,raw_input().split()) for x in xrange(n)]
+v = input()
+a.append((0,0))
+a = sorted((x-v*t,-x-v*t) for x,t in a)
+b = [I]*(n+1)
+for x,y in a:
+	if x or y: b[br(b,y)]=y
+	else: print br(b,y),
+print b.index(I) 

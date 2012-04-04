@@ -1,0 +1,94 @@
+// By murphy, contest: Codeforces Beta Round #74 (Div. 1 Only), problem: (D) Space mines, Accepted
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+#include <cassert>
+#include <set>
+#include <map>
+#include <queue>
+#include <iostream>
+#include <fstream>
+using namespace std;
+#define pb push_back
+#define REP(i,n) for(int i=0;i<(n);i++ )
+typedef long long LL;
+typedef pair<int, int> pii;
+
+double a[3], v[3], R;
+double o[3], p[3], r;
+
+double g(double pos[3], double r) {
+	double A = 0, B = 0, C = 0;
+	C = -pow(r + R, 2.0);
+	REP(i, 3) {
+		A += pow(v[i], 2.0);
+		C += pow(a[i] - pos[i], 2.0);
+		B += 2 * v[i] * (a[i] - pos[i]);
+	}
+	double delta = B * B - 4 * A * C;
+	if (fabs(A) < 1e-5) {
+		if (fabs(B) < 1e-5) {
+			return -1;
+		} else {
+			double ans = -C / B;
+			if (ans < -1e-6)
+				return -1;
+			return ans;
+		}
+	} else {
+		if (delta < -1e-6) {
+			return -1;
+		}
+		delta = fabs(delta);
+		delta = sqrt(delta);
+		double x1 = -B - delta, x2 = -B + delta;
+		A *= 2; x1 /= A; x2 /= A;
+		if (x2 < 1e-6)
+			return -1;
+		if (x1 < 1e-6)
+			return x2;
+		else
+			return x1;
+	}
+	return 0;
+}
+
+double update(double t1, double t2) {
+	if (t1 < -0.5)
+		return t2;
+	if (t2 < -0.5)
+		return t1;
+	return min(t1, t2);
+}
+
+
+int main(){
+	REP(i, 3)
+		cin>>a[i];
+	REP(i, 3)
+		cin>>v[i];
+	cin>>R;
+	double tm = -1;
+	int n;
+	cin>>n;
+	while (n--) {
+		int m;
+		REP(i, 3)
+			cin>>o[i];
+		cin>>r>>m;
+		tm = update(g(o, r), tm);
+		while (m--) {
+			REP(i, 3) {
+				cin>>p[i];
+				p[i] += o[i];
+			}
+			tm = update(g(p, 0), tm);
+		}
+	}
+	printf("%.10lf\n", tm);
+	return 0;
+}

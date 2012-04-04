@@ -1,0 +1,15 @@
+-- By KTR, contest: School Team Contest #2 (Winter Computer School 2010/11), problem: (D) Hyperdrive, Accepted
+
+import Array
+import Data.List
+main = interact solve
+solve input = output where
+  [n]:c:cs = map (map (read::String->Int)) $ map words $ lines input
+  output = show $ answer ds / 2
+  ds = [(x,dist c x)|x<-cs]
+  dist x y = sqrt(
+    read ( show $ sum $ map (^2) $ zipWith (-) x y ) ::Double)
+  answer [x,y] = distSum x y
+  answer (x:xs) = foldl' (min' x) (answer xs) xs
+  min' (x,u) a (y,v) = if a<=u+v then a else min a $ distSum (x,u) (y,v)
+  distSum (x,u) (y,v) = dist x y + u + v

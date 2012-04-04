@@ -1,0 +1,23 @@
+-- By KTR, contest: School Team Contest #1 (Winter Computer School 2010/11), problem: (A) C*++ Calculations, Accepted
+
+import List
+
+main = interact f
+f input = output where
+	[init,expr] = lines input
+	output = show $ cal (read init::Int) $ sort $ coef ("+":(summ $ incr expr))
+	incr [] = []
+	incr ('a':'+':'+':xs) = 'b':(incr xs)
+	incr ('+':'+':'a':xs) = 'c':(incr xs)
+	incr (x:xs) = x:(incr xs)
+	summ [] = []
+	summ xs = if null y then [x] else x:[head y]:(summ $ tail y)
+		where (x,y) = break (\x -> x=='+' || x=='-') xs
+	coef [] = []
+	coef (x:y:xs) = ((if x=="+" then 1 else -1) * c,d):(coef xs)
+		where
+			(v,w) = break (=='*') y
+			c = read (if null w then "1" else v) :: Int
+			d = if null w then v else (tail w)
+	cal x [] = 0
+	cal x ((y,z):xs) = (if z=="b" then y*x else y*(x+1)) + (cal (x+1) xs)

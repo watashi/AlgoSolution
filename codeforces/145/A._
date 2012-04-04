@@ -1,0 +1,12 @@
+By nab, contest: Codeforces Round #104 (Div. 1), problem: (A) Lucky Conversion, Accepted, #
+
+r=raw_input
+s=[0]*4
+for i,j in zip(r(),r()):s[(i<"5")*2+(j<"5")]+=1
+print max(s[1:3])
+
+
+By Rotsor, contest: Codeforces Round #104 (Div. 1), problem: (A) Lucky Conversion, Accepted, #
+
+s[a,b]=c(<)`max`c(>)where c f=length.filter id$zipWith f a b
+main=interact$show.s.lines

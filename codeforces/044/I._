@@ -1,0 +1,17 @@
+--By KTR, contest: School Team Contest #2 (Winter Computer School 2010/11), problem: (I) Toys, Accepted
+
+ main = interact solve
+ solve input = output where
+   n = read input :: Int
+   output = unlines $ (show $ length xs):xs where
+     xs = map (out2.partition) $ codes n
+   codes 1 = [ [0] ]
+   codes x = concat [ [s++[j]|j<-(xs i s)] | (i,s) <- (zip [1..] (codes (x-1)))]
+     where
+       xs y z = if odd y then (0:[m,m-1..1]) else ([1..m]++[0])
+         where m = foldl1 max z + 1
+   partition xs = [[y|(y,z)<-zip [1..] xs,z==x]|x<-[0..foldl1 max xs]]
+   out1 [x] = (show x) ++ "}"
+   out1 (x:xs) = (show x) ++ "," ++ (out1 xs)
+   out2 [x] = '{':(out1 x)
+   out2 (x:xs) = (out2 [x]) ++ "," ++ (out2 xs)

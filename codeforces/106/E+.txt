@@ -1,0 +1,23 @@
+E. (link) Author's solution is three ternary search for every demension that are nested within each other.
+
+It works because the function is convex. Maximum of convex functions also convex function. Author not very well imagine convex function in 3 dimrnsions, therefore you can read following proof that algorithm is correct:
+
+Let consider some straight line. Function of distance between points on this line and planet position will be convex (you can imagine it). If you get maximum of such functions it will be convex function too. Let's call this function f1.
+
+Now let's consider flat plane and choose one straight line in it. Set for every point of this line a minumum of function f1 of line that passes through this point and is perpendicular to choosen line. Let's call function on this choosen line f2.
+
+f2 is convex. It can be easily proved by contrary. If f2 is not convex, we can find at least two local minimums. Let's choose two neighbour of them. We can find this two minimums on the plane and drawn through them new line. f1 on this line will be not convex (you also can imagine it). Сontradiction.
+
+Now let's consider all space. Choose one line in it and define function f3 on it. Values of f3 will be minimums of functions f2 of planes that passes through the line and is perpendicular to it. f3 also is convex. Proof of it is analogically to that is written in the previous paragraph. []
+
+Now you can see that minimum can ge found by three ternary search over functions fi. You can add to these functions returning of value in which they reach a minimum.
+
+Also there are solutions that uses idea of Gradient descent or Hill climbing. Author was unable to write this solution (not enough precision), but some participants got AC with such solutions.
+
+There is exact solution O(n^4) (more exactly O(C_n^4)). This solution uses Helly's theorem and Jung's theorem that follows from the first one:
+http://en.wikipedia.org/wiki/Helly's_theorem
+In this solution you should itarate over all pairs, triples and fours of points and for every of them build minimal ball that cover them. Answer is center of ball with maximum radius.
+
+Also you can google something like that
+http://www.inf.ethz.ch/personal/gaertner/miniball.html
+There are code and article, but the author of contest is not particularly delved into them))

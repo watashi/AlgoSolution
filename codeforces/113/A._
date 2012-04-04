@@ -1,0 +1,31 @@
+By bjin, contest: Codeforces Beta Round #86 (Div. 1 Only), problem: (A) Grammar Lessons, Accepted, #
+
+    import List
+    t s=last$6:[i|i<-[0..5],isSuffixOf(words"lios liala etr etra initis inites"!!i)s]
+    n="NO"
+    c x|any(>5)x=n
+    c[_]="YES"
+    c(x:y)|any((/=odd x).odd)y=n
+    c x=g$map(`div`2)x
+    g(0:x)=g x
+    g(1:2:x)=g(1:x)
+    g[1]="YES"
+    g _=n
+    main=interact$c.map t.words
+
+
+
+By Rotsor, contest: Codeforces Beta Round #86 (Div. 1 Only), problem: (A) Grammar Lessons, Accepted, #
+
+    import List
+    d=words"soil alail rte arte sitini setini"`zip`[(i,j)|j<-[0..2],i<-[0..1]]
+    r w=maybe(8,3)snd$find((`isPrefixOf`reverse w).fst)d
+    g(1:l)=all(==2)l
+    g _=1<0
+    c[x]=x<3
+    c l=g$dropWhile(==0)l
+    s((h:g),t)|all(==h)g&&c t="YES"|1>0="NO"
+    main=interact$s.unzip.map r.words
+
+
+
