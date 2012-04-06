@@ -2,16 +2,30 @@
 #include <cstdio>
 #include <string>
 #include <vector>
+#include <cassert>
 #include <iostream>
 #include <algorithm>
+#include <unistd.h>
+#include <sys/time.h>
 
 using namespace std;
 
-const clock_t TIME_LIMIT = 10 * CLOCKS_PER_SEC - CLOCKS_PER_SEC / 10;
-static clock_t time_limit = 0;
+typedef long long llint;
+
+timeval startti, endti;
+llint startll, endll;
+
+void startTimer() {
+    gettimeofday(&startti, NULL);
+    startti.tv_sec += 9;
+    startti.tv_usec += 654321;
+    startll = startti.tv_sec * 1000000LL + startti.tv_usec;
+}
 
 bool timeout() {
-    return clock() > time_limit;
+    gettimeofday(&endti, NULL);
+    endll = endti.tv_sec * 1000000LL + endti.tv_usec;
+    return endll > startll;
 }
 
 enum endType {
@@ -50,6 +64,9 @@ void reverse(int r) {
 template<bool byRow>
 void rotate(int r, int p) {
     static char buf[MAXN + MAXN];
+    if (byRow && tile == WHITE) {
+        ++crw[r];
+    }
     cell<byRow>(r, 0) = tile;
     for (int i = 0, j = p; i <= sz; ++i, ++j) {
         buf[j] = cell<byRow>(r, i);
@@ -61,6 +78,9 @@ void rotate(int r, int p) {
         cell<byRow>(r, i) = buf[i];
     }
     tile = cell<byRow>(r, 0);
+    if (byRow && tile == WHITE) {
+        --crw[r];
+    }
     cell<byRow>(r, 0) = BLACK;
 }
 
@@ -100,7 +120,7 @@ void untransform(vector<pair<int, int> >& v, int mask) {
 
 inline void upd() {
     if (op.size() < ans.size()) {
-        op.swap(ans);
+        ans = op;
         untransform(ans, mask);
     }
 }
@@ -169,24 +189,10 @@ endType whichEnd(int r, char color) {
 
 template<bool byRow>
 void pushEnd(int r, endType end) {
-    if (byRow) {
-        if (tile == WHITE) {
-            ++crw[r];
-        }
-    }
     if (end == HEAD) {
         doit(r, 0, 1);
-        // rotate<byRow>(r, 1);
-        // op.push_back(coordinate<byRow>(r, 0));
     } else {
         doit(r, sz_1, 1);
-        // rotate<byRow>(r, sz);
-        // op.push_back(coordinate<byRow>(r, sz_1));
-    }
-    if (byRow) {
-        if (tile == WHITE) {
-            --crw[r];
-        }
     }
 }
 
@@ -213,22 +219,137 @@ void tryCons(const vector<string>& board_, int mask_, int start) {
     while (tile == WHITE && op.size() < ans.size()) {
         pushEnd<true>(w, dw);
     }
-    upd();
+    if (crw[1] == 0 || crw[sz] == 0) {
+        upd();
+    }
 }
 /** @}*/ // tryCons
+
+/** \defgroup tryConsZebra
+ *  @{
+ */
+void restore(int s) {
+    while ((int)op.size() > s) {
+        pair<int, int> p = op.back();
+        int r = (int)op.size() - 1;
+        while (r > s && op[r - 1] == p) {
+            --r;
+        }
+        undoit(p.first, p.second, (int)op.size() - r);
+    }
+}
+
+void tryConsZebra(int w, int b, endType dw, endType db) {
+    int s = (int)op.size();
+    if (s >= (int)ans.size() || timeout()) {
+        return;
+    }
+    while (w != b && crw[w] < sz) {
+        while (crw[b] == 0) {
+            b = prev(b);
+            db = whichEnd<true>(b, BLACK);
+        }
+        if (tile == WHITE) {
+            pushEnd<true>(w, dw);
+        } else {
+            pushEnd<true>(b, db);
+        }
+    }
+    if (w == b) {
+    } else if (w == prev(b)) {
+        do {
+            w = next(w);
+        } while (crw[w] == sz);
+        dw = whichEnd<true>(w, WHITE);
+        while (tile == WHITE) {
+            pushEnd<true>(w, dw);
+        }
+        if (crw[1] == 0 || crw[sz] == 0) {
+            upd();
+        }
+    } else {
+        int ww;
+        endType dww;
+        ww = next(next(w));
+        dww = whichEnd<true>(ww, WHITE);
+        tryConsZebra(ww, b, dww, db);
+        ww = next(w);
+        dww = whichEnd<true>(ww, WHITE);
+        tryConsZebra(ww, b, dww, db);
+    }
+    restore(s);
+}
+
+// we can find at least 1 full line and at most 40% full lines
+void tryConsZebra(const vector<string>& board_, int mask_, int start) {
+    init(board_, mask_);
+    int w = start, b = prev(prev(start));
+    endType dw = whichEnd<true>(w, WHITE), db = whichEnd<true>(b, BLACK);
+    tryConsZebra(w, b, dw, db);
+}
+/** @}*/
+
+void guess(const vector<string>& board, int& x, int& y, int& r, int& c) {
+    static int sum[MAXN + MAXN][MAXN + MAXN];
+    int sz = (int)board.size();
+    for (int i = 1; i <= sz; ++i) {
+        for (int j = 1; j <= sz; ++j) {
+            sum[i][j] = board[i - 1][j - 1] == WHITE ? 1 : 0;
+            sum[i][j] += sum[i][j - 1];
+        }
+        for (int j = 1; j <= sz; ++j) {
+            sum[i][j] += sum[i - 1][j];
+        }
+    }
+    int best = -1;
+    for (int a = 1; a <= sz; ++a) {
+        if (sum[sz][sz] % a != 0) {
+            continue;
+        }
+        int b = sum[sz][sz] / a;
+        for (int i = a; i <= sz; ++i) {
+            for (int j = b; j <= sz; ++j) {
+                int temp = sum[i][j] + sum[i - a][j - b] - sum[i - a][j] - sum[i][j - b];
+                if (best < temp) {
+                    best = temp;
+                    x = i - a + 1;
+                    y = j - b + 1;
+                    r = a;
+                    c = b;
+                }
+            }
+        }
+    }
+    fprintf(stderr, "guess (%d,%d) %dx%d\n", x, y, r, c);
+}
 
 /**
  * BlackAndWhiteGame
  */
 struct BlackAndWhiteGame {
-    vector<string> makeConnected(vector<string> board) {
+    void gao(const vector<string>& board) {
         int sz = (int)board.size();
+        int x, y, r, c;
+
+        guess(board, x, y, r, c);
         ans.resize(sz * sz);
-        for (int m = 0; m < 8; ++m) {
+        fill(::board[0], ::board[MAXN], BLACK);
+
+        for (int m = 0; m < 8; m += 2) {
             for (int i = 1; i <= sz; ++i) {
                 tryCons(board, m, i);
             }
         }
+        for (int m = 0; m < 8; m += 2) {
+            for (int i = 1; i <= sz; ++i) {
+                tryConsZebra(board, r <= c ? m : m ^ 4, i);
+            }
+        }
+    }
+
+    vector<string> makeConnected(vector<string> board) {
+        startTimer();
+        gao(board);
         int best = (int)ans.size();
         fprintf(stderr, "time = %lf;\n", 1.0 * clock() / CLOCKS_PER_SEC);
         fprintf(stderr, "best = %d / %d^2 = %lf;\n", best, sz, 100.0 - 100.0 * best / sz / sz);
