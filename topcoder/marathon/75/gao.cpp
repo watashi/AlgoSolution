@@ -228,6 +228,16 @@ void tryCons(const vector<string>& board_, int mask_, int start) {
 /** \defgroup tryConsZebra
  *  @{
  */
+template<bool byRow>
+bool zipAnd(int i, int j) {
+    for (int k = 1; k <= sz; ++k) {
+        if (cell<byRow>(i, k) == WHITE && cell<byRow>(j, k) == WHITE) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void restore(int s) {
     while ((int)op.size() > s) {
         pair<int, int> p = op.back();
@@ -239,10 +249,10 @@ void restore(int s) {
     }
 }
 
-void tryConsZebra(int w, int b, endType dw, endType db) {
+bool tryConsZebra(int w, int b, endType dw, endType db) {
     int s = (int)op.size();
     if (s >= (int)ans.size() || timeout()) {
-        return;
+        return true;
     }
     while (w != b && crw[w] < sz) {
         while (crw[b] == 0) {
@@ -266,23 +276,31 @@ void tryConsZebra(int w, int b, endType dw, endType db) {
         }
         if (crw[1] == 0 || crw[sz] == 0) {
             upd();
+            return true;
         }
     } else {
-        int ww;
-        endType dww;
-        ww = next(next(w));
-        dww = whichEnd<true>(ww, WHITE);
-        tryConsZebra(ww, b, dww, db);
-        ww = next(w);
-        dww = whichEnd<true>(ww, WHITE);
-        tryConsZebra(ww, b, dww, db);
+        int ww = next(next(w));
+        if (zipAnd<true>(next(w), next(next(w)))) {
+            ww = next(ww);
+        }
+        while (ww != w) {
+            endType dww = whichEnd<true>(ww, WHITE);
+            if (tryConsZebra(ww, b, dww, db)) {
+                return true;
+            }
+            ww = prev(ww);
+        }
     }
     restore(s);
+    return false;
 }
 
 // we can find at least 1 full line and at most 40% full lines
 void tryConsZebra(const vector<string>& board_, int mask_, int start) {
     init(board_, mask_);
+    if (crw[start] == 0) {
+        return;
+    }
     int w = start, b = prev(prev(start));
     endType dw = whichEnd<true>(w, WHITE), db = whichEnd<true>(b, BLACK);
     tryConsZebra(w, b, dw, db);
