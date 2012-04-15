@@ -238,6 +238,44 @@ bool zipAnd(int i, int j) {
     return false;
 }
 
+template<bool byRow>
+void zip2(int i, int j, bool mark[MAXN]) {
+    for (int k = 1; k <= sz; ++k) {
+        mark[k] = cell<byRow>(i, k) == WHITE && cell<byRow>(j, k) == WHITE;
+    }
+    for (int k = 1; k <= sz; ++k) {
+        if (mark[k]) {
+            for (int kk = k - 1; kk >= 1 && cell<byRow>(j, kk) == WHITE; --kk) {
+                if (mark[kk]) {
+                    break;
+                } else {
+                    mark[kk] = true;
+                }
+            }
+        } else if (cell<byRow>(j, k) == WHITE && mark[k - 1]) {
+            mark[k] = true;
+        }
+    }
+}
+
+template<bool byRow>
+bool zip3(int u, int m, int d) {
+    static bool mu[MAXN], md[MAXN];
+    bool flag = false;
+    zip2<byRow>(u, m, mu);
+    zip2<byRow>(d, m, md);
+    for (int k = 1; k <= sz; ++k) {
+        if (cell<byRow>(m, k) == WHITE) {
+            if (!mu[k] && !md[k]) {
+                return false;
+            } else if (!flag && mu[k] && md[k]) {
+                flag = true;
+            }
+        }
+    }
+    return flag;
+}
+
 void restore(int s) {
     while ((int)op.size() > s) {
         pair<int, int> p = op.back();
@@ -278,10 +316,16 @@ bool tryConsZebra(int w, int b, endType dw, endType db) {
             upd();
             return true;
         }
-    } else {
-        int ww = next(next(w));
-        if (zipAnd<true>(next(w), next(next(w)))) {
+    } else if (w < sz) {
+        int ww = next(w);
+        if (ww < sz) {
             ww = next(ww);
+            if (ww < sz && zipAnd<true>(next(w), next(next(w)))) {
+                ww = next(ww);
+                if (ww < sz && zip3<true>(next(w), next(next(w)), next(next(next(w))))) {
+                    ww = next(ww);
+                }
+            }
         }
         while (ww != w) {
             endType dww = whichEnd<true>(ww, WHITE);
@@ -305,6 +349,53 @@ void tryConsZebra(const vector<string>& board_, int mask_, int start) {
     endType dw = whichEnd<true>(w, WHITE), db = whichEnd<true>(b, BLACK);
     tryConsZebra(w, b, dw, db);
 }
+/** @}*/
+
+/** \defgroup checkAns
+ *  @{
+ */
+
+static int ts;
+static int tag[MAXN][MAXN];
+
+int dfs(int x, int y) {
+    int ret = 0;
+    if (board[x][y] == WHITE && tag[x][y] != ts) {
+        tag[x][y] = ts;
+        ++ret;
+        for (int i = 0; i < 4; ++i) {
+            ret += dfs(x + dx[i], y + dy[i]);
+        }
+    }
+    return ret;
+}
+
+bool checkAns(int total) {
+    ++ts;
+    for (int i = 1; i <= sz; ++i) {
+        for (int j = 1; j <= sz; ++j) {
+            if (board[i][j] == WHITE) {
+                return dfs(i, j) == total;
+            }
+        }
+    }
+    return false;
+}
+
+void checkAns(const vector<string>& board_, int total) {
+    init(board_, 0);
+    for (int i = 0; i < (int)ans.size(); ++i) {
+        doit(ans[i].first, ans[i].second, 1);
+        if (tile == WHITE) {
+            continue;
+        }
+        if (checkAns(total)) {
+            ans.resize(i + 1);
+            break;
+        }
+    }
+}
+
 /** @}*/
 
 void guess(const vector<string>& board, int& x, int& y, int& r, int& c) {
@@ -363,6 +454,7 @@ struct BlackAndWhiteGame {
                 tryConsZebra(board, r <= c ? m : m ^ 4, i);
             }
         }
+        checkAns(board, r * c);
     }
 
     vector<string> makeConnected(vector<string> board) {
