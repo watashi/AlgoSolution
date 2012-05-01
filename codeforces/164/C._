@@ -1,0 +1,127 @@
+// By Dumbear, contest: VK Cup 2012 Round 3, problem: (C) Machine Programming, Accepted, #
+
+#include <cstdio>
+#include <cstdlib>
+#include <climits>
+#include <cmath>
+#include <cstring>
+#include <cctype>
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <string>
+#include <stack>
+#include <queue>
+#include <set>
+#include <map>
+#include <utility>
+#include <algorithm>
+#include <numeric>
+
+using namespace std;
+
+const int node_max = 3000;
+
+struct network {
+    struct node {
+        int v, c, w, b;
+        node(int _v = 0, int _c = 0, int _w = 0, int _b = 0): v(_v), c(_c), w(_w), b(_b) {
+        }
+    };
+    int n, pre[node_max];
+    vector<node> nd[node_max];
+    void clear() {
+        for (int i = 0; i < n; ++i)
+            nd[i].clear();
+        n = 0;
+    }
+    void insert(int u, int v, int c, int w, bool d = false) {
+        n = max(n, max(u, v) + 1);
+        nd[u].push_back(node(v, c, w, nd[v].size()));
+        nd[v].push_back(node(u, 0, -w, nd[u].size() - 1));
+        if (d) {
+            nd[v].push_back(node(u, c, w, nd[u].size()));
+            nd[u].push_back(node(v, 0, -w, nd[v].size() - 1));
+        }
+    }
+    pair<int, int> get_max_flow_min_cost(int src, int dst) {
+        pair<int, int> res;
+        int flow;
+        while ((flow = get_min_path(src, dst)) != 0) {
+            res.first += flow;
+            for (int i = dst; i != src; i = nd[i][pre[i]].v) {
+                res.second += nd[nd[i][pre[i]].v][nd[i][pre[i]].b].w * flow;
+                nd[nd[i][pre[i]].v][nd[i][pre[i]].b].c -= flow;
+                nd[i][pre[i]].c += flow;
+            }
+        }
+        return res;
+    }
+    int get_min_path(int src, int dst) {
+        int dis[node_max], bfs[node_max];
+        bool visited[node_max] = {};
+        fill(dis, dis + n, INT_MAX);
+        visited[src] = true;
+        dis[src] = 0;
+        bfs[0] = src;
+        for (int s = 0, t = 1; s != t; visited[bfs[s]] = 0, s = (s + 1) % n) {
+            int v = bfs[s];
+            for (vector<node>::iterator i = nd[v].begin(); i != nd[v].end(); ++i) {
+                if (i->c <= 0 || dis[v] + i->w >= dis[i->v])
+                    continue;
+                dis[i->v] = dis[v] + i->w;
+                pre[i->v] = i->b;
+                if (!visited[i->v]) {
+                    visited[i->v] = true;
+                    bfs[t] = i->v;
+                    t = (t + 1) % n;
+                }
+            }
+        }
+        if (dis[dst] == INT_MAX)
+            return 0;
+        int res = INT_MAX;
+        for (int i = dst; i != src; i = nd[i][pre[i]].v)
+            res = min(res, nd[nd[i][pre[i]].v][nd[i][pre[i]].b].c);
+        return res;
+    }
+};
+
+int n, m, s[1024], t[1024], c[1024], ans[1024];
+network g;
+
+bool solve() {
+    if (scanf("%d%d", &n, &m) == EOF)
+        return false;
+    for (int i = 0; i < n; ++i)
+        scanf("%d%d%d", &s[i], &t[i], &c[i]);
+    g.clear();
+    int S = n * 2, T = n * 2 + 2;
+    g.insert(S, S + 1, m, 0);
+    for (int i = 0; i < n; ++i) {
+        g.insert(S + 1, i, 1, 0);
+        g.insert(i + n, T, 1, 0);
+        g.insert(i, i + n, 1, -c[i]);
+        for (int j = 0; j < n; ++j) {
+            if (i != j && s[i] + t[i] <= s[j]) {
+                g.insert(i + n, j, 1, 0);
+            }
+        }
+    }
+    g.get_max_flow_min_cost(S, T);
+    for (int i = 0; i < n; ++i) {
+        ans[i] = 0;
+        for (vector<network::node>::iterator j = g.nd[i].begin(); j != g.nd[i].end(); ++j) {
+            if (j->v == i + n && j->c == 0) {
+                ans[i] = 1;
+            }
+        }
+        printf(i == n - 1 ? "%d\n" : "%d ", ans[i]);
+    }
+    return true;
+}
+
+int main() {
+    while (solve());
+    return 0;
+}
