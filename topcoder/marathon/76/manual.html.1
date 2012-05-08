@@ -1,0 +1,37 @@
+<H3> 
+Downloads
+</H3> 
+
+<ul> 
+<li> 
+<A href="Drawer.jar">Executable JAR of the visualization tool</a> 
+</li> 
+<li> 
+<A href="TwistedGameDrawer.java">Source code of the visualization tool</a> 
+</li> 
+</ul> 
+ 
+<hr> 
+
+<p>The visualization tool allows you to draw the contents of a dump file created by the <a href="../tester/manual.html">offline tester</a>.</p>
+ 
+<p> 
+In order to run the tool, you should use the following command:
+</p> 
+ 
+<pre>
+java -jar Drawer.jar
+</pre>
+
+<p> 
+Additionally you can use the following parameters (all are optional):
+</p> 
+
+<ul> 
+<li><tt>-dump &lt;file_name&gt;</tt>. Read the dump data from <tt>file_name</tt>. The default <tt>file_name</tt> used is "res.dmp".</li>
+<li><tt>-res &lt;file_name&gt;</tt>. Saves the result of visualization into <tt>file_name</tt>. The default <tt>file_name</tt> used is "pic.gif".
+Disregarding of <tt>file_name</tt>'s extension, the resulted picture will be in GIF format.</li>
+<li><tt>-mv &lt;moves_count&gt;</tt>. The tool will visualize only the first <tt>moves_count</tt> moves (placed tiles) of the game. The default
+behaviour is to visualize the whole game.</li>
+<li><tt>-sz &lt;SIZE&gt;</tt>. Sets the distance between neighboring contacts of the same tile to <tt>SIZE</tt> pixels. The default value is 10.</li>
+</ul> 

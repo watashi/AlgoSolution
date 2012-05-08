@@ -1,0 +1,98 @@
+<H3> 
+Downloads
+</H3> 
+
+<ul> 
+<li> 
+<A href="Tester.jar">Executable JAR of the tester</a> 
+</li> 
+<li> 
+<A href="TwistedGameTester.java">Source code of the tester</a> 
+</li> 
+</ul> 
+ 
+<hr> 
+ 
+<p> 
+In order to use the offline tester for testing your solution locally, you'll have to modify your solution
+by adding the main method that interacts with the tester via reading data from standard input and
+writing data to standard output. Since you do not change the implementation of methods <i>init</i> and <i>placeTile</i>, this
+doesn't affect the way your solution works when being submitted to our server.
+</p> 
+
+<p>
+To simulate a call to <i>init</i>, your program should read the following data from standard input in this exact order:
+
+<ul>
+<li>Integer <b>N</b> (in a separate line).</li>
+<li>Integers <b>firstTile</b>[0], <b>firstTile</b>[1], ..., <b>firstTile</b>[7] (all in the same line separated by spaces).</li>
+</ul>
+</p>
+
+<p>
+Once this data is read, just pass it to your implementation of <i>init</i> method.
+</p>
+
+<p>
+To simulate a call to <i>placeTile</i>, your program should read integers <b>tile</b>[0], <b>tile</b>[1], ..., <b>tile</b>[7] from the standard input (all in the
+same line separated by spaces), pass <b>tile</b> to your implementation of <i>placeTile</i>, print the return value to the standard output and flush the
+standard output.
+</p>
+
+<p> 
+In other words, you should implement the following pseudocode in the main method of your solution:
+</p> 
+
+<pre>
+    N = getInt(stdin)
+
+    for (i=0; i < 8; i++)
+        firstTile[i] = getInt(stdin)
+
+    init(N, firstTile)
+
+    while (stdin has more data):
+        for (i=0; i < 8; i++)
+            tile[i] = getInt(stdin)
+
+        ret = placeTile(tile);
+		
+        printLine(ret)
+        flush(stdout)
+</pre> 
+ 
+<p> 
+In order to run the tester, you should use the following command:
+</p> 
+ 
+<pre>
+java -jar Tester.jar -exec "&lt;command&gt;"
+</pre>
+
+
+<p>
+<tt>&lt;command&gt;</tt> is the command you would use to execute your solution. If your compiled solution is an executable file, the command will just
+be the full path to it, for example, "C:\TopCoder\solution.exe" or "~/topcoder/solution". In case your compiled solution is to be run
+with the help of an interpreter, for example, if you program in Java, the command will be something like "java -cp C:\TopCoder Solution".
+</p> 
+
+<p> 
+Additionally you can use the following parameters (all are optional):
+</p> 
+
+<ul> 
+<li><tt>-seed &lt;seed&gt;</tt>. Sets the seed used for test case generation. Default value is 1.</li>
+<li><tt>-dump &lt;file_name&gt;</tt>. The tester will dump the game process into <tt>file_name</tt>. The resulted dump can then be drawn
+using the <a href="../drawer/manual.html">visualization tool</a>.</li>
+</ul> 
+ 
+<p> 
+You can print any debug information of your solution to the standard error stream and it will be forwarded to the standard output of the tester.
+</p>
+ 
+<p> 
+For more information on using offline testers / visualizers, please check the following
+<a href="http://forums.topcoder.com/?module=Thread&threadID=670892&start=0">recipe draft</a> 
+from TopCoder Cookbook. Note that this is not a troubleshooting thread, please use
+the <a href="http://apps.topcoder.com/forums/?module=ThreadList&forumID=556302">match forum</a> for questions instead.
+</p> 

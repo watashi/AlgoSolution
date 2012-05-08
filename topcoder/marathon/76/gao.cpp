@@ -21,12 +21,8 @@ inline int R(int i) { return i ^ 5; }
 inline int RA(int d) { return R(A(d)); }
 inline int RB(int d) { return R(B(d)); }
 
-inline bool test(int i, int j) {
-    return ((i >> j) & 1) != 0;
-}
-
 struct Tile {
-    bool chain[8];
+    int chain[8];
     int contact[8];
     int x, y, rot;
 
@@ -34,7 +30,7 @@ struct Tile {
     }
 
     Tile(const vector<int>& tile): rot(0) {
-        fill(chain, chain + 8, false);
+        fill(chain, chain + 8, 0);
         for (int i = 0; i < 8; i += 2) {
             contact[tile[i]] = tile[i + 1];
             contact[tile[i + 1]] = tile[i];
@@ -46,19 +42,26 @@ struct Tile {
     }
 
     int chainCount() const {
-        return count(chain, chain + 8, true);
+        return count_if(chain, chain + 8, bind2nd(not_equal_to<int>(), 0));
     }
 
     void clearChain() {
-        fill(chain, chain + 8, false);
+        fill(chain, chain + 8, 0);
     }
 
-    void input(int i) {
-        if (chain[i]) {
-            chain[i] = false;
+    int input(int i, int j) {
+        int flag;
+        if (chain[i] != 0) {
+            flag = (chain[i] == j ? 0 : 1);
+            chain[i] = 0;
+        } else if (chain[contact[i]] != 0) {
+            flag = (chain[contact[i]] == j ? 0 : 1);
+            chain[contact[i]] = 0;
         } else {
-            chain[contact[i]] ^= true;
+            flag = -1;
+            chain[contact[i]] = j;
         }
+        return flag;
     }
 
     void rotate() {
@@ -84,10 +87,10 @@ struct TwistedGame {
     map<pair<int, int>, Tile> done;
     list<pair<int, int> > chain;
 
-    int flag;
+    int con[2];
 
     template<bool Update>
-    int gao(int& x, int& y, int& z) {
+    int gao(int& x, int& y, int& z, int color) {
         int ret = 0;
         while (true) {
             int d = z >> 1;
@@ -98,18 +101,20 @@ struct TwistedGame {
                 break;
             }
             Tile& tile = done[make_pair(x, y)];
-            if (tile.chain[z]) {
-                flag |= 1;
+            if (tile.chain[z] != 0) {
+                ++con[tile.chain[z] == color ? 0 : 1];
                 if (Update) {
-                    tile.chain[z] = false;
+                    tile.chain[z] = 0;
                 }
+                z = -1; //
                 return ret;
-            } else if (tile.chain[tile[z]]) {
+            } else if (tile.chain[tile[z]] != 0) {
                 ++ret;
-                flag |= 1;
+                ++con[tile.chain[tile[z]] == color ? 0 : 1];
                 if (Update) {
-                    tile.chain[tile[z]] = false;
+                    tile.chain[tile[z]] = 0;
                 }
+                z = -1; //
                 return ret;
             } else {
                 ++ret;
@@ -121,7 +126,8 @@ struct TwistedGame {
 
     template<bool Update>
     int place(Tile& tile) {
-        int add = 0, sub = 0;
+        int sum = 0;
+        con[0] = con[1] = 0;
 
         for (int d = 0; d < 4; ++d) {
             if (done.count(make_pair(tile.x + dx[d], tile.y + dy[d])) == 0) {
@@ -131,49 +137,59 @@ struct TwistedGame {
             for (int i = 0; i < 2; ++i) {
                 int j = i == 0 ? RA(d) : RB(d);
                 int k = i == 0 ? A(d) : B(d);
-                if (base.chain[j]) {
+                if (base.chain[j] != 0) {
+                    int color = base.chain[j];
                     if (Update) {
-                        base.chain[j] = false;
+                        base.chain[j] = 0;
                     }
-                    if (tile.chain[k]) {
-                        ++sub;
-                    } else {
-                        ++add;
+                    if (tile.chain[k] == 0) {
+                        sum += (chainCount == 2 && color == 1 ? 2 : 1);
                     }
-                    tile.input(k);
+                    int flag = tile.input(k, color);
+                    if (flag != -1) {
+                        ++con[flag];
+                    }
                 }
             }
         }
 
-        vector<int> v;
+        /*
+        if (Update) {
+            fprintf(stderr, "- %d %d %d %d\n", sum, con[0], con[1], chainCount);
+        }
+        if (con[0] + con[1] > chainCount) {
+            throw 1;
+        }
+        */
+
+        vector<pair<int, int> > v;
         while (true) {
-            int k = find(tile.chain, tile.chain + 8, true) - tile.chain;
+            int k = find_if(tile.chain, tile.chain + 8, bind2nd(not_equal_to<int>(), 0)) - tile.chain;
+            int color;
             if (k == 8) {
                 break;
             } else {
-                tile.chain[k] = false;
+                color = tile.chain[k];
+                tile.chain[k] = 0;
             }
             int x = tile.x, y = tile.y, z = k;
             if (Update) {
                 // fprintf(stderr, "+++ %d %d %d\n", x, y, z);
             }
-            flag = 0;
-            int tmp = gao<Update>(x, y, z);
-            add += tmp;
+            // flag = 0;
+            int tmp = gao<Update>(x, y, z, color);
+            sum += (chainCount == 2 && color == 1 ? 2 : 1) * tmp;
             if (tmp == 0) {
-                v.push_back(R(z));
-            } else if (test(flag, 0)) {
-                --sub;
+                v.push_back(make_pair(R(z), color));
+            } else if (z == -1) {
             } else if (x == tile.x && y == tile.y) {
-                if (tile.chain[z]) {
-                    ++sub;
-                } else if (tile.chain[tile[z]]) {
-                    ++sub;
-                    ++add;
-                } else {
-                    ++add;
+                if (tile.chain[z] == 0) {
+                    sum += (chainCount == 2 && color == 1 ? 2 : 1);
                 }
-                tile.input(z);
+                int flag = tile.input(z, color);
+                if (flag != -1) {
+                    ++con[flag];
+                }
             } else if (Update) {
                 int d = z >> 1;
                 // fprintf(stderr, "--- %d %d %d\n", x, y, z);
@@ -181,7 +197,7 @@ struct TwistedGame {
                 y += dy[d];
                 z = R(z);
                 // fprintf(stderr, "=== %d %d %d\n", x, y, z);
-                done[make_pair(x, y)].chain[z] = true;
+                done[make_pair(x, y)].chain[z] = color;
                 if (find(chain.begin(), chain.end(), make_pair(x, y)) == chain.end()) {
                     chain.push_back(make_pair(x, y));
                 }
@@ -189,19 +205,29 @@ struct TwistedGame {
         }
         if (Update) {
             for (int i = 0; i < (int)v.size(); ++i) {
-                tile.chain[v[i]] = true;
+                tile.chain[v[i].first] = v[i].second;
             }
         }
 
-        int ret;
-        if (add == 0) {
-            ret = -INF;
-        } else if (M > N * 4 / 5 && sub < chainCount) {
-            ret = add + M * sub;
-        } else {
-            ret = add - (N - M) * sub;
+        /*
+        if (Update) {
+            fprintf(stderr, "@ %d %d %d %d\n", sum, con[0], con[1], chainCount);
         }
-        return ret;
+        */
+
+        if (sum == 0) {
+            sum = -INF;
+        }
+        sum -= (2 * con[0] + con[1]) * (N - M) / 2;
+        if (0 < con[1] && con[1] < chainCount && 4 * N < 5 * M) {
+            sum += M;
+        }
+/*
+        if (Update) {
+            fprintf(stderr, " => %d\n", sum);
+        }
+*/
+        return sum;
     }
 
     string add(const Tile& tile) {
@@ -249,15 +275,15 @@ struct TwistedGame {
             tile2.rotate();
         }
         chainCount = 0;
-        tile1.input(A(bestD));
-        tile1.input(B(bestD));
+        tile1.input(A(bestD), 1);
+        tile1.input(B(bestD), 2);
         if (tile1.chainCount() > 0) {
             ++chainCount;
             chain.push_back(make_pair(tile1.x, tile1.y));
         }
         done[make_pair(tile1.x, tile1.y)] = tile1;
-        bestTile.input(RA(bestD));
-        bestTile.input(RB(bestD));
+        bestTile.input(RA(bestD), 1);
+        bestTile.input(RB(bestD), 2);
         if (bestTile.chainCount() > 0) {
             ++chainCount;
             chain.push_back(make_pair(bestTile.x, bestTile.y));
@@ -266,7 +292,7 @@ struct TwistedGame {
     }
 
     string placeGeneralTile(Tile tile) {
-        int bestScore = -INF;
+        int bestScore = -INF - INF;
         Tile bestTile;
         chainCount = 0;
         for (list<pair<int, int> >::iterator it = chain.begin(); it != chain.end(); ) {
