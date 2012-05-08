@@ -45,8 +45,8 @@ struct Tile {
         return contact[i];
     }
 
-    bool hasChain() const {
-        return find(chain, chain + 8, true) < chain + 8;
+    int chainCount() const {
+        return count(chain, chain + 8, true);
     }
 
     void clearChain() {
@@ -79,6 +79,7 @@ struct Tile {
 };
 
 struct TwistedGame {
+    int chainCount;
     int N, M, score;
     map<pair<int, int>, Tile> done;
     list<pair<int, int> > chain;
@@ -192,7 +193,15 @@ struct TwistedGame {
             }
         }
 
-        return add == 0 ? -INF : add - (N - M) / 2 * sub;
+        int ret;
+        if (add == 0) {
+            ret = -INF;
+        } else if (M > N * 4 / 5 && sub < chainCount) {
+            ret = add + M * sub;
+        } else {
+            ret = add - (N - M) * sub;
+        }
+        return ret;
     }
 
     string add(const Tile& tile) {
@@ -239,43 +248,56 @@ struct TwistedGame {
             }
             tile2.rotate();
         }
+        chainCount = 0;
         tile1.input(A(bestD));
         tile1.input(B(bestD));
-        chain.push_back(make_pair(tile1.x, tile1.y));
+        if (tile1.chainCount() > 0) {
+            ++chainCount;
+            chain.push_back(make_pair(tile1.x, tile1.y));
+        }
         done[make_pair(tile1.x, tile1.y)] = tile1;
         bestTile.input(RA(bestD));
         bestTile.input(RB(bestD));
-        chain.push_back(make_pair(bestTile.x, bestTile.y));
+        if (bestTile.chainCount() > 0) {
+            ++chainCount;
+            chain.push_back(make_pair(bestTile.x, bestTile.y));
+        }
         return add(bestTile);
     }
 
     string placeGeneralTile(Tile tile) {
         int bestScore = -INF;
         Tile bestTile;
+        chainCount = 0;
         for (list<pair<int, int> >::iterator it = chain.begin(); it != chain.end(); ) {
             Tile base = done[*it];
-            if (base.hasChain()) {
-                // fprintf(stderr, "(%d, %d) = (%d, %d)\n", it->first, it->second, base.x, base.y);
-                for (int d = 0; d < 4; ++d) {
-                    tile.x = base.x + dx[d];
-                    tile.y = base.y + dy[d];
-                    if (done.count(make_pair(tile.x, tile.y)) > 0) {
-                        continue;
-                    }
-                    for (int r = 0; r < 4; ++r) {
-                        tile.clearChain();
-                        int score = place<false>(tile);
-                        // fprintf(stderr, "%d %d %d: %d\n", tile.x, tile.y, r, score);
-                        if (bestScore < score) {
-                            bestScore = score;
-                            bestTile = tile;
-                        }
-                        tile.rotate();
-                    }
-                }
+            if (base.chainCount() > 0) {
+                chainCount += base.chainCount();
                 ++it;
             } else {
                 it = chain.erase(it);
+            }
+        }
+        chainCount /= 2;
+        for (list<pair<int, int> >::const_iterator it = chain.begin(); it != chain.end(); ++it) {
+            Tile base = done[*it];
+            // fprintf(stderr, "(%d, %d) = (%d, %d)\n", it->first, it->second, base.x, base.y);
+            for (int d = 0; d < 4; ++d) {
+                tile.x = base.x + dx[d];
+                tile.y = base.y + dy[d];
+                if (done.count(make_pair(tile.x, tile.y)) > 0) {
+                    continue;
+                }
+                for (int r = 0; r < 4; ++r) {
+                    tile.clearChain();
+                    int score = place<false>(tile);
+                    // fprintf(stderr, "%d %d %d: %d\n", tile.x, tile.y, r, score);
+                    if (bestScore < score) {
+                        bestScore = score;
+                        bestTile = tile;
+                    }
+                    tile.rotate();
+                }
             }
         }
         bestTile.clearChain();
@@ -290,35 +312,35 @@ struct TwistedGame {
         ++M;
         if (M == 2) {
             /*
-            string ret = placeSecondTile(tile);
-            for (auto p: done) {
-                fprintf(stderr, "(%d,%d)", p.first.first, p.first.second);
-                for (int i = 0; i < 8; ++i) {
-                    fprintf(stderr, " %d", (int)p.second.chain[i]);
-                }
-                fprintf(stderr, "\n");
-            }
-            return ret;
-            */
+               string ret = placeSecondTile(tile);
+               for (auto p: done) {
+               fprintf(stderr, "(%d,%d)", p.first.first, p.first.second);
+               for (int i = 0; i < 8; ++i) {
+               fprintf(stderr, " %d", (int)p.second.chain[i]);
+               }
+               fprintf(stderr, "\n");
+               }
+               return ret;
+               */
             ret = placeSecondTile(tile);
         } else {
             ret = placeGeneralTile(tile);
         }
 
         /*
-        for (auto p: chain) {
-            Tile t = done[p];
-            if (false && t.hasChain()) {
-                fprintf(stderr, "[%d, %d]", t.x, t.y);
-                for (int i = 0; i < 8; ++i) {
-                    if (t.chain[i]) {
-                        fprintf(stderr, " %d", i);
-                    }
-                }
-                fprintf(stderr, "\n");
-            }
-        }
-        */
+           for (auto p: chain) {
+           Tile t = done[p];
+           if (false && t.hasChain()) {
+           fprintf(stderr, "[%d, %d]", t.x, t.y);
+           for (int i = 0; i < 8; ++i) {
+           if (t.chain[i]) {
+           fprintf(stderr, " %d", i);
+           }
+           }
+           fprintf(stderr, "\n");
+           }
+           }
+           */
 
         return ret;
     }
@@ -354,7 +376,7 @@ int main() {
         }
     }
 LAST:
-    fprintf(stderr, "score = %d\n", tg.score);
+    fprintf(stderr, "score = %d; chainCount = %d\n", tg.score, tg.chainCount);
     fclose(tee);
     fclose(log);
 
