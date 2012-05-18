@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <vector>
 #include <string>
+#include <cstdlib>
 #include <utility>
 #include <algorithm>
 
@@ -143,7 +144,7 @@ struct TwistedGame {
                         base.chain[j] = 0;
                     }
                     if (tile.chain[k] == 0) {
-                        sum += (chainCount == 2 && color == 1 ? 2 : 1);
+                        sum += (chainCount == 2 && color == 1 ? 1 : 1);
                     }
                     int flag = tile.input(k, color);
                     if (flag != -1) {
@@ -178,13 +179,13 @@ struct TwistedGame {
             }
             // flag = 0;
             int tmp = gao<Update>(x, y, z, color);
-            sum += (chainCount == 2 && color == 1 ? 2 : 1) * tmp;
+            sum += (chainCount == 2 && color == 1 ? 1 : 1) * tmp;
             if (tmp == 0) {
                 v.push_back(make_pair(R(z), color));
             } else if (z == -1) {
             } else if (x == tile.x && y == tile.y) {
                 if (tile.chain[z] == 0) {
-                    sum += (chainCount == 2 && color == 1 ? 2 : 1);
+                    sum += (chainCount == 2 && color == 1 ? 1 : 1);
                 }
                 int flag = tile.input(z, color);
                 if (flag != -1) {
@@ -218,9 +219,11 @@ struct TwistedGame {
         if (sum == 0) {
             sum = -INF;
         }
-        sum -= (2 * con[0] + con[1]) * (N - M) / 2;
-        if (0 < con[1] && con[1] < chainCount && 4 * N < 5 * M) {
-            sum += M;
+        sum -= 2 * (con[0] + con[1]) * (N - M);
+        if (0 < con[1] && con[1] < chainCount && N < 2 * M) {
+            sum += 3 * (N + M);
+        } else if (0 < con[1] && chainCount == 2 && 4 * N < 5 * M) {
+            sum += 4 * M;
         }
 /*
         if (Update) {
@@ -255,13 +258,13 @@ struct TwistedGame {
                 if (tile1[A(d)] != B(d)) {
                     score += 10;
                     if ((tile1[A(d)] ^ tile1[B(d)]) == 1) {
-                        score += 1;
+                        score -= 1;
                     }
                 }
                 if (tile2[RA(d)] != RB(d)) {
                     score += 10;
                     if ((tile2[RA(d)] ^ tile2[RB(d)]) == 1) {
-                        score += 1;
+                        score -= 1;
                     }
                 }
                 if (bestScore < score) {
@@ -317,6 +320,14 @@ struct TwistedGame {
                 for (int r = 0; r < 4; ++r) {
                     tile.clearChain();
                     int score = place<false>(tile);
+                    if (M < N / 4) {
+                        score += rand() % 1000;
+                    } else if (M < N / 3) {
+                        score += rand() % 100;
+                    } else if (M < N / 2) {
+                        score += rand() % 10;
+                    }
+                    score -= hypot(tile.x - N, tile.y - N) / 100.0;
                     // fprintf(stderr, "%d %d %d: %d\n", tile.x, tile.y, r, score);
                     if (bestScore < score) {
                         bestScore = score;
