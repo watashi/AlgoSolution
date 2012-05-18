@@ -1,0 +1,106 @@
+<H3> 
+Downloads
+</H3> 
+<ul> 
+<li> 
+<A href="Tester.jar">Executable JAR of the tester</a> 
+</li> 
+<li> 
+<A href="TheUniverseUnravelsTester.java">Source code of the tester</a> 
+</li> 
+</ul> 
+ 
+<hr> 
+ 
+<p> 
+In order to use the offline tester for testing your solution locally, you'll have to modify your solution
+by adding the main method that interacts with the tester via reading data from standard input and
+writing data to standard output. Since you do not change the implementation of method <i>predictCoordinates</i>, this
+doesn't affect the way your solution works when being submitted to our server.
+</p> 
+
+<p>
+To simulate a single test case, your program should read the following data from standard input in this exact order
+(each integer/string is located in a separate line):
+<ul>
+<li>Integer <i>nCoords</i>.</li>
+<li>Strings <b>coords</b>[0], <b>coords[1]</b>, ..., <b>coords</b>[<i>nCoords</i> - 1], in this order.</li>
+<li>Integer <i>nRanks</i>.</li>
+<li>Strings <b>ranks</b>[0], <b>ranks[1]</b>, ..., <b>ranks</b>[<i>nRanks</i> - 1], in this order.</li>
+<li>Integer <i>nMinDist</i>.</li>
+<li>Integers <b>minDist</b>[0], <b>minDist[1]</b>, ..., <b>minDist</b>[<i>nMinDist</i> - 1], in this order.</li>
+<li>Integer <i>nMaxDist</i>.</li>
+<li>Integers <b>maxDist</b>[0], <b>maxDist[1]</b>, ..., <b>maxDist</b>[<i>nMaxDist</i> - 1], in this order.</li>
+</ul>
+</p>
+
+<p>
+Once this data is read, pass it to your implementation of <i>predictCoordinates</i> method and let <i>ret</i> be the return value. Write the following data
+to standard output in this exact order (each integer/string in a separate line):
+</p>
+
+<ul>
+<li>Integer <i>len</i> denoting the number of elements in <i>ret</i>.</li>
+<li>Strings <i>ret</i>[0], <i>ret</i>[1], ..., <i>ret</i>[<i>len</i>-1], in this order.</li>
+</ul> 
+
+<p>
+Make sure to flush the standard output after all this data is written.
+</p>
+ 
+<p> 
+In other words, you should implement the following pseudocode in the main method of your solution:
+</p> 
+<pre>
+    nCoords = parseInt(readLine())
+    for (i=0; i < nCoords; i++)
+        coords[i] = readLine()
+
+    nRanks = parseInt(readLine())
+    for (i=0; i < nRanks; i++)
+        ranks[i] = readLine()
+
+	nMinDist = parseInt(readLine())
+    for (i=0; i < nMinDist; i++)
+        minDist[i] = parseInt(readLine())
+
+	nMaxDist = parseInt(readLine())
+	for (i=0; i < nMaxDist; i++)
+		maxDist[i] = parseInt(readLine())
+
+    ret = predictCoordinates(coords, ranks, minDist, maxDist)
+
+    printLine(length(ret))
+    for (i=0; i < length(ret); i++)
+        printLine(ret[i])
+
+    flush(stdout)
+</pre> 
+ 
+<p> 
+In order to run the tester / visualizer, you should use the following command:
+</p> 
+ 
+<pre>
+java -jar Tester.jar -exec "&lt;command&gt;"
+</pre>
+
+<p> 
+<tt>&lt;command&gt;</tt> is the command you would use to execute your solution. If your compiled solution is an executable file, the command will just
+be the full path to it, for example, "C:\TopCoder\solution.exe" or "~/topcoder/solution". In case your compiled solution is to be run
+with the help of an interpreter, for example, if you program in Java, the command will be something like "java -cp C:\TopCoder Solution".
+</p> 
+
+<p> 
+Additionally you can use the parameter <tt>-seed &lt;seed&gt;</tt>. This sets the seed used for test case generation. The default value of this parameter is 1.
+</p> 
+
+<p> 
+You can print any debug information of your solution to the standard error stream and it will be forwarded to the standard output of the tester.
+</p>
+ 
+<p> 
+For more information on using offline testers, please check the following <a href="http://forums.topcoder.com/?module=Thread&threadID=670892&start=0">recipe draft</a> 
+from TopCoder Cookbook. Note that this is not a troubleshooting thread, please use the <a href="http://apps.topcoder.com/forums/?module=ThreadList&forumID=556614">match forum</a>
+for questions instead.
+</p>
