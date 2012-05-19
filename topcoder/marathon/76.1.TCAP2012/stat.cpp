@@ -1,3 +1,5 @@
+#include <set>
+#include <map>
 #include <cmath>
 #include <ctime>
 #include <cstdio>
@@ -143,146 +145,62 @@ struct Point {
     }
 };
 
-const int MAXSTEP = MAXN;
-const real RATE = 1.0;
-const real GRAVITY = 1.0;
-
 int n;
-Point<real> p[MAXN];
-Point<int> q[MAXN], r[MAXN];
-real mind[MAXN], maxd[MAXN];
-int rank[MAXN][MAXN];
-
-void gao(int step) {
-    static Point<real> v;
-    static Point<real> w[MAXN];
-    static real dw[MAXN], dd[MAXN];
-
-    for (int i = 0; i < n; ++i) {
-        if ((i & 0x3f) == 0 && timeout()) {
-            return;
-        }
-        bool skip = true;
-        for (int j = 0; j < DIMENSION; ++j) {
-            if (r[i][j] == -1) {
-                skip = false;
-            }
-        }
-        if (skip) {
-            continue;
-        }
-        for (int j = 0; j < n; ++j) {
-            dw[j] = 0;
-            for (int k = 0; k < DIMENSION; ++k) {
-                w[j][k] = p[j][k] - p[i][k];
-                dw[j] += sqr(w[j][k]);
-            }
-            dd[j] = dw[j] = sqrt_(dw[j]);
-        }
-        sort(dd, dd + n);
-
-        real s = 0.0;
-        v.clear();
-        for (int j = 0; j < n; ++j) {
-            if (i == j) {
-                continue;
-            }
-            real t = 0.0;
-            if (dw[j] < mind[i]) {
-                t += dw[j] - mind[i];
-            } else if (dw[j] > maxd[i]) {
-                t += dw[j] - maxd[i];
-            }
-            t += 0.5 * (dw[j] - dd[rank[i][j]]);
-            real u = t;
-            if (step < 20) {
-                u *= t;
-                if (step < 10) {
-                    u *= t;
-                }
-            }
-            u = fabs_(u);
-            s += u;
-            t = u * t / dw[j];
-            for (int k = 0; k < DIMENSION; ++k) {
-                v[k] += w[j][k] * t;
-            }
-            // v = v + w[j] * t;
-            // fprintf(stderr, "[%d][%d], %lf ; t = %lf\n", i, j, dw[i][j], t);
-        }
-        if (s > 0) {
-            v = v * (1.0 / s);
-        }
-        // fprintf(stderr, "%s\n", v[i].str().c_str());
-        // sp += v[i].abs();
-        for (int j = 0; j < DIMENSION; ++j) {
-            if (r[i][j] != -1) {
-                continue;
-            }
-            p[i][j] += v[j];
-            if (p[i][j] > MAXZ) {
-                p[i][j] = MAXZ;
-            } else if (p[i][j] < 0) {
-                p[i][j] = 0;
-            }
-        }
-    }
-    // upd();
-}
+Point<int> r[MAXN];
+int mind[MAXN], maxd[MAXN], rank[MAXN][MAXN];
 
 struct TheUniverseUnravels {
-    void gao() {
-        while (!timeout()) {
-            for (int i = 0; i < n; ++i) {
-                // p[i] = r[i];
-                for (int j = 0; j < DIMENSION; ++j) {
-                    p[i][j] = r[i][j];
-                    if (p[i][j] == -1) {
-                        p[i][j] = rand() % (MAXZ + 1);
-                    }
-                }
-            }
-            int step = 0;
-            while (!timeout()) {
-                ::gao(step);
-                ++step;
-                // fprintf(stderr, "%d: %lf\n", i, sp);
-            }
-            fprintf(stderr, "step = %d\n", step);
-        }
-
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < DIMENSION; ++j) {
-                q[i][j] = p[i][j] + .5;
-            }
-        }
-    }
-
     vector<string> predictCoordinates(
             vector<string> coords,
             vector<string> ranks,
             vector<int> minDist,
             vector <int> maxDist) {
-        startTimer();
         n = coords.size();
         for (int i = 0; i < n; ++i) {
             r[i].parse(coords[i]);
-            q[i] = r[i];
-            for (int j = 0; j < DIMENSION; ++j) {
-                if (q[i][j] == -1) {
-                    q[i][j] = 0;
-                }
-            }
             split(ranks[i], rank[i]);
-            mind[i] = sqrt_(minDist[i]);
-            maxd[i] = sqrt_(maxDist[i]);
+            mind[i] = minDist[i];
+            maxd[i] = maxDist[i];
         }
 
-        gao();
+        int dup = 0;
+        std::map<int, int> mp, rk;
+        for (int i = 0; i < n; ++i) {
+            int c = 0;
+            for (int j = 0; j < DIMENSION; ++j) {
+                if (r[i][j] == -1) {
+                    ++c;
+                }
+            }
+            ++mp[c];
+            std::set<int> st;
+            for (int j = 0; j < n; ++j) {
+                ++rk[rank[i][j]];
+                st.insert(rank[i][j]);
+            }
+            dup += n - st.size();
+        }
+        fprintf(stderr, "n = %d\n", n);
+        for (int i = 0; i <= DIMENSION; ++i) {
+            fprintf(stderr, "%2d | %d\n", i, mp[i]);
+        }
+        fprintf(stderr, "dup = %d\n", dup);
+        /*
+        for (int i = 0; i < n; ++i) {
+            if (rk[i] != n) {
+                fprintf(stderr, "%d: %+d\n", i, rk[i] - n);
+            }
+        }
+        */
 
         vector<string> ret;
         for (int i = 0; i < n; ++i) {
-            ret.push_back(q[i].str());
+            for (int j = 0; j < DIMENSION; ++j) {
+                if (r[i][j] == -1) {
+                    r[i][j] = 500;
+                }
+            }
+            ret.push_back(r[i].str());
         }
         return ret;
     }
