@@ -1,0 +1,65 @@
+/*
+int n; [9]
+int* p, q; [7], [8]
+int[] a; [10]
+int i; [1]
+int j; [2]
+int k; [3]
+bool flag; [0]
+*/
+
+iin [9]
+
+set [1] 0
+co input {
+    eq [0] [1] [9]
+    if [0] ac
+    add [7] [1] 10
+    iin [[7]]
+    inc [1]
+}
+ca input
+
+co swap {
+    set [3] [[7]]
+    set [[7]] [[8]]
+    set [[8]] [3]
+    ac
+}
+
+co loop2 {
+    eq [0] [2] [9]
+    if [0] ac
+    add [8] [2] 10
+
+    gt [0] [[7]] [[8]]
+    if [0] ca swap
+
+    inc [2]
+}
+
+set [1] 0
+co loop1 {
+    eq [0] [1] [9]
+    if [0] ac
+    add [7] [1] 10
+
+    set [2] [1]
+    ca loop2
+
+    inc [1]
+}
+ca loop1
+
+set [1] 0
+co output {
+    eq [0] [1] [9]
+    if [0] ac
+    add [7] [1] 10
+    iout [[7]]
+    cout 32
+    inc [1]
+}
+ca output
+
+ac

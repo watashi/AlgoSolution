@@ -1,0 +1,42 @@
+co output;
+co endcondition;
+
+co input {
+    cin [0]
+    yi endcondition
+}
+
+co endcondition {
+    eq [1] [0] 10
+    if [1] ac
+    yi output
+}
+
+co output {
+    eq [1] [0] 72
+    if [1] add [2] [2] 1
+    eq [1] [0] 81
+    if [1] add [2] [2] 1
+    eq [1] [0] 57
+    if [1] add [2] [2] 1
+    yi input
+}
+
+co yes {
+    cout 89
+    cout 69
+    cout 83
+    ac
+}
+
+co no {
+    cout 78
+    cout 79
+    ac
+}
+
+set [2] 0
+ca input
+eq [2] [2] 0
+if [2] yi no
+yi yes

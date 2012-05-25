@@ -1,0 +1,29 @@
+/*
+[3]: bool
+[9]: int
+[10]: int[]
+*/
+
+co bin {
+    eq [3] [0] 0
+    if [3] ac
+    mod [[9]] [0] 2
+    div [0] [0] 2
+    inc [9]
+    yi bin
+}
+
+co print {
+    dec [9]
+    eq [3] [9] 9
+    if [3] ac
+    add [[9]] [[9]] 48
+    cout [[9]]
+    yi print
+}
+
+iin [0]
+set [9] 10
+ca bin
+ca print
+ac

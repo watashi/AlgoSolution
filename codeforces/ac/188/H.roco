@@ -1,0 +1,80 @@
+
+co push {
+    set [[8]] [0]
+    inc [8]
+    ac
+}
+
+co pop0 {
+    dec [8]
+    set [0] [[8]]
+    ac
+}
+
+co pop1 {
+    dec [8]
+    set [1] [[8]]
+    ac
+}
+
+co add {
+    set [4] 1
+    ca pop0
+    ca pop1
+    add [0] [0] [1]
+    ca push
+    ac
+}
+
+co mul {
+    set [4] 1
+    ca pop0
+    ca pop1
+    mul [0] [0] [1]
+    ca push
+    ac
+}
+
+co dig {
+    sub [0] [2] 48
+    ca push
+    ac
+}
+
+co gao {
+/*
+    cout 32
+    cout [2]
+    cout 32
+    iout [2]
+    cout 32
+    iout [8]
+    cout 10
+*/
+    set [4] 0
+
+    eq [3] [2] 43
+    if [3] ca add
+
+    eq [3] [2] 42
+    if [3] ca mul
+
+    eq [3] [4] 0
+    if [3] ca dig
+
+    ac
+}
+
+co input {
+    cin [2]
+    eq [3] [2] 10
+    if [3] ac
+    ca gao
+    yi input
+}
+
+set [8] 20
+ca input
+ca pop0
+iout [0]
+ac

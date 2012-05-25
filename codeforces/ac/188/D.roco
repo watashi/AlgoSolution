@@ -1,0 +1,23 @@
+co loop0 {
+    eq [2] [0] 0
+    if [2] ac
+    cout 42
+    dec [0]
+    yi loop0
+}
+
+co loop1 {
+    eq [2] [1] 0
+    if [2] ac
+    sub [0] [3] [1]
+    add [0] [0] 1
+    ca loop0
+    cout 10
+    dec [1]
+    yi loop1
+}
+
+iin [1]
+set [3] [1]
+ca loop1
+ac
