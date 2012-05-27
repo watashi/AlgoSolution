@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <sys/time.h>
 
+using std::max;
+using std::min;
 using std::fill;
 using std::copy;
 using std::sort;
@@ -23,21 +25,63 @@ typedef long long llint;
 timeval startti, endti;
 llint startll, endll;
 
+const llint MSEC_PER_SEC = 1000000LL;
+
+#define USE_DOUBLE 1
+
+#if USE_DOUBLE
+typedef double real;
+#define sqrt_ sqrt
+#define fabs_ fabs
+#define pow_ pow
+#else
+typedef float real;
+// #define sqrt_ sqrtf
+#define fabs_ fabsf
+inline float sqrt_(float x){
+	union {
+		int intPart;
+		float floatPart;
+	} convertor;
+	union {
+		int intPart;
+		float floatPart;
+	} convertor2;
+	convertor.floatPart = x;
+	convertor2.floatPart = x;
+	convertor.intPart = 0x1FBCF800 + (convertor.intPart >> 1);
+	convertor2.intPart = 0x5f3759df - (convertor2.intPart >> 1);
+	return 0.5f * (convertor.floatPart + (x * convertor2.floatPart));
+}
+#define pow_ powf
+#define round_ roundf
+#endif
+
+#ifdef __WATASHI__
+const llint TIME_LIMIT = 3868686;
+#else
+const llint TIME_LIMIT = 9543210;
+#endif
+
 void startTimer() {
     gettimeofday(&startti, NULL);
-#ifdef __WATASHI__
-    startti.tv_sec += 3;
-    startti.tv_usec += 868686;
-#else
-    startti.tv_sec += 9;
-    startti.tv_usec += 543210;
-#endif
-    startll = startti.tv_sec * 1000000LL + startti.tv_usec;
+    startti.tv_sec += TIME_LIMIT / MSEC_PER_SEC;
+    startti.tv_usec += TIME_LIMIT % MSEC_PER_SEC;
+    startll = startti.tv_sec * MSEC_PER_SEC + startti.tv_usec;
+}
+
+void updateTimer() {
+    gettimeofday(&endti, NULL);
+    endll = endti.tv_sec * 1000000LL + endti.tv_usec;
+}
+
+real timeRatio() {
+    updateTimer();
+    return (real)(endll - startll + TIME_LIMIT) / TIME_LIMIT;
 }
 
 bool timeout() {
-    gettimeofday(&endti, NULL);
-    endll = endti.tv_sec * 1000000LL + endti.tv_usec;
+    updateTimer();
     return endll > startll;
 }
 
@@ -60,33 +104,6 @@ void split(const string& s, T* ret) {
 const int MAXN = 2012;
 const int MAXZ = 1000;
 const int DIMENSION = 10;
-
-#define USE_DOUBLE 0
-
-#if USE_DOUBLE
-typedef double real;
-#define sqrt_ sqrt
-#define fabs_ fabs
-#else
-typedef float real;
-// #define sqrt_ sqrtf
-#define fabs_ fabsf
-inline float sqrt_(float x){
-	union {
-		int intPart;
-		float floatPart;
-	} convertor;
-	union {
-		int intPart;
-		float floatPart;
-	} convertor2;
-	convertor.floatPart = x;
-	convertor2.floatPart = x;
-	convertor.intPart = 0x1FBCF800 + (convertor.intPart >> 1);
-	convertor2.intPart = 0x5f3759df - (convertor2.intPart >> 1);
-	return 0.5f * (convertor.floatPart + (x * convertor2.floatPart));
-}
-#endif
 
 template<typename T>
 struct Point {
@@ -197,6 +214,7 @@ Point<real> p[MAXN];
 Point<int> q[MAXN];
 real mind[MAXN], maxd[MAXN];
 int rank[MAXN][MAXN], rank0[MAXN][MAXN];
+vector<int> minDist, maxDist;
 
 void adjust(int n, int k, real rate = 1.0) {
     static Point<real> w[MAXN];
@@ -276,6 +294,29 @@ void rerank(int k, int n, const vector<pair<int, int> >& todo) {
     }
 }
 
+void guess() {
+    for (int i = 0; i < n; ++i) {
+        for (int k = 0; k < DIMENSION; ++k) {
+            if (q[i][k] == -1) {
+                real s = 0.0f;
+                p[i][k] = 0.0f;
+                for (int j = 0; j < LIMIT; ++j) {
+                    if (q[j][k] != -1) {
+                        s += n - rank[i][j];
+                        p[i][k] += (n - rank[i][j]) * q[j][k];
+                    }
+                }
+                p[i][k] /= s;
+            } else {
+                p[i][k] = q[i][k];
+            }
+        }
+    }
+}
+
+const int REP = 32;
+const int CHECK = 64;
+
 void gao() {
     vector<pair<int, int> > todo;
     for (int i = 0; i < n; ++i) {
@@ -287,6 +328,7 @@ void gao() {
         }
         todo.push_back(make_pair(cz[i], i));
     }
+
     sort(todo.begin(), todo.end());
     for (int i = 0; i < n; ++i) {
         ::cz[i] = 12 - todo[i].first;
@@ -295,6 +337,8 @@ void gao() {
     shuffle(n, mind, todo);
     shuffle(n, maxd, todo);
     shuffle(n, q, todo);
+    guess();
+    /*
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < DIMENSION; ++j) {
             if (q[i][j] == -1) {
@@ -304,33 +348,44 @@ void gao() {
             }
         }
     }
+    */
 
-    for (int cc = 1; cc <= DIMENSION; ++cc) {
+    int cc = 0;
+    int pre = 0;
+    while (!timeout()) {
         int n = lower_bound(todo.begin(), todo.end(), make_pair(cc, -1)) - todo.begin();
         int m = lower_bound(todo.begin(), todo.end(), make_pair(cc + 1, -1)) - todo.begin();
         real rate;
+        /*
         if (n >= LIMIT) {
             n = LIMIT;
             m = (int)todo.size();
-            rate = M_PI;
+            rate = 12.0f;
         } else {
             m = std::min(m, LIMIT);
-            rate = M_E;
+            rate = 8.0f;
         }
-        fprintf(stderr, "%d_: [%d, %d)\n", cc, n, m);
+        */
+        n = timeRatio() * (real)1.1 * ::n;
+        n = max(n, pre + 10);
+        n = min(n, pre + 100);
+        n = min(n, LIMIT);
+        pre = n;
+        rate = M_E;
+        // fprintf(stderr, "%d_: [%d, %d)\n", cc, n, m);
 
 REDO:
         // partA
-        fprintf(stderr, "%dA: %lf\n", cc, (double)clock() / CLOCKS_PER_SEC);
+        // fprintf(stderr, "%dA: %lf\n", cc, (double)clock() / CLOCKS_PER_SEC);
         if (timeout()) {
             goto RET;
         }
-        for (int i = n; i < m; ++i) {
+        for (int i = 0; i < ::n; ++i) {
             rerank(i, n, todo);
         }
-        for (int i = 0; i < LIMIT * 2; ++i) {
-            for (int j = n; j < m; ++j) {
-                if (j % LIMIT == 0 && timeout()) {
+        for (int i = 0; i < REP * 2; ++i) {
+            for (int j = 0; j < ::n; ++j) {
+                if (j % CHECK == 0 && timeout()) {
                     goto RET;
                 } else {
                     adjust(n, j, rate);
@@ -341,26 +396,36 @@ REDO:
 
         if (n == LIMIT) {
             goto REDO;
+        } else {
+            continue;
         }
         // partB
-        fprintf(stderr, "%dB: %lf\n", cc, (double)clock() / CLOCKS_PER_SEC);
+        // fprintf(stderr, "%dB: %lf\n", cc, (double)clock() / CLOCKS_PER_SEC);
         if (timeout()) {
             goto RET;
         }
         for (int i = 0; i < m; ++i) {
             rerank(i, m, todo);
         }
-        rate = 1.0;
-        for (int i = 0; i < LIMIT; ++i) {
+        rate = 4.0f;
+        for (int i = 0; i < REP; ++i) {
             for (int j = 0; j < m; ++j) {
-                if (j % LIMIT == 0 && timeout()) {
+                if (j % CHECK == 0 && timeout()) {
                     goto RET;
                 } else {
-                    adjust(m, j);
+                    adjust(m, j, rate);
                 }
             }
             rate *= 0.999;
         }
+
+        /*
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < DIMENSION; ++j) {
+                p[i][j] = round_(p[i][j]);
+            }
+        }
+        */
     }
 
 RET:
@@ -385,13 +450,15 @@ struct TheUniverseUnravels {
             mind[i] = sqrt_(minDist[i]);
             maxd[i] = sqrt_(maxDist[i]);
         }
+        //::minDist = minDist;
+        //::maxDist = maxDist;
 
-        if (n > 1200) {
-            LIMIT = 100;
+        if (n > 1600) {
+            LIMIT = 1000;
+        } else if (n > 1200) {
+            LIMIT = 750;
         } else if (n > 800) {
-            LIMIT = 128;
-        } else if (n > 400) {
-            LIMIT = 150;
+            LIMIT = 500;
         } else {
             LIMIT = n / 2;
         }
