@@ -23,11 +23,11 @@ using std::make_pair;
 typedef long long llint;
 
 timeval startti, endti;
-llint startll, endll;
+llint startll, startll2, endll;
 
 const llint MSEC_PER_SEC = 1000000LL;
 
-#define USE_DOUBLE 1
+#define USE_DOUBLE 0
 
 #if USE_DOUBLE
 typedef double real;
@@ -70,6 +70,11 @@ void startTimer() {
     startll = startti.tv_sec * MSEC_PER_SEC + startti.tv_usec;
 }
 
+void startTimer2() {
+    gettimeofday(&startti, NULL);
+    startll2 = startti.tv_sec * MSEC_PER_SEC + startti.tv_usec;
+}
+
 void updateTimer() {
     gettimeofday(&endti, NULL);
     endll = endti.tv_sec * 1000000LL + endti.tv_usec;
@@ -77,7 +82,7 @@ void updateTimer() {
 
 real timeRatio() {
     updateTimer();
-    return (real)(endll - startll + TIME_LIMIT) / TIME_LIMIT;
+    return (real)(endll - startll2) / TIME_LIMIT;
 }
 
 bool timeout() {
@@ -143,16 +148,6 @@ struct Point {
         }
         *(s - 1) = '\0';
         return buf;
-        /*
-        std::ostringstream oss;
-        for (int i = 0; i < DIMENSION; ++i) {
-            if (i > 0) {
-                oss << ' ';
-            }
-            oss << p[i];
-        }
-        return oss.str();
-        */
     }
 
     Point operator-() const {
@@ -220,8 +215,6 @@ void adjust(int n, int k, real rate = 1.0) {
     static Point<real> w[MAXN];
     static real dw[MAXN], dd[MAXN];
     for (int i = 0; i < n; ++i) {
-        // w[i] = p[i] - p[k];
-        // dd[i] = dw[i] = w[i].abs();
         dw[i] = 0;
         for (int j = 0; j < DIMENSION; ++j) {
             w[i][j] = p[i][j] - p[k][j];
@@ -249,7 +242,6 @@ void adjust(int n, int k, real rate = 1.0) {
             real u = cz[i] * sqrt_(fabs_(t));
             s += u;
             t *= u / dw[i];
-            // v = v + w[i] * t;
             for (int j = 0; j < DIMENSION; ++j) {
                 v[j] += w[i][j] * t;
             }
@@ -298,15 +290,7 @@ void guess() {
     for (int i = 0; i < n; ++i) {
         for (int k = 0; k < DIMENSION; ++k) {
             if (q[i][k] == -1) {
-                real s = 0.0f;
-                p[i][k] = 0.0f;
-                for (int j = 0; j < LIMIT; ++j) {
-                    if (q[j][k] != -1) {
-                        s += n - rank[i][j];
-                        p[i][k] += (n - rank[i][j]) * q[j][k];
-                    }
-                }
-                p[i][k] /= s;
+                p[i][k] = 500.0f;
             } else {
                 p[i][k] = q[i][k];
             }
@@ -314,7 +298,7 @@ void guess() {
     }
 }
 
-const int REP = 32;
+int REP = 10;
 const int CHECK = 64;
 
 void gao() {
@@ -338,52 +322,50 @@ void gao() {
     shuffle(n, maxd, todo);
     shuffle(n, q, todo);
     guess();
-    /*
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < DIMENSION; ++j) {
-            if (q[i][j] == -1) {
-                p[i][j] = MAXZ / 2 + 50 * (2.0 * rand() / RAND_MAX - 1.0);
-            } else {
-                p[i][j] = q[i][j];
-            }
-        }
+
+    int pre = 10;
+    while (todo[pre].first == 0) {
+        ++pre;
     }
-    */
-
-    int cc = 0;
-    int pre = 0;
+    bool first = true;
+    real baserate = 12.0f;
+    real rate = baserate;
+    startTimer2();
     while (!timeout()) {
-        int n = lower_bound(todo.begin(), todo.end(), make_pair(cc, -1)) - todo.begin();
-        int m = lower_bound(todo.begin(), todo.end(), make_pair(cc + 1, -1)) - todo.begin();
-        real rate;
-        /*
-        if (n >= LIMIT) {
-            n = LIMIT;
-            m = (int)todo.size();
-            rate = 12.0f;
-        } else {
-            m = std::min(m, LIMIT);
-            rate = 8.0f;
-        }
-        */
-        n = timeRatio() * (real)1.1 * ::n;
-        n = max(n, pre + 10);
-        n = min(n, pre + 100);
+        int n = (real)timeRatio() * 0.618f * ::n;
+        n = max(n, pre);
+        // n = min(n, pre + 100);
         n = min(n, LIMIT);
-        pre = n;
-        rate = M_E;
-        // fprintf(stderr, "%d_: [%d, %d)\n", cc, n, m);
+        if (first) {
+            n = pre;
+            pre = n - 1;
+            first = false;
+        }
+        if (pre != n) {
+            rate = baserate;
+            baserate *= 0.985;
+        }
 
-REDO:
-        // partA
-        // fprintf(stderr, "%dA: %lf\n", cc, (double)clock() / CLOCKS_PER_SEC);
         if (timeout()) {
             goto RET;
         }
-        for (int i = 0; i < ::n; ++i) {
-            rerank(i, n, todo);
+        if (n != pre) {
+            for (int i = 0; i < ::n; ++i) {
+                rerank(i, n, todo);
+            }
+            pre = n;
         }
-        for (int i = 0; i < REP * 2; ++i) {
+REDO:
+        if (timeout()) {
+            goto RET;
+        }
+        int rep = REP;
+        if (n < ::n / 10) {
+            rep *= 2;
+        } else if (n > ::n / 3) {
+            rep /= 2;
+        }
+        for (int i = 0; i < rep; ++i) {
             for (int j = 0; j < ::n; ++j) {
                 if (j % CHECK == 0 && timeout()) {
                     goto RET;
@@ -391,7 +373,7 @@ REDO:
                     adjust(n, j, rate);
                 }
             }
-            rate *= 0.999;
+            rate *= 0.996;
         }
 
         if (n == LIMIT) {
@@ -399,33 +381,6 @@ REDO:
         } else {
             continue;
         }
-        // partB
-        // fprintf(stderr, "%dB: %lf\n", cc, (double)clock() / CLOCKS_PER_SEC);
-        if (timeout()) {
-            goto RET;
-        }
-        for (int i = 0; i < m; ++i) {
-            rerank(i, m, todo);
-        }
-        rate = 4.0f;
-        for (int i = 0; i < REP; ++i) {
-            for (int j = 0; j < m; ++j) {
-                if (j % CHECK == 0 && timeout()) {
-                    goto RET;
-                } else {
-                    adjust(m, j, rate);
-                }
-            }
-            rate *= 0.999;
-        }
-
-        /*
-        for (int i = 0; i < m; ++i) {
-            for (int j = 0; j < DIMENSION; ++j) {
-                p[i][j] = round_(p[i][j]);
-            }
-        }
-        */
     }
 
 RET:
@@ -456,11 +411,11 @@ struct TheUniverseUnravels {
         if (n > 1600) {
             LIMIT = 1000;
         } else if (n > 1200) {
-            LIMIT = 750;
+            LIMIT = 800;
         } else if (n > 800) {
-            LIMIT = 500;
+            LIMIT = 600;
         } else {
-            LIMIT = n / 2;
+            LIMIT = min(600, n);
         }
         gao();
 
