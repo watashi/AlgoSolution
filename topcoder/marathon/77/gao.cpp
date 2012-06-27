@@ -17,26 +17,31 @@ using namespace std;
 typedef long long llint;
 
 timeval startti, endti;
-llint startll, endll;
+llint startll0, startll, endll;
 
 const llint MSEC_PER_SEC = 1000000LL;
 
 #ifdef __WATASHI__
 const llint TIME_LIMIT = 3868686;
 #else
-const llint TIME_LIMIT = 9543210;
+const llint TIME_LIMIT = 9500000;
 #endif
 
 void startTimer() {
     gettimeofday(&startti, NULL);
-    startti.tv_sec += TIME_LIMIT / MSEC_PER_SEC;
-    startti.tv_usec += TIME_LIMIT % MSEC_PER_SEC;
-    startll = startti.tv_sec * MSEC_PER_SEC + startti.tv_usec;
+    startll0 = startti.tv_sec * MSEC_PER_SEC + startti.tv_usec + TIME_LIMIT / 3;
+    startll = startti.tv_sec * MSEC_PER_SEC + startti.tv_usec + TIME_LIMIT;
+}
+
+bool timeout0() {
+    gettimeofday(&endti, NULL);
+    endll = endti.tv_sec * MSEC_PER_SEC + endti.tv_usec;
+    return endll > startll0;
 }
 
 bool timeout() {
     gettimeofday(&endti, NULL);
-    endll = endti.tv_sec * 1000000LL + endti.tv_usec;
+    endll = endti.tv_sec * MSEC_PER_SEC + endti.tv_usec;
     return endll > startll;
 }
 
@@ -49,7 +54,7 @@ int C, G, I, S, SS;
 int prefs[MAXG][MAXI];
 int cakes[MAXC][MAXS * MAXS][MAXI];
 int pts[MAXG][MAXC][MAXS * MAXS + 1];
-int per[MAXG], qer[MAXG];
+int pg[MAXG], pc[MAXC], qg[MAXG], qc[MAXC];
 
 inline int idx(int r, int c) {
     return r * S + c;
@@ -83,50 +88,174 @@ int init() {
     return ret;
 }
 
-bool gen(int target) {
+inline int getqid(int gid, int cid, int pid, int target) {
+    int* pts = ::pts[gid][cid];
+    int qid = lower_bound(pts + pid, pts + SS + 1, pts[pid] + target) - pts;
+    if (qid / S != pid / S) {
+        qid = max(qid, pid + S + 1);
+    }
+    return qid;
+}
+
+vector<int> dummy;
+bool mark[MAXG];
+
+template<bool RET>
+bool gen0(int target, vector<int>& ret) {
+    int* pg = RET ? ::qg : ::pg;
+    int* pc = RET ? ::qc : ::pc;
     int cid = 0;
     int pid = 0;
+    fill(mark, mark + G, false);
+    if (RET) {
+        ret.resize(C * SS);
+        fill(ret.begin(), ret.end(), -1);
+    }
     for (int i = 0; i < G; ++i) {
         if (cid == C) {
             return false;
         }
-        int qid = lower_bound(pts[per[i]][cid] + pid, pts[per[i]][cid] + SS + 1, pts[per[i]][cid][pid] + target) - pts[per[i]][cid];
-        qid = max(qid, pid + S + 1);
-        if (qid > SS) {
+        int gid = -1;
+        int qid = SS + 1;
+        for (int j = 0; j < G; ++j) {
+            if (mark[pg[j]]) {
+                continue;
+            }
+            int rid = getqid(pg[j], pc[cid], pid, target);
+            if (qid > rid) {
+                qid = rid;
+                gid = pg[j];
+            }
+        }
+        if (gid == -1) {
             ++cid;
             pid = 0;
             --i;
-            continue;
+        } else {
+            mark[gid] = true;
+            if (RET) {
+                fill(ret.begin() + pc[cid] * SS + pid, ret.begin() + pc[cid] * SS + qid, gid);
+            }
+            pid = qid;
         }
-        pid = qid;
     }
-    // fprintf(stderr, "%d is true\n", target);
+    if (RET) {
+        fprintf(stderr, "A %d/%d:%d/%d\n", cid, C, pid, SS);
+    }
     return true;
 }
 
-void regen(int target, vector<int>& ret) {
-    ret.resize(C * SS);
-    fill(ret.begin(), ret.end(), -1);
+bool gen0(int target) {
+    return gen0<false>(target, dummy);
+}
 
+int gao0(int ans) {
+    int counter1 = 0;
+    int counter2 = 0;
+    int ret = ans;
+    while (counter1 % 10 != 0 || !timeout0()) {
+        random_shuffle(pg, pg + G);
+        random_shuffle(pc, pc + C);
+        ++counter1;
+        if (!gen0(ret + 1)) {
+            continue;
+        }
+        ++counter2;
+        int l = ret;
+        int r = l * 2;
+        while (gen0(r)) {
+            l = r;
+            r = l * 2;
+        }
+        while (l < r) {
+            int m = (l + r) / 2;
+            if (gen0(m)) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+        ret = r - 1;
+        copy(pg, pg + G, qg);
+        copy(pc, pc + C, qc);
+    }
+    fprintf(stderr, "counter1 = %d\n", counter1);
+    fprintf(stderr, "counter2 = %d\n", counter2);
+    fprintf(stderr, "ret = %d\n", ret);
+    return ret;
+}
+
+template<bool RET>
+bool gen(int target, vector<int>& ret) {
+    int* pg = RET ? ::qg : ::pg;
+    int* pc = RET ? ::qc : ::pc;
     int cid = 0;
     int pid = 0;
+    if (RET) {
+        ret.resize(C * SS);
+        fill(ret.begin(), ret.end(), -1);
+    }
     for (int i = 0; i < G; ++i) {
         if (cid == C) {
-            throw 1;
+            return false;
         }
-        int qid = lower_bound(pts[qer[i]][cid] + pid, pts[qer[i]][cid] + SS + 1, pts[qer[i]][cid][pid] + target) - pts[qer[i]][cid];
-        qid = max(qid, pid + S + 1);
+        int gid = pg[i];
+        int qid = getqid(gid, pc[cid], pid, target);
         if (qid > SS) {
             ++cid;
             pid = 0;
             --i;
+        } else {
+            if (RET) {
+                fill(ret.begin() + pc[cid] * SS + pid, ret.begin() + pc[cid] * SS + qid, gid);
+            }
+            pid = qid;
+        }
+    }
+    if (RET) {
+        fprintf(stderr, "B %d/%d:%d/%d\n", cid, C, pid, SS);
+    }
+    return true;
+}
+
+bool gen(int target) {
+    return gen<false>(target, dummy);
+}
+
+int gao(int ans) {
+    int counter1 = 0;
+    int counter2 = 0;
+    int ret = ans;
+    while (counter1 % 100 != 0 || !timeout()) {
+        random_shuffle(pg, pg + G);
+        random_shuffle(pc, pc + C);
+        ++counter1;
+        if (!gen(ret + 1)) {
             continue;
         }
-        fill(ret.begin() + cid * SS + pid, ret.begin() + cid * SS + qid, qer[i]);
-        // fprintf(stderr, "%d:%d-%d => %d\n", cid, pid, qid, i);
-        pid = qid;
+        ++counter2;
+        int l = ret;
+        int r = l * 2;
+        while (gen(r)) {
+            l = r;
+            r = l * 2;
+        }
+        while (l < r) {
+            int m = (l + r) / 2;
+            if (gen(m)) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+        ret = r - 1;
+        copy(pg, pg + G, qg);
+        copy(pc, pc + C, qc);
     }
-    fprintf(stderr, "%d/%d:%d/%d\n", cid, C, pid, SS);
+    fprintf(stderr, "counter1 = %d\n", counter1);
+    fprintf(stderr, "counter2 = %d\n", counter2);
+    fprintf(stderr, "ret = %d\n", ret);
+    return ret;
 }
 
 struct Cakes {
@@ -154,41 +283,24 @@ struct Cakes {
             }
         }
 
-        int ans = init();
         for (int i = 0; i < G; ++i) {
-            per[i] = qer[i] = i;
+            pg[i] = qg[i] = i;
         }
-        int counter1 = 0;
-        int counter2 = 0;
-        while (counter1 % 100 != 0 || !timeout()) {
-            ++counter1;
-            if (gen(ans + 1)) {
-                ++counter2;
-                int l = ans + 1;
-                int r = l * 2;
-                while (gen(r)) {
-                    l = r;
-                    r = l * 2;
-                }
-                while (l < r) {
-                    int m = (l + r) / 2;
-                    if (gen(m)) {
-                        l = m + 1;
-                    } else {
-                        r = m;
-                    }
-                }
-                copy(per, per + G, qer);
-                ans = r - 1;
-            }
-            random_shuffle(per, per + G);
+        for (int i = 0; i < C; ++i) {
+            pc[i] = qc[i] = i;
         }
-        fprintf(stderr, "counter1 = %d\n", counter1);
-        fprintf(stderr, "counter2 = %d\n", counter2);
-        fprintf(stderr, "ans = %d\n", ans);
+
+        int ans0 = gao0(init() / 2);
+        int ans = gao(ans0);
+
+        fprintf(stderr, "ans = %d\n", max(ans0, ans));
 
         vector<int> ret;
-        regen(ans, ret);
+        if (ans0 >= ans) {
+            gen0<true>(ans0, ret);
+        } else {
+            gen<true>(ans, ret);
+        }
         /*
         for (int i = 0; i < G; ++i) {
             fprintf(stderr, "%d ", count(ret.begin(), ret.end(), i));
