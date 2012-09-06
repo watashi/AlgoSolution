@@ -1,4 +1,3 @@
-// ZOJ3020. Puzzle Quest
 #include <cstdio>
 #include <vector>
 #include <ext/hash_set>
@@ -297,7 +296,6 @@ int main()
     return 0;
 }
 
-//3043668  	2008-08-20 21:45:23  	Accepted 	3020 	C++  	00:04.40  	7568K  	Re:ReJudge
+//3043668   2008-08-20 21:45:23     Accepted    3020    C++     00:04.40    7568K   Re:ReJudge
 
-//Run ID 	Submit Time 	Judge Status 	Problem ID 	Language 	Run Time(ms) 	Run Memory(KB) 	User Name 	Admin
-//3001273 	2012-08-05 11:13:30 	Accepted 	3020 	C++ 	2090 	7220 	watashi 	Source
+// 2012-09-07 01:55:42 | Accepted | 3020 | C++ | 1990 | 7220 | watashi | Source

@@ -1,0 +1,204 @@
+import java.util.*;
+
+class Edge {
+    int v, c, id;
+    Edge r;
+
+    public Edge(int v, int c) {
+        this.v = v;
+        this.c = c;
+        this.id = -1;
+        this.r = null;
+    }
+}
+
+class NoSuchFlowException extends Throwable {
+}
+
+class LimitFlow {
+    int n, source, sink;
+    int[] f;
+    ArrayList<ArrayList<Edge> > edge;
+
+    public LimitFlow(int an, int[] s, int[] t, int[] b, int[] c) {
+        n = an + 2;
+        source = an;
+        sink = an + 1;
+        f = b.clone();
+        edge = new ArrayList<ArrayList<Edge> >(n);
+        for (int i = 0; i < n; ++i) {
+            edge.add(new ArrayList<Edge>());
+        }
+        int[] d = new int[an];
+        for (int i = 0; i < f.length; ++i) {
+            Edge x = new Edge(t[i], c[i] - b[i]);
+            Edge y = new Edge(s[i], 0);
+            x.r = y;
+            y.r = x;
+            edge.get(s[i]).add(x);
+            edge.get(t[i]).add(y);
+            d[s[i]] -= b[i];
+            d[t[i]] += b[i];
+            x.id = i;
+        }
+        for (int i = 0; i < d.length; ++i) {
+            if (d[i] > 0) {
+                Edge x = new Edge(i, d[i]);
+                Edge y = new Edge(source, 0);
+                x.r = y;
+                y.r = x;
+                edge.get(source).add(x);
+                edge.get(i).add(y);
+            } else if (d[i] < 0) {
+                Edge x = new Edge(sink, -d[i]);
+                Edge y = new Edge(i, 0);
+                x.r = y;
+                y.r = x;
+                edge.get(i).add(x);
+                edge.get(sink).add(y);
+            }
+        }
+    }
+
+    public int[] solve() throws NoSuchFlowException {
+        int[] q = new int[n];
+        int[] d = new int[n];
+        int[] done = new int[n];
+        int[] path = new int[n];
+        while (true) {
+            //
+            Arrays.fill(d, -1);
+            q[0] = source;
+            d[source] = 0;
+            int begin = 0, end = 1;
+            while (begin < end) {
+                int front = q[begin++];
+                for (Edge e : edge.get(front)) {
+                    if (e.c > 0 && d[e.v] == -1) {
+                        d[e.v] = d[front] + 1;
+                        q[end++] = e.v;
+                    }
+                }
+            }
+            /* String s = "";
+            for (int x : d) {
+                s += x;
+            }
+            System.err.println(s); */
+            if (d[sink] == -1) {
+                break;
+            }
+            //
+            Arrays.fill(done, 0);
+            int len = 0;
+            path[0] = source;
+            while (len >= 0) {
+                int back = path[len];
+                if (back == sink) {
+                    int flow = Integer.MAX_VALUE;
+                    int todo = -1;
+                    for (int i = 0; i < len; ++i) {
+                        Edge e = edge.get(path[i]).get(done[path[i]]);
+                        if (e.c < flow) {
+                            flow = e.c;
+                            todo = i;
+                        }
+                    }
+                    for (int i = 0; i < len; ++i) {
+                        Edge e = edge.get(path[i]).get(done[path[i]]);
+                        e.c -= flow;
+                        e.r.c += flow;
+                    }
+                    len = todo;
+                } else {
+                    while (done[back] < edge.get(back).size()) {
+                        Edge e = edge.get(back).get(done[back]);
+                        if (d[e.v] == d[back] + 1 && e.c > 0) {
+                            break;
+                        } else {
+                            ++done[back];
+                        }
+                    }
+                    if (done[back] == edge.get(back).size()) {
+                        d[back] = -1; // !!
+                        --len;
+                    } else {
+                        path[++len] = edge.get(back).get(done[back]).v;
+                    }
+                }
+            }
+        }
+        for (Edge e : edge.get(source)) {
+            if (e.c > 0) {
+                throw new NoSuchFlowException();
+            }
+        }
+        for (ArrayList<Edge> ae : edge) {
+            for (Edge e : ae) {
+                if (e.id != -1) {
+                    f[e.id] += e.r.c;
+                }
+            }
+        }
+        return f;
+    }
+}
+
+public class Main {
+    public static void main (String[] args) {
+        Scanner in = new Scanner(System.in);
+        int re = in.nextInt();
+        for (int ri = 1; ri <= re; ++ri) {
+            if (ri > 1) {
+                System.out.println();
+            }
+            int n = in.nextInt();
+            int m = in.nextInt();
+            int[] s = new int[m];
+            int[] t = new int[m];
+            int[] b = new int[m];
+            int[] c = new int[m];
+            for (int i = 0; i < m; ++i) {
+                s[i] = in.nextInt() - 1;
+                t[i] = in.nextInt() - 1;
+                b[i] = in.nextInt();
+                c[i] = in.nextInt();
+            }
+            LimitFlow lf = new LimitFlow(n, s, t, b, c);
+            try {
+                int[] ans = lf.solve();
+                System.out.println("YES");
+                for (int f : ans) {
+                    System.out.println(f);
+                }
+            } catch (NoSuchFlowException e) {
+                System.out.println("NO");
+            }
+        }
+    }
+}
+
+//Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name
+//1778367   2009-03-05 02:53:40     Accepted    2314    Java    0   3726    watashi@Zodiac
+
+/*
+ * ZOJ BUG
+Submit Time     Language    Run Time(ms)    Run Memory(KB)      User Name
+2009-03-05 02:53:40     Java    0   3726    watashi@Zodiac
+2009-01-12 14:34:15     C++     30  1276    igoogle
+2008-11-14 18:24:49     C++     30  2184    FallingFlowers
+2008-11-07 09:29:08     C++     30  15700   NicYun
+2008-11-27 23:01:32     C++     40  1276    husheyn
+2008-10-22 07:47:51     C++     40  15400   sz
+2008-12-09 15:52:41     FPC     60  832     EZ_programmer
+2009-02-24 23:42:50     FPC     70  1944    leokan
+2008-10-21 21:33:23     C++     70  15204   sz
+2005-11-26 03:37:00     C   80  1680    frkstyc
+2007-03-05 15:43:26     FPC     90  1192    fangge518
+2008-04-21 15:06:22     C++     90  1356    nwpuzhl
+2009-01-16 22:10:35     FPC     90  3364    taowenbo
+2008-09-27 19:03:21     C++     90  28184   arsenal4arsenal
+2008-04-03 14:28:09     C++     100     1160    Sherlock
+*/
+
+// 2012-09-07 01:18:15 | Accepted | 2314 | Java | 870 | 11356 | watashi | Source
