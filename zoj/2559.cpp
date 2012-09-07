@@ -1,5 +1,5 @@
-// -1- ÄÚÇĞÔ²£¬½ÇÆ½·ÖÏß½»µã
-// -2- ½âÈıÔªÒ»´Î·½³Ì
+// -1- å†…åˆ‡åœ†ï¼Œè§’å¹³åˆ†çº¿äº¤ç‚¹
+// -2- è§£ä¸‰å…ƒä¸€æ¬¡æ–¹ç¨‹
 
 #include <cmath>
 #include <cstdio>
@@ -31,6 +31,6 @@ int main(void)
 }
 
 //Run ID Submit time Judge Status Problem ID Language Run time Run memory User Name
-//2795892 2008-03-22 00:24:45 Accepted 2559 C++ 00:00.00 396K ¤ï¤¿¤·
+//2795892 2008-03-22 00:24:45 Accepted 2559 C++ 00:00.00 396K ã‚ãŸã—
 
-// 2012-09-07 01:28:23 | Accepted | 2559 | C++ | 0 | 180 | watashi | Source
+// 2012-09-07 15:39:56 | Accepted | 2559 | C++ | 0 | 180 | watashi | Source

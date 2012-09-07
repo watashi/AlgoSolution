@@ -109,4 +109,4 @@ Submit Time     Language    Run Time(ms)    Run Memory(KB)      User Name
 2009-02-06 19:07:28     C++     420     7996    wode
 */
 
-// 2012-09-07 01:18:22 | Accepted | 2315 | Java | 1360 | 9129 | watashi | Source
+// 2012-09-07 15:37:31 | Accepted | 2315 | Java | 1350 | 9678 | watashi | Source

@@ -1,45 +1,6 @@
-/*
-4
-
-3 4
-min 2x1-x3
-with
-x1>=0
-x2 arbitary
-x3<=0
-under
-x1+x2+x3>=0
-3x2=3
--x1-x2+100x3<=-4
-0=0
-
-1 1
-min x1
-with
-x1>=0
-under
-x1>=1
-
-4 3
-max 3x2-4x3
-with
-x1>=0
-x2 arbitary
-x3<=0
-x4 arbitary
-under
-x1-x3<=2
-x1+3x2-x3=0
-x1+100x3>=-1
-
-1 1
-max x1
-with
-x1>=0
-under
-x1<=1
-*/
+#include <algorithm> // auto fix CE
 #include <cstdio>
+#include <algorithm> // auto fix CE
 #include <cstring>
 
 const char* condition[3] = {
@@ -196,4 +157,4 @@ int main() {
 //Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name
 //1832117   2009-04-13 14:31:13     Accepted    2590    C++     30  176     watashi@Zodiac
 
-// 2012-09-07 01:30:21 | Accepted | 2590 | C++ | 40 | 180 | watashi | Source
+// 2012-09-07 15:41:23 | Accepted | 2590 | C++ | 40 | 180 | watashi | Source

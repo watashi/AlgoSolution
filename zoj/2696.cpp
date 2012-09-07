@@ -188,4 +188,4 @@ int main() {
     return 0;
 }
 
-// 2012-09-07 01:34:58 | Accepted | 2696 | C++ | 20 | 180 | watashi | Source
+// 2012-09-07 15:43:44 | Accepted | 2696 | C++ | 50 | 180 | watashi | Source

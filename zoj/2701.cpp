@@ -1,8 +1,14 @@
+#include <utility> // auto fix CE
 #include <list>
+#include <utility> // auto fix CE
 #include <cstdio>
+#include <utility> // auto fix CE
 #include <limits>
+#include <utility> // auto fix CE
 #include <vector>
+#include <utility> // auto fix CE
 #include <cassert>
+#include <utility> // auto fix CE
 #include <algorithm>
 
 using namespace std;
@@ -148,4 +154,4 @@ int main() {
 //Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name
 //2178390   2010-04-27 19:25:00     Accepted    2701    C++     590     184     watashi@Zodiac
 
-// 2012-09-07 01:35:28 | Accepted | 2701 | C++ | 610 | 188 | watashi | Source
+// 2012-09-07 15:44:15 | Accepted | 2701 | C++ | 610 | 188 | watashi | Source

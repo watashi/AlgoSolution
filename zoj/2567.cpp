@@ -272,4 +272,4 @@ Submit Time     Language    Run Time(ms)    Run Memory(KB)      User Name
 2008-11-26 15:48:28     FPC     100     2964    ddjdhx
 */
 
-// 2012-09-07 01:29:11 | Accepted | 2567 | C++ | 50 | 1500 | watashi | Source
+// 2012-09-07 15:40:46 | Accepted | 2567 | C++ | 60 | 1500 | watashi | Source

@@ -1,8 +1,14 @@
+#include <cstdlib> // auto fix CE
 #include <map>
+#include <cstdlib> // auto fix CE
 #include <cmath>
+#include <cstdlib> // auto fix CE
 #include <cstdio>
+#include <cstdlib> // auto fix CE
 #include <vector>
+#include <cstdlib> // auto fix CE
 #include <utility>
+#include <cstdlib> // auto fix CE
 #include <algorithm>
 
 using namespace std;
@@ -206,4 +212,4 @@ int main() {
 //1807529   2009-03-28 04:02:51     Accepted    2361    C++     80  788     watashi@Zodiac
 //1807528   2009-03-28 04:02:28     Accepted    2361    C++     80  788     watashi@Zodiac
 
-// 2012-09-07 01:20:31 | Accepted | 2361 | C++ | 70 | 788 | watashi | Source
+// 2012-09-07 15:38:58 | Accepted | 2361 | C++ | 80 | 788 | watashi | Source

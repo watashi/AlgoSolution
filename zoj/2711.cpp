@@ -101,4 +101,4 @@ int main(void)
 //Run ID    Submit time     Judge Status    Problem ID  Language    Run time    Run memory      User Name
 //2953714   2008-06-21 01:40:02     Accepted    2711    C++     00:00.04    10192K  Re:ReJudge
 
-// 2012-09-07 01:35:53 | Accepted | 2711 | C++ | 10 | 9932 | watashi | Source
+// 2012-09-07 15:45:35 | Accepted | 2711 | C++ | 0 | 9932 | watashi | Source

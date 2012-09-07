@@ -161,4 +161,4 @@ int main(void)
 //3022069 2008-08-05 08:34:00 Accepted 2706 C++ 00:01.60 1276K Re:ReJudge
 //
 
-// 2012-09-07 01:35:47 | Accepted | 2706 | C++ | 700 | 952 | watashi | Source
+// 2012-09-07 15:44:47 | Accepted | 2706 | C++ | 720 | 952 | watashi | Source

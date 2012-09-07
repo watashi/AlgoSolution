@@ -1,11 +1,17 @@
 // You must perform a transformation in such a way that as many words as possible are transformed to numbers
 // If there are several way to perform the transformation in such a way, you must do it so that the first number is as great as possible. If there are still several ways, maximize the second number, and so on.
 
+#include <algorithm> // auto fix CE
 #include <map>
+#include <algorithm> // auto fix CE
 #include <cctype>
+#include <algorithm> // auto fix CE
 #include <cstdio>
+#include <algorithm> // auto fix CE
 #include <string>
+#include <algorithm> // auto fix CE
 #include <vector>
+#include <algorithm> // auto fix CE
 #include <utility>
 
 using namespace std;
@@ -226,4 +232,4 @@ int main() {
 //Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name
 //2178745   2010-04-27 23:19:27     Accepted    2698    C++     520     20952   watashi@Zodiac
 
-// 2012-09-07 01:35:10 | Accepted | 2698 | C++ | 480 | 20952 | watashi | Source
+// 2012-09-07 15:43:56 | Accepted | 2698 | C++ | 480 | 20952 | watashi | Source

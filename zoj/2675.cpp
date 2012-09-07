@@ -1,6 +1,10 @@
+#include <cstdlib> // auto fix CE
 #include <cmath>
+#include <cstdlib> // auto fix CE
 #include <cstdio>
+#include <cstdlib> // auto fix CE
 #include <vector>
+#include <cstdlib> // auto fix CE
 #include <algorithm>
 
 using namespace std;
@@ -97,4 +101,4 @@ int main() {
 //Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name
 //2128572   2010-03-27 14:13:26     Accepted    2675    C++     0   176     watashi@Zodiac
 
-// 2012-09-07 01:34:08 | Accepted | 2675 | C++ | 0 | 180 | watashi | Source
+// 2012-09-07 15:43:19 | Accepted | 2675 | C++ | 0 | 180 | watashi | Source

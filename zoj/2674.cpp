@@ -1,3 +1,4 @@
+#include <cmath> // auto fix CE
 #include <cstdio>
 
 long long f[] = {1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600};
@@ -64,4 +65,4 @@ Run ID      Submit Time     Judge Status    Problem ID      Language    Run Time
 2130779     2010-03-28 22:49:39     Accepted    2674    C++     0   176     watashi@Zodiac
 */
 
-// 2012-09-07 01:34:02 | Accepted | 2674 | C++ | 0 | 180 | watashi | Source
+// 2012-09-07 15:43:13 | Accepted | 2674 | C++ | 0 | 180 | watashi | Source

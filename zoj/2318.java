@@ -94,22 +94,4 @@ public class Main {
 //Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name
 //1776928   2009-03-03 21:54:31     Accepted    2318    Java    0   2398    watashi@Zodiac
 
-/*
-// BUG
-Submit Time     Language    Run Time(ms)    Run Memory(KB)      User Name
-2009-02-01 03:09:04     Java    0   1884    moonancient
-2009-03-03 21:54:31     Java    0   2398    watashi@Zodiac
-2007-01-30 18:53:17     C++     50  1308    11
-2008-03-19 14:34:02     FPC     60  504     linshu
-2008-05-30 23:43:12     C++     60  884     jaherrero
-2008-05-27 15:35:34     C++     60  1240    Will
-2008-09-14 00:49:37     C++     70  548     张红小朋友
-2007-12-02 20:56:50     FPC     70  588     QiZiChao
-2009-01-12 15:34:50     C++     70  1144    HyperHexagon
-2008-05-27 15:39:09     C++     70  1236    Will
-2007-12-06 22:52:31     FPC     90  776     liyuantao
-2008-04-20 22:36:52     C++     90  836     antimony
-2009-01-14 21:35:58     C++     100     288     zs_zeng1
-*/
-
-// 2012-09-07 01:18:40 | Accepted | 2318 | Java | 1820 | 6707 | watashi | Source
+// 2012-09-07 15:37:49 | Accepted | 2318 | Java | 1880 | 5439 | watashi | Source

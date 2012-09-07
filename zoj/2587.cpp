@@ -190,19 +190,4 @@ int main() {
 //Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name
 //1831829   2009-04-13 01:22:06     Accepted    2587    C++     130     308     watashi@Zodiac
 
-/*
-Submit Time     Language    Run Time(ms)    Run Memory(KB)      User Name
-2009-04-13 01:22:06     C++     130     308     watashi@Zodiac
-2009-01-16 13:33:54     C++     130     428     HyperHexagon
-2008-11-04 11:57:47     C++     130     432     rendezvous_hello_world
-2008-10-20 15:54:14     C++     140     424     QiZiChao
-2008-10-05 18:49:04     C++     140     1124    bin3
-2008-11-02 19:11:30     C++     140     1760    skoier
-2008-12-13 17:34:54     C++     150     512     Accepted
-2008-11-26 15:07:59     C++     180     584     zkw
-2009-02-14 00:18:40     C++     180     2460    huicpc035
-2009-01-12 14:37:25     FPC     190     356     joey2005
-2008-12-25 08:45:44     FPC     190     760     xc_bb
-*/
-
-// 2012-09-07 01:30:02 | Accepted | 2587 | C++ | 170 | 312 | watashi | Source
+// 2012-09-07 15:41:04 | Accepted | 2587 | C++ | 110 | 312 | watashi | Source

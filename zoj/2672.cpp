@@ -93,4 +93,4 @@ Run ID      Submit Time     Judge Status    Problem ID      Language    Run Time
 2128955     2010-03-27 16:54:15     Accepted    2672    C++     2610    17800   watashi@Zodiac
 */
 
-// 2012-09-07 01:33:50 | Accepted | 2672 | C++ | 2560 | 17804 | watashi | Source
+// 2012-09-07 15:43:01 | Accepted | 2672 | C++ | 2580 | 17804 | watashi | Source

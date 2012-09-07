@@ -9,7 +9,6 @@ do
 done
 */
 
-
 // no three of which are lying on the same line
 
 import java.math.*;
@@ -165,4 +164,4 @@ public class Main {
 //Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name
 //1830446   2009-04-12 01:52:38     Accepted    2568    Java    0   3824    watashi@Zodiac
 
-// 2012-09-07 01:29:17 | Accepted | 2568 | Java | 2180 | 8345 | watashi | Source
+// 2012-09-07 15:40:52 | Accepted | 2568 | Java | 1790 | 13817 | watashi | Source

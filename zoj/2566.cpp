@@ -15,11 +15,17 @@ You might find the following information useful: It is known that there are only
 // ***.
 // ..**
 
+#include <algorithm> // auto fix CE
 #include <map>
+#include <algorithm> // auto fix CE
 #include <queue>
+#include <algorithm> // auto fix CE
 #include <cstdio>
+#include <algorithm> // auto fix CE
 #include <vector>
+#include <algorithm> // auto fix CE
 #include <cstring>
+#include <algorithm> // auto fix CE
 #include <utility>
 
 using namespace std;
@@ -175,4 +181,4 @@ int main() {
 //Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name
 //1830246   2009-04-11 22:16:00     Accepted    2566    C++     0   196     watashi@Zodiac
 
-// 2012-09-07 01:29:05 | Accepted | 2566 | C++ | 0 | 200 | watashi | Source
+// 2012-09-07 15:40:40 | Accepted | 2566 | C++ | 10 | 200 | watashi | Source
