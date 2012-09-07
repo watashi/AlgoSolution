@@ -59,4 +59,4 @@ Submit Time     Language    Run Time(ms)    Run Memory(KB)      User Name
 2010-04-17 23:36:15     C++     110     256     hhanger@Zodiac
 */
 
-// 2012-09-07 02:08:33 | Accepted | 3331 | C++ | 30 | 180 | watashi | Source
+// 2012-09-07 15:46:55 | Accepted | 3331 | C++ | 30 | 180 | watashi | Source

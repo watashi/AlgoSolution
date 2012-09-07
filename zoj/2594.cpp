@@ -1,6 +1,10 @@
+#include <algorithm> // auto fix CE
 #include <queue>
+#include <algorithm> // auto fix CE
 #include <cstdio>
+#include <algorithm> // auto fix CE
 #include <cstring>
+#include <algorithm> // auto fix CE
 #include <utility>
 
 using namespace std;
@@ -98,4 +102,4 @@ int main() {
 //Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name
 //1831854   2009-04-13 04:19:55     Accepted    2594    C++     110     176     watashi@Zodiac
 
-// 2012-09-07 01:30:46 | Accepted | 2594 | C++ | 100 | 180 | watashi | Source
+// 2012-09-07 15:41:47 | Accepted | 2594 | C++ | 90 | 180 | watashi | Source

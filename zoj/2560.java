@@ -159,4 +159,4 @@ public class Main {
 //1820976   2009-04-06 16:01:47     Accepted    2560    Java    0   15736   watashi@Zodiac
 //1820975   2009-04-06 16:00:07     Accepted    2560    Java    0   24917   watashi@Zodiac
 
-// 2012-09-07 01:28:29 | Accepted | 2560 | Java | 910 | 20531 | watashi | Source
+// 2012-09-07 15:40:02 | Accepted | 2560 | Java | 970 | 20535 | watashi | Source

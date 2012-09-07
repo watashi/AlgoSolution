@@ -75,4 +75,4 @@ int main(void)
 }
 //2868299   2008-04-25 13:26:41     Accepted    2313    C++     00:00.01    392K    Re:ReJudge
 
-// 2012-09-07 01:18:03 | Accepted | 2313 | C++ | 0 | 180 | watashi | Source
+// 2012-09-07 15:37:18 | Accepted | 2313 | C++ | 0 | 180 | watashi | Source

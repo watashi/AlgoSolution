@@ -93,4 +93,4 @@ public class Main {
 //Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name
 //1777067   2009-03-03 23:02:43     Accepted    2320    Java    0   848     watashi@Zodiac
 
-// 2012-09-07 01:18:53 | Accepted | 2320 | Java | 90 | 1056 | watashi | Source
+// 2012-09-07 15:38:02 | Accepted | 2320 | Java | 110 | 1056 | watashi | Source

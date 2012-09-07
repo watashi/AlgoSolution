@@ -222,4 +222,4 @@ Run ID      Submit Time     Judge Status    Problem ID      Language    Run Time
 // EPS = 0.5 => WA
 */
 
-// 2012-09-07 01:34:15 | Accepted | 2676 | C++ | 60 | 204 | watashi | Source
+// 2012-09-07 16:49:26 | Accepted | 2676 | C++ | 60 | 204 | watashi | Source

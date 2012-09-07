@@ -163,4 +163,4 @@ int main() {
 //Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name   Admin
 //2248811   2010-08-02 08:41:38     Accepted    2599    C++     0   300     watashi@Zodiac  Source
 
-// 2012-09-07 01:31:11 | Accepted | 2599 | C++ | 0 | 304 | watashi | Source
+// 2012-09-07 15:42:18 | Accepted | 2599 | C++ | 0 | 304 | watashi | Source

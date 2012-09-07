@@ -1,4 +1,5 @@
 /*
+#include <cstdio> // auto fix CE
 #include <stdio.h>
 int main()
 {
@@ -16,7 +17,8 @@ int main()
 }
 */
 //Run ID Submit time Judge Status Problem ID Language Run time Run memory User Name
-//2627369 2007-10-01 15:50:04 Accepted 2670 C 00:00.02 396K §Ô§ø§∑
+//2627369 2007-10-01 15:50:04 Accepted 2670 C 00:00.02 396K „Çè„Åü„Åó
+#include <cstdio> // auto fix CE
 #include <stdio.h>
 int main()
 {
@@ -34,6 +36,6 @@ int main()
     }
 }
 //Run ID Submit time Judge Status Problem ID Language Run time Run memory User Name
-//2627377 2007-10-01 15:55:36 Accepted 2670 C 00:00.00 392K §Ô§ø§∑
+//2627377 2007-10-01 15:55:36 Accepted 2670 C 00:00.00 392K „Çè„Åü„Åó
 
-// 2012-09-07 01:33:44 | Accepted | 2670 | C++ | 0 | 180 | watashi | Source
+// 2012-09-07 15:42:49 | Accepted | 2670 | C++ | 0 | 180 | watashi | Source

@@ -1,10 +1,34 @@
+#include <cmath> // auto fix CE
+#include <utility> // auto fix CE
+#include <cmath> // auto fix CE
 #include <map>
+#include <cmath> // auto fix CE
+#include <utility> // auto fix CE
+#include <cmath> // auto fix CE
 #include <stack>
+#include <cmath> // auto fix CE
+#include <utility> // auto fix CE
+#include <cmath> // auto fix CE
 #include <cctype>
+#include <cmath> // auto fix CE
+#include <utility> // auto fix CE
+#include <cmath> // auto fix CE
 #include <cstdio>
+#include <cmath> // auto fix CE
+#include <utility> // auto fix CE
+#include <cmath> // auto fix CE
 #include <vector>
+#include <cmath> // auto fix CE
+#include <utility> // auto fix CE
+#include <cmath> // auto fix CE
 #include <cstdlib>
+#include <cmath> // auto fix CE
+#include <utility> // auto fix CE
+#include <cmath> // auto fix CE
 #include <cstring>
+#include <cmath> // auto fix CE
+#include <utility> // auto fix CE
+#include <cmath> // auto fix CE
 #include <algorithm>
 
 using namespace std;
@@ -313,4 +337,4 @@ int main() {
 //ID:   Date'n'Time:    Name:   Task:   .Ext:   Status:     Time:   Memory:
 //848139    10.04.09 21:58  watashi 215     .CPP_VS Accepted    249 ms  13211 kb
 
-// 2012-09-07 01:21:08 | Accepted | 2367 | C++ | 660 | 13004 | watashi | Source
+// 2012-09-07 15:39:35 | Accepted | 2367 | C++ | 700 | 13004 | watashi | Source

@@ -1,3 +1,4 @@
+#include <cmath> // auto fix CE
 #include <cstdio>
 
 int phi(int n) {
@@ -99,4 +100,4 @@ Run ID      Submit Time     Judge Status    Problem ID      Language    Run Time
 2131952     2010-03-29 21:03:19     Accepted    2595    C++     10  176     watashi@Zodiac
 */
 
-// 2012-09-07 01:30:52 | Accepted | 2595 | C++ | 0 | 180 | watashi | Source
+// 2012-09-07 15:41:54 | Accepted | 2595 | C++ | 0 | 180 | watashi | Source

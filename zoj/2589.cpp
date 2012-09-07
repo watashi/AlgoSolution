@@ -4,13 +4,13 @@ http://en.wikipedia.org/wiki/Euler_characteristic
 χ=V-E+F
 */
 
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// TAG : GOOD_PROB
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+#include <cstdlib> // auto fix CE
 #include <set>
+#include <cstdlib> // auto fix CE
 #include <cmath>
+#include <cstdlib> // auto fix CE
 #include <cstdio>
+#include <cstdlib> // auto fix CE
 #include <algorithm>
 
 using namespace std;
@@ -111,4 +111,4 @@ int main() {
 //Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name
 //1832251   2009-04-13 16:42:17     Accepted    2589    C++     20  440     watashi@Zodiac
 
-// 2012-09-07 01:30:15 | Accepted | 2589 | C++ | 20 | 444 | watashi | Source
+// 2012-09-07 15:41:17 | Accepted | 2589 | C++ | 20 | 444 | watashi | Source

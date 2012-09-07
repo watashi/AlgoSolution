@@ -239,4 +239,4 @@ ansCache[50][49] = new BigDecimal("0.9983657414543868001732276719783171516390048
 //Run ID    Submit Time     Judge Status    Problem ID      Language    Run Time(ms)    Run Memory(KB)      User Name
 //2175716   2010-04-24 21:48:34     Accepted    2600    Java    190     2318    watashi@Zodiac
 
-// 2012-09-07 01:31:17 | Accepted | 2600 | Java | 130 | 844 | watashi | Source
+// 2012-09-07 15:42:24 | Accepted | 2600 | Java | 120 | 844 | watashi | Source

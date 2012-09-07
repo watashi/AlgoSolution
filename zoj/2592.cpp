@@ -1,7 +1,10 @@
 // O(nlogn) TLE
 
+#include <cmath> // auto fix CE
 #include <cstdio>
+#include <cmath> // auto fix CE
 #include <cctype>
+#include <cmath> // auto fix CE
 #include <algorithm>
 using namespace std;
 
@@ -63,7 +66,9 @@ int main(void)
 
 /*
 //hhanger's code
+#include <cmath> // auto fix CE
 #include <cstdio>
+#include <cmath> // auto fix CE
 #include <cstring>
 
 char str[600000];
@@ -89,4 +94,4 @@ int main()
 }
 */
 
-// 2012-09-07 01:30:33 | Accepted | 2592 | C++ | 140 | 1744 | watashi | Source
+// 2012-09-07 15:41:35 | Accepted | 2592 | C++ | 140 | 1744 | watashi | Source

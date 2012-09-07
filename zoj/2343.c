@@ -40,6 +40,6 @@ int main()
     }
 }
 /* //Run ID Submit time Judge Status Problem ID Language Run time Run memory User Name */
-/* //2532047 2007-07-23 21:00:29 Accepted 2343 C 00:00.03 420K ¤ï¤¿¤· */
+/* //2532047 2007-07-23 21:00:29 Accepted 2343 C 00:00.03 420K ¿¿¿ */
 
-// 2012-09-07 01:20:00 | Accepted | 2343 | C | 10 | 160 | watashi | Source
+// 2012-09-07 15:38:45 | Accepted | 2343 | C | 10 | 160 | watashi | Source
