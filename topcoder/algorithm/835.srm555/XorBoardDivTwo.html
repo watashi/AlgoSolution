@@ -1,0 +1,35 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><p>Fox Jiro has a rectangular board, divided into a grid of square cells.
+Each cell in the grid contains either the character '0', or the character '1'.
+The vector &lt;string&gt; <b>board</b> contains the current state of the board.
+The j-th character of the i-th element of <b>board</b> is the character in row i, column j of the grid.</p>
+<br></br>
+<p>Jiro now has to make exactly two flips. 
+In the first flip, he must pick a row and flip all characters in that row.
+(When flipped, a '0' turns to a '1' and vice versa.)
+In the second flip, he must pick a column and flip all characters in that column.</p>
+<br></br>
+<p>You are given the vector &lt;string&gt; <b>board</b>.
+Return the maximum number of '1's in the grid after Jiro makes the two flips.</p></td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>XorBoardDivTwo</td></tr><tr><td>Method:</td><td>theMax</td></tr><tr><td>Parameters:</td><td>vector &lt;string&gt;</td></tr><tr><td>Returns:</td><td>int</td></tr><tr><td>Method signature:</td><td>int theMax(vector &lt;string&gt; board)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td>&#160;&#160;&#160;&#160;</td></tr><tr><td></td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>board</b> will contain between 1 and 50 elements, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>board</b> will contain the same number of characters.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>board</b> will contain between 1 and 50 characters, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each character in <b>board</b> will be '0' or '1'.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;101&quot;,
+ &quot;010&quot;,
+ &quot;101&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 9</pre></td></tr><tr><td><table><tr><td colspan="2">Jiro can obtain 9 '1's by flipping the center row and then the center column.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;111&quot;,
+ &quot;111&quot;,
+ &quot;111&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 5</pre></td></tr><tr><td><table><tr><td colspan="2">Jiro has to make both flips, even if that decreases the number of '1's.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;0101001&quot;,
+ &quot;1101011&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 9</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;000&quot;,
+ &quot;001&quot;,
+ &quot;010&quot;,
+ &quot;011&quot;,
+ &quot;100&quot;,
+ &quot;101&quot;,
+ &quot;110&quot;,
+ &quot;111&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 15</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;000000000000000000000000&quot;,
+ &quot;011111100111111001111110&quot;,
+ &quot;010000000100000001000000&quot;,
+ &quot;010000000100000001000000&quot;,
+ &quot;010000000100000001000000&quot;,
+ &quot;011111100111111001111110&quot;,
+ &quot;000000100000001000000010&quot;,
+ &quot;000000100000001000000010&quot;,
+ &quot;000000100000001000000010&quot;,
+ &quot;011111100111111001111110&quot;,
+ &quot;000000000000000000000000&quot;}
+</pre></td></tr></table></td></tr><tr><td><pre>Returns: 105</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>

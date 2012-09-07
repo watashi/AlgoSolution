@@ -1,0 +1,33 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><p>Fox Ciel is going to walk along an unpaved road to her friend's house.
+For our purposes, the road can be considered a one-dimensional polyline consisting of <b>N</b> segments.
+The segments are numbered 0 through <b>N</b>-1 along the road.
+At the beginning, Ciel stands on the segment number 0.
+Her friend's house is on the segment number <b>N</b>-1.</p>
+<br></br>
+<p>Unfortunately, yesterday it rained, so some segments of the road are now muddy.
+Ciel has new shoes, so she must only use the other, dry segments.
+She knows that segments 0 and <b>N</b>-1 are dry.
+The friend just called her and gave her two additional pieces of information:</p>
+<ul>
+<li>Out of the remaining <b>N</b>-2 segments, exactly <b>muddyCount</b> are muddy.</li>
+<li>There is an even number of ways how Ciel can get to the friend's house without stepping into the mud, while making steps of length at most 2.</li>
+</ul>
+
+<p>We will now explain the second information in more detail.
+When Ciel walks along the road, each of her steps has either length 1 or 2.
+A step of length 1 takes her from segment i to segment i+1.
+A step of length 2 takes her from segment i to segment i+2, skipping the (possibly, but not necessarily muddy) segment i+1.</p>
+<br></br>
+<p>Fox Ciel would like to use the information she has to determine how the road looks like.
+Of course, there may be multiple configurations that match the information.
+It is also possible that her friend was mistaken and there is no sequence of dry and muddy segments that matches what she told Ciel.</p>
+<br></br>
+<p>You are given the ints <b>N</b> and <b>muddyCount</b>.
+Count all the ways the road can look like, and return that count modulo 555,555,555.</p></td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>MuddyRoad2</td></tr><tr><td>Method:</td><td>theCount</td></tr><tr><td>Parameters:</td><td>int, int</td></tr><tr><td>Returns:</td><td>int</td></tr><tr><td>Method signature:</td><td>int theCount(int N, int muddyCount)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td>&#160;&#160;&#160;&#160;</td></tr><tr><td></td></tr><tr><td colspan="2"><h3>Notes</h3></td></tr><tr><td align="center" valign="top">-</td><td>Zero (0) is also an even number. Hence, if Ciel cannot reach her friend's house without stepping into the mud, there is an even number of ways to reach the house.</td></tr><tr><td align="center" valign="top">-</td><td>Two configurations of the road are different if some road segment is dry in one of them and muddy in the other.</td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>N</b> will be between 2 and 555, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td><b>muddyCount</b> will be between 0 and <b>N</b>-2, inclusive.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>5</pre></td></tr><tr><td><pre>1</pre></td></tr></table></td></tr><tr><td><pre>Returns: 2</pre></td></tr><tr><td><table><tr><td colspan="2">There are two possible configurations of the road: 
+<pre>.#...</pre>
+and
+<pre>...#.</pre> (where '#' denotes a muddy segment and '.' a dry one).</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>5</pre></td></tr><tr><td><pre>2</pre></td></tr></table></td></tr><tr><td><pre>Returns: 2</pre></td></tr><tr><td><table><tr><td colspan="2"><p>Possible configurations:</p>
+<pre>.##..</pre>
+and
+<pre>..##.</pre>
+<p>Note that in these configurations, there are no ways to go from part 0 to part 4 without stepping onto any muddy parts. You have to count this kind of configurations too, since 0 is an even number.</p></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>10</pre></td></tr><tr><td><pre>4</pre></td></tr></table></td></tr><tr><td><pre>Returns: 65</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>314</pre></td></tr><tr><td><pre>78</pre></td></tr></table></td></tr><tr><td><pre>Returns: 498142902</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>555</pre></td></tr><tr><td><pre>222</pre></td></tr></table></td></tr><tr><td><pre>Returns: 541606281</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>

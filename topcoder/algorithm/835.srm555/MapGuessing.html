@@ -1,0 +1,52 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><p>Invader Squid Girl is a big fan of the Advanced Turing Game.
+This is a game in which the player programs a simple Turing machine (defined below).
+The goal of this game is to turn the starting tape into a pre-determined goal tape.</p>
+<br></br>
+<p><img src="http://snuke.main.jp/mapguess.png"></img></p>
+<br></br>
+<p>The picture above explains how the Turing machines in our problem operate.
+On the top you can see the goal tape: a finite sequence of cells, each containing a zero (0) or a one (1).
+The player starts with a tape of the same length as the goal tape.
+The player's tape is initially filled with some zeros and ones.
+The Turing machine has a "head": a reading and writing device.
+At each moment, the head points at one of the cells of the tape.
+In order to change it to the goal tape, the player picks a starting cell for the head and writes a program for the Turing machine.</p>
+<br></br>
+<p>In this problem, the program is simply a sequence of commands, executed one after another.
+There are just four commands:</p>
+<ul>
+<li> '0' : Write 0 into the cell where the head points. (The old content of the cell is lost.)</li>
+<li> '1' : Write 1 into the cell where the head points. (The old content of the cell is lost.)</li>
+<li> '&lt;' : Move the head one cell to the left.</li>
+<li> '&gt;' : Move the head one cell to the right.</li>
+</ul>
+<br></br>
+<p>It is not allowed for the head to leave the tape (i.e., move left from the leftmost cell or right from the rightmost one).
+Should that happen, the player loses -- even if the goal has been reached before the head left the tape.
+In other words, a level of the Advanced Turing Game is considered solved if the head never leaves the tape, and at any point during the execution of the program (including the beginning and the end) the content of the tape exactly matches the goal tape.</p>
+<br></br>
+<p>Squid Girl recently solved a level of the Advanced Turing Game.
+However, she forgot the initial contents of the tape, and her choice of the starting cell.
+All she remembers is the program she wrote, and the content of the goal tape.
+Help her by counting the number of possible initial contents of the tape.</p>
+<br></br>
+<p>You are given a string <b>goal</b> that describes the goal tape, and a vector &lt;string&gt; <b>code</b>.
+Concatenate all elements of <b>code</b> to get Squid Girl's program.
+Return a long long containing the number of possible initial contents of the tape.</p>
+<br></br></td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>MapGuessing</td></tr><tr><td>Method:</td><td>countPatterns</td></tr><tr><td>Parameters:</td><td>string, vector &lt;string&gt;</td></tr><tr><td>Returns:</td><td>long long</td></tr><tr><td>Method signature:</td><td>long long countPatterns(string goal, vector &lt;string&gt; code)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td>&#160;&#160;&#160;&#160;</td></tr><tr><td></td></tr><tr><td colspan="2"><h3>Notes</h3></td></tr><tr><td align="center" valign="top">-</td><td>Note that we are only counting the possible initial contents of the tape. Even if multiple starting positions work for a given tape, we only count it once.</td></tr><tr><td align="center" valign="top">-</td><td>For some test cases the return value may be zero (0).</td></tr><tr><td align="center" valign="top">-</td><td>The constraints imply that <b>code</b> will contain at most 555 characters.</td></tr><tr><td align="center" valign="top">-</td><td>The automaton used in the problem is not an actual Turing machine. The actual Turing machines are more complex, with a potentially infinite tape and a more powerful "programming language". Of course, this has no relevance regarding the problem you have to solve.</td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>goal</b> will contain between 1 and 36 characters, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each character in <b>goal</b> will be either '0' or '1'.</td></tr><tr><td align="center" valign="top">-</td><td><b>code</b> will contain between 1 and 15 elements, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>code</b> will contain between 1 and 37 characters, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each character in each element of <b>code</b> will be one of '0', '1', '&lt;', and '&gt;'.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;000&quot;</pre></td></tr><tr><td><pre>{&quot;0&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 4</pre></td></tr><tr><td><table><tr><td colspan="2"><p>There are 4 possible contents of the initial tape: "000", "001", "010", and "100".</p></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;001&quot;</pre></td></tr><tr><td><pre>{&quot;0&gt;1&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 5</pre></td></tr><tr><td><table><tr><td colspan="2"><p>There are 5 possible contents of the initial tape: "000", "001", "010", "011", and "101".</p>
+<p>Note that for the initial tape "101" we have to choose the leftmost cell as the starting one.</p>
+<p>We will then reach the goal after the first command is executed.</p></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;000&quot;</pre></td></tr><tr><td><pre>{&quot;1&gt;1&gt;1&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 1</pre></td></tr><tr><td><table><tr><td colspan="2"><p>The goal can also be reached before any commands are executed.</p></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;11001&quot;</pre></td></tr><tr><td><pre>{&quot;&gt;&gt;&lt;&lt;&lt;&lt;&gt;&lt;&lt;&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 0</pre></td></tr><tr><td><table><tr><td colspan="2"><p>There is no possible contents of the initial tape. (We do reach the goal if the initial tape is equal to the goal tape, but as the head leaves the word, this does not count.)</p></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;1000101011&quot;</pre></td></tr><tr><td><pre>{&quot;1&lt;&lt;0&gt;&gt;0&gt;1&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 22</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">5)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;00000010000000000000000000000000&quot;</pre></td></tr><tr><td><pre>{&quot;&gt;&lt;&gt;&gt;0&lt;0&lt;&gt;&gt;1&gt;0&gt;&lt;&gt;&quot;, &quot;&lt;&lt;0&gt;&gt;0&lt;&gt;&gt;&lt;0&gt;0&gt;&gt;&gt;&lt;&gt;&lt;&quot;, &quot;&gt;&gt;&gt;0&lt;&gt;&quot;, &quot;&gt;0&gt;&lt;&gt;&gt;&gt;&gt;0&lt;&lt;&gt;&lt;&gt;&gt;0&gt;&gt;&gt;0&lt;0&gt;&gt;0&gt;&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 13601</pre></td></tr><tr><td><table><tr><td colspan="2"><p>Don't forget to concatenate <b>code</b>.</p></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">6)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;11100011010111111010100100110001101&quot;</pre></td></tr><tr><td><pre>{&quot;11111111111111111111&quot;
+,&quot;1&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;1&quot;
+,&quot;1&lt;&gt;000&gt;000&gt;&lt;0&lt;&gt;&lt;0&lt;&gt;1&quot;
+,&quot;1&lt;0&lt;&gt;&lt;&gt;0&gt;&lt;0&lt;00&gt;00&lt;&gt;1&quot;
+,&quot;1&lt;&gt;00&lt;&gt;000&gt;&lt;0&lt;0&lt;0&lt;&gt;1&quot;
+,&quot;1&lt;&gt;&lt;&gt;0&gt;0&gt;&lt;0&lt;0&lt;&gt;&lt;0&lt;&gt;1&quot;
+,&quot;1&lt;000&lt;&gt;0&gt;&lt;0&lt;0&lt;&gt;&lt;0&lt;&gt;1&quot;
+,&quot;1&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;1&quot;
+,&quot;1&lt;&gt;000&gt;&lt;000&lt;&gt;000&gt;&lt;&gt;1&quot;
+,&quot;1&lt;&gt;0&gt;&lt;&gt;&lt;0&lt;&gt;&lt;&gt;0&gt;&lt;&gt;&lt;&gt;1&quot;
+,&quot;1&lt;&gt;000&gt;&lt;000&lt;&gt;000&gt;&lt;&gt;1&quot;
+,&quot;1&lt;&gt;&lt;&gt;0&gt;&lt;&gt;&lt;0&lt;&gt;&lt;&gt;0&gt;&lt;&gt;1&quot;
+,&quot;1&lt;&gt;000&gt;&lt;000&lt;&gt;000&gt;&lt;&gt;1&quot;
+,&quot;1&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;&lt;&gt;1&quot;
+,&quot;11111111111111111111&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 90</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>
