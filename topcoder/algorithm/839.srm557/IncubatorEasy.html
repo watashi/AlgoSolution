@@ -1,0 +1,49 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td>You are the Incubator.
+You have the ability to turn normal girls into magical girls.
+<br></br>
+<br></br>
+<br></br>
+There are n girls in the city.
+The girls are conveniently numbered 0 through n-1.
+Some girls love some other girls.
+Love is not necessarily symmetric.
+It is also possible for a girl to love herself.
+<br></br>
+<br></br>
+<br></br>
+You are given a vector &lt;string&gt; <b>love</b>.
+Character j of element i of <b>love</b> is 'Y' if girl i loves girl j.
+Otherwise, that character is 'N'.
+In the rest of the problem statement, we will use love[i][j] to denote the truth value of the statement "girl i loves girl j".
+<br></br>
+<br></br>
+<br></br>
+Each girl has two boolean properties: isMagical (is she a magical girl?) and isProtected (is she protected by some girl?).
+Initially, for each girl i we have isMagical[i] = False and isProtected[i] = False.
+<br></br>
+<br></br>
+<br></br>
+At any moment, you can choose an ordinary girl and turn her into a magical girl.
+That is, you can take a girl i such that isMagical[i] = False, and change isMagical[i] to True.
+<br></br>
+<br></br>
+<br></br>
+Each such change will trigger a series of events:
+<ul>
+<li>Each magical girl will protect all girls she loves: if isMagical[i] and love[i][j], then isProtected[j] is set to True.</li>
+<li>Each protected girl will also protect all girls she loves: if isProtected[i] and love[i][j], then isProtected[j] is set to True.</li>
+</ul>
+Note that some of these changes may in turn trigger other changes, as more and more girls become protected.
+<br></br>
+<br></br>
+<br></br>
+Once there are no more changes, you can again change another ordinary girl into a magical one, and so on.
+Your goal is to reach a situation with many girls that are magical, but not protected.
+That is, you are interested in girls such that isMagical[i] = True and isProtected[i] = False.
+Return the maximum number of such girls in a situation that can be reached using the above process.</td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>IncubatorEasy</td></tr><tr><td>Method:</td><td>maxMagicalGirls</td></tr><tr><td>Parameters:</td><td>vector &lt;string&gt;</td></tr><tr><td>Returns:</td><td>int</td></tr><tr><td>Method signature:</td><td>int maxMagicalGirls(vector &lt;string&gt; love)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td>&#160;&#160;&#160;&#160;</td></tr><tr><td></td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td>n will be between 1 and 10, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td><b>love</b> will contain exactly n elements.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>love</b> will contain exactly n characters.</td></tr><tr><td align="center" valign="top">-</td><td>Each character in each element of <b>love</b> will be either 'Y' or 'N'.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;NY&quot;,&quot;NN&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 1</pre></td></tr><tr><td><table><tr><td colspan="2">One optimal solution is to change girl 0 to a magical girl.
+Girl 0 will be magical and she will not be protected.
+It is not possible to have two girls that are both magical and not protected:
+if you change both girls to magical girls (in any order), you will get a situation in which girl 1 is protected.
+</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;NYN&quot;, &quot;NNY&quot;, &quot;NNN&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 1</pre></td></tr><tr><td><table><tr><td colspan="2">Again, there is no way to create more than one unprotected magical girl.
+For example, if we start by making girl 2 magical, and then make girl 0 magical, magical girl 0 will protect girl 1, and protected girl 1 will protect girl 2.
+Thus, in this case girl 0 will be magical and unprotected, girl 1 will be ordinary and protected, and girl 2 will be magical and protected.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;NNYNN&quot;,&quot;NNYNN&quot;,&quot;NNNYY&quot;,&quot;NNNNN&quot;,&quot;NNNNN&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 2</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;NNNNN&quot;,&quot;NYNNN&quot;,&quot;NYNYN&quot;,&quot;YNYNN&quot;,&quot;NNNNN&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 2</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;NNNNN&quot;,&quot;NNNNN&quot;,&quot;NNNNN&quot;,&quot;NNNNN&quot;,&quot;NNNNN&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 5</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">5)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;Y&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 0</pre></td></tr><tr><td><table><tr><td colspan="2">Note that a girl may love herself.</td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>
