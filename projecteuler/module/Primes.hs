@@ -18,10 +18,14 @@ isqrt :: (Integral a, Integral b) => a -> b
 isqrt = floor . sqrt . fromIntegral
 
 threshold :: Integral a => a
-threshold = 1000000
+threshold = fromIntegral threshold'
+threshold' :: Int
+threshold' = 1000000
 
 primeList :: Integral a => [a]
-primeList = primesToN threshold
+primeList = map fromIntegral $ primeList'
+primeList' :: [Int]
+primeList' = primesToN threshold
 
 -- primesToN
 sieveToN :: Int -> UArray Int Bool
