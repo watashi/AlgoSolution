@@ -3,7 +3,8 @@ module Primes (
   primesToN,
   primesFromMToN,
   primeDivision,
-  isPrime
+  isPrime,
+  nextPrime
   ) where
 
 import Control.Arrow ((***))
@@ -31,14 +32,16 @@ primeList' = primesToN threshold
 sieveToN :: Int -> UArray Int Bool
 sieveToN n = runSTUArray sieve
   where
-	  sieve = do
-		  a <- newArray (2, n) True :: ST s (STUArray s Int Bool)
-		  forM_ [4, 6 .. n] $ \j -> writeArray a j False
-		  forM_ [3, 5 .. isqrt n] $ \i -> do
-			  ai <- readArray a i
-			  when ai $
-				  forM_ [i * i, i * (i + 2) .. n] $ \j -> writeArray a j False
-		  return a
+    sieve = do
+      a <- newArray (2, n) True :: ST s (STUArray s Int Bool)
+      forM_ [4, 6 .. n] $ \j ->
+        writeArray a j False
+      forM_ [3, 5 .. isqrt n] $ \i -> do
+        ai <- readArray a i
+        when ai $
+          forM_ [i * i, i * (i + 2) .. n] $ \j ->
+            writeArray a j False
+      return a
 
 primesToN :: (Integral a, Integral b) => a -> [b]
 primesToN n = map (fromIntegral . fst) $ filter snd $ assocs $ sieveToN n'
@@ -56,7 +59,8 @@ sieveFromMToN m n = runSTUArray sieve
       forM_ primes $ \i -> do
         let s = max i $ div (m + i - 1) i
         when (i * s <= n) $
-          forM_ [i * s, i * (s + 1) .. n] $ \j -> writeArray a j False
+          forM_ [i * s, i * (s + 1) .. n] $ \j ->
+            writeArray a j False
       return a
 
 primesFromMToN :: (Integral a, Integral b) => a -> a -> [b]
@@ -79,4 +83,10 @@ primeDivision n = f n $ primeList ++ [threshold + 1, threshold + 3 ..]
 
 -- isPrime
 isPrime :: Integral a => a -> Bool
-isPrime = null . tail . primeDivision
+isPrime n = case primeDivision n of
+                 [(_, 1)] -> True
+                 _        -> False
+
+-- nextPrime
+nextPrime :: Integral a => a -> a
+nextPrime = until isPrime succ
