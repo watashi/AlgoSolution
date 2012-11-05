@@ -1,19 +1,27 @@
+{-# OPTIONS_GHC -O2 -optc-O3 -fignore-asserts #-}
 import Control.Monad
-import Data.Array
-import Data.Int
+import Data.Array.Unboxed
+import Data.Maybe
+import qualified Data.ByteString.Char8 as C
 
 main = do
-	[n] <- getArray
-	a <- replicateM (fromIntegral n) getArray
-	[m] <- getArray
-	b <- replicateM (fromIntegral m) getArray
-	putStrLn $ unwords $ map show $ gao n b $ toArray a where
-		toArray a = let n = fromIntegral $ length a in listArray ((1, 1), (n, n)) $ concat a
-		getArray :: IO [Int32]
-		getArray = fmap (map read . words) getLine
-		gao :: Int32 -> [[Int32]] -> Array (Int32, Int32) Int32 -> [Int32]
-		gao n [] _ = []
-		gao n ([x,y,z]:bs) a = div (sum (map sum a')) 2 : gao n bs (toArray a') where
-			a' = [[minimum [a!(i,j), a!(i,x) + z + a!(y,j), a!(i,y) + z + a!(x,j)] | j <- [1 .. n]] | i <- [1 .. n]]
+  [n] <- getArray
+  a <- replicateM n getArray
+  [m] <- getArray
+  b <- replicateM m getArray
+  putStrLn $ unwords $ map (show . (`div` 2)) $ gao n b $ concat a
+  where
+    getArray = fmap (map (fst . fromJust . C.readInt) . C.words) C.getLine
+    gao n [] _ = []
+    gao n ([x,y,z]:bs) a = sum a': gao n bs a'
+      where
+        x' = x - 1
+        y' = y - 1
+        a' = if z < a!!(x' * n + y') then zipWith min a $! d else a
+        d = zipWith (\i j -> z + min i j) [i + j | i <- u, j <- v] [i + j | i <- v, j <- u]
+          where
+            u = take n $ drop (x' * n) a
+            v = take n $ drop (y' * n) a
 
---TLE10
+-- TLE10
+-- TLE12
