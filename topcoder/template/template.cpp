@@ -89,6 +89,9 @@ void eq(int id, S v1, T v2) {
 }
 
 int main(int argc, char *argv[]) {
+  (void)argc;
+  (void)argv;
+
   $MAINBODY$
 
   puts("\033[1;33mPress any key to continue...\033[0m");
