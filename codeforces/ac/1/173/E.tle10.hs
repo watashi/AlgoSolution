@@ -129,14 +129,14 @@ gao n m r a i j = go i j
         r = minimum a' + m
         x = maximum r'
 
+pairs (x:y:z) = (x, y): pairs z
+pairs _ = []
+
 main = do
-  [n, k] <- getArray
-  r <- getArray
-  a <- getArray
-  [m] <- getArray
-  q <- replicateM m getArray
-  putStr $ unlines $ map show $ [f i j | f <- [gao n k r a], [i, j] <- q]
-  where
-    getArray = fmap (map (fst . fromJust . C.readInt) . C.words) C.getLine
+  (n:k:input1) <- fmap (map (fst . fromJust . C.readInt) . C.words) C.getContents
+  let (r,input2) = splitAt n input1
+      (a,input3) = splitAt n input2
+      (m:q) = input3
+  putStr $ unlines $ map show $ [f i j | f <- [gao n k r a], (i, j) <- pairs q]
 
 -- Time limit exceeded on test 10

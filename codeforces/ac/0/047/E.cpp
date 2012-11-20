@@ -62,7 +62,7 @@ int main() {
 	for (int i = 0; i < n; ++i) {
 		printf("%.9lf %.9lf\n", p[i].first, p[i].second);
 	}
-	
+
 	return 0;
 }
 

@@ -120,26 +120,23 @@ query l r tree = go tree
 
 --
 main = do
-  [n] <- getArray
-  a <- getArray
-  [m] <- getArray
-  q <- replicateM m getArray
-  -- print $ newTree a
-  putStr $ unlines $ map show $ reverse $ fst $ foldl gao ([], newTree a) q
-  where
-    getArray = fmap (map (fst . fromJust . C.readInt) . C.words) C.getLine
+  (n:input) <- fmap (map (fst . fromJust . C.readInt) . C.words) C.getContents
+  let (a,(m:q)) = splitAt n input
+  putStr $ unlines $ map show $ gao (newTree a) q
 
-gao (ans, tree) [1,l,r] = (ans': ans, tree')
+gao tree (1:l:r:t) = ans': gao tree' t
   where
     (ans', tree') = query (l-1) r tree
 
-gao (ans, tree) [2,l,r,x] = (ans, tree')
+gao tree (2:l:r:x:t) = gao tree' t
   where
     tree' = update (l-1) r x tree
 
+gao _ _ = []
+
 {-
 #13: n=1000   m=503/1000    62ms
-#14: n=1000   m=24962/50000 2375ms
+#14: n=1000   m=24962/50000 2375ms  1953ms
 #15: n=50000  m=506/?       312ms
 #16: n=50000
 -}
