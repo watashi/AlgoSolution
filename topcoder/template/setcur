@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [[ -n $1 ]]
+then
+  if [[ ! -e $1 ]]
+  then
+    mkdir $1
+  fi
+  ln -T -s -f $1 cur
+else
+  echo "Usage: $0 DIR"
+fi
