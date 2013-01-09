@@ -1,5 +1,7 @@
 {-# OPTIONS -O2 -optc-O3 #-}
 module NumberTheory (
+  isqrt,
+
   powMod,
   extGcd,
   modInv,
@@ -24,18 +26,18 @@ m `divides` n = mod n m == 0
 
 -- idecomposite
 -- (m, r) == idecomposite n p <=> n == p ^ r * m && gcd m p == 1
-idecomposite :: (Integral a, Integral b) => a -> a -> (a, b)
-idecomposite n p
+idecomposition :: (Integral a, Integral b) => a -> a -> (a, b)
+idecomposition n p
   | m /= 0    = (n, 0)
-  | otherwise = second succ $ idecomposite m p
+  | otherwise = second succ $ idecomposition d p
   where
     (d, m) = divMod n p
 
 isignificand :: Integral a => a -> a -> a
-isignificand n = fst . idecomposite n
+isignificand n = fst . idecomposition n
 
 iexponent :: (Integral a, Integral b) => a -> a -> b
-iexponent n = snd . idecomposite n
+iexponent n = snd . idecomposition n
 
 -- powMod
 -- powMod a b m = mod (a^b) m

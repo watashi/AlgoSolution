@@ -4,13 +4,15 @@ module Primes (
   primesFromMToN,
   primeDivision,
   isPrime,
-  nextPrime
+  nextPrime,
+
+  divisors,
   ) where
 
 import Control.Arrow ((***))
 import Control.Monad (forM_, when)
 import Control.Monad.ST (ST)
-import Data.Array.ST (STUArray, runSTUArray, newArray, newListArray, readArray, writeArray)
+import Data.Array.ST (STUArray, runSTUArray, newArray, readArray, writeArray)
 import Data.Array.Unboxed (UArray, (!), assocs)
 import Data.Int (Int64)
 
@@ -64,9 +66,11 @@ sieveFromMToN m n = runSTUArray sieve
       return a
 
 primesFromMToN :: (Integral a, Integral b) => a -> a -> [b]
-primesFromMToN m n = map (fromIntegral . fst) $ filter snd $ assocs $ sieveFromMToN m' n'
+primesFromMToN m n
+  | m' <= n'  = map (fromIntegral . fst) $ filter snd $ assocs $ sieveFromMToN m' n'
+  | otherwise = []
   where
-    m' = fromIntegral m
+    m' = fromIntegral $ max 2 m
     n' = fromIntegral n
 
 -- primeDivision
@@ -90,3 +94,14 @@ isPrime n = case primeDivision n of
 -- nextPrime
 nextPrime :: Integral a => a -> a
 nextPrime = until isPrime succ
+
+-- primeDecomposition
+primeDecomposition :: Integral a => a -> [a]
+primeDecomposition n = concatMap (\(p, r) -> replicate r p) $ primeDivision n
+
+-- divisors
+divisors :: Integral a => a -> [a]
+divisors n = gen $ primeDivision n
+  where
+    gen [] = [1]
+    gen ((p,r):t) = concatMap (\i -> map (*i) $ gen t) $ scanl (*) 1 $ replicate r p

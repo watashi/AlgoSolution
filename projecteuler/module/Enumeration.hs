@@ -5,10 +5,16 @@ module Enumeration (
   slices,
   substrings,
   pairs,
-  binarySearch'
+
+  binarySearchBy,
+  mergeBy,
+  merge,
   ) where
 
 -- Data.List.permutations
+
+------------------------------------------------------------------------
+-- Generators
 
 -- subsets
 -- sort . subset = sort . Data.List.subsequences
@@ -41,13 +47,12 @@ pairs :: [a] -> [(a, a)]
 pairs []      = []
 pairs a@(h:t) = zip a t
 
+------------------------------------------------------------------------
+-- Algorithms
 
-
-
-
--- binarySearch'
-binarySearch' :: Integral a => (a -> Bool) -> a -> a -> a
-binarySearch' f s t = go s (t+1)
+-- binarySearchBy
+binarySearchBy :: Integral a => (a -> Bool) -> a -> a -> a
+binarySearchBy f s t = go s (t+1)
   where
     go l r
       | l == r    = r
@@ -56,5 +61,16 @@ binarySearch' f s t = go s (t+1)
       where
         m = div (l + r) 2
 
+-- merge
+merge :: Ord a => [a] -> [a] -> [a]
+merge = mergeBy compare
 
+mergeBy :: Ord a => (a -> a -> Ordering) -> [a] -> [a] -> [a]
+mergeBy cmp = merge'
+  where
+    merge' [] a = a
+    merge' a [] = a
+    merge' a@(i:x) b@(j:y)
+      | cmp i j == GT = j:merge' a y
+      | otherwise     = i:merge' x b
 
