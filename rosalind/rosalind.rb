@@ -15,9 +15,28 @@ END {
 
 require 'highline'
 
-$op, $pl = *$*
+begin
+  require 'wirble'
+  def pp(status)
+    puts Wirble::Colorize.colorize(status.inspect)
+  end
+rescue LoadError
+  alias :pp :p
+end
 
-if $op =~ /login/i
+def usage
+  print <<-USAGE
+Usage:
+  rosalind.rb login
+  rosalind.rb $pid.pl dl
+  rosalind.rb $pid.pl up
+USAGE
+  exit 1
+end
+
+$pl, $op = *$*
+
+if $pl =~ /login/i
   hl = HighLine.new
   user = hl.ask("Username: ")
   pass = hl.ask("Password: "){|q| q.echo = false}
@@ -31,11 +50,17 @@ elsif $pl =~ /[a-z]*/
   elsif $op =~ /up|upload|submit/i
     output = IO.read('output')
     source = IO.read($pl)
-    p $rosalind.judge! id, [output, 'output'], [source, $pl]
-  elsif $op =~ /ac|archive/i
-    FileUtils.mv $pl, 'pl/', :verbose => true
-    FileUtils.mv "rosalind_#{id}.txt", 'txt/', :verbose => true
-    FileUtils.rm "rosalind_#{id}.txt.index", :force => true
+    status = $rosalind.judge! id, [output, 'output'], [source, $pl]
+    pp status
+    if status && status[:status] == 'Correct'
+      FileUtils.mv $pl, 'pl/', :verbose => true
+      FileUtils.mv "rosalind_#{id}.txt", 'txt/', :verbose => true
+      FileUtils.rm "rosalind_#{id}.txt.index", :force => true
+    end
+  else
+    usage
   end
+else
+  usage
 end
 
