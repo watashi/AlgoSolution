@@ -46,7 +46,9 @@ elsif $pl =~ /[a-z]*/
   if $op =~ /dl|download|open/i
     input = $rosalind.open! id
     IO.write input.filename, input.content
-    system %{perl #{$pl} #{input.filename} | tee output}
+    cmd = %{perl #{$pl} #{input.filename} | tee output}
+    puts cmd
+    system cmd
   elsif $op =~ /up|upload|submit/i
     output = IO.read('output')
     source = IO.read($pl)
