@@ -1,3 +1,4 @@
 input
 output
-txt/
+*.index
+*.cookie
