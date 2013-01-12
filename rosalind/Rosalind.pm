@@ -39,7 +39,7 @@ while (my ($k, $v) = each %codon) {
 sub revc {
   my $_ = shift;
   y/ACGT/TGCA/;
-  reverse;
+  scalar reverse;
 }
 
 1;
