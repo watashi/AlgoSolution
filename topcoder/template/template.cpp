@@ -24,7 +24,7 @@ using namespace std;
 #define FOR(i, n) for (int i = 0; i < (int)(n); ++i)
 #define FOREACH(i, n) for (typeof(n.begin()) i = n.begin(); i != n.end(); ++i)
 #define MEMSET(p, c) memset(p, c, sizeof(p))
-typedef long long long;
+typedef long long llint;
 typedef pair<int, int> PII;
 $BEGINCUT$
 inline void errf(const char *fmt, ...) {
