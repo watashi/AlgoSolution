@@ -5,7 +5,7 @@ use warnings;
 use Exporter;
 
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(%codon %nodoc revc);
+our @EXPORT_OK = qw(%codon %nodoc revc fasta);
 
 # RNA codon table
 our $codon =<<EOF;
@@ -40,6 +40,18 @@ sub revc {
   my $_ = shift;
   y/ACGT/TGCA/;
   scalar reverse;
+}
+
+# read fasta
+sub fasta {
+  my $_ = shift;
+  my @ret = ();
+  while (/(?:^>(\w+).*$)((?:\R^(?!>).*$)*)/mg) {
+    my $key = $1;
+    my $value = $2;
+    push @ret, $key, $value =~ s/\s//gr;
+  }
+  @ret;
 }
 
 1;
