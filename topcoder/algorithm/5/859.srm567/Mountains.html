@@ -1,0 +1,55 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td>Manao is developing a simple 2-D computer game. The screen of the game is H pixels high and W pixels wide (1 &lt;= H, W &lt;= 50).
+<br></br><br></br>
+Manao is currently working on the background which should be filled with N mountains (1 &lt;= N &lt;= 10). The mountains are numbered from 0 to N-1. The contents of the screen are stored in an array of characters <tt>pix</tt> where <tt>pix</tt>[x, y] gives the contents of the pixel at column x, row y. Both indices are 0-based. Columns are numbered left to right and rows are numbered bottom to top. The parts of the screen where the i-th mountain is visible are denoted by digit i. Character '.' means that the corresponding pixel is not covered by any mountains.
+<br></br><br></br>
+The i-th (0-based index) mountain is described by its peak position (X[i], Y[i]), 0 &lt;= X[i] &lt; W, 0 &lt;= Y[i] &lt; H. In order to draw the mountains, the following pseudocode is used:
+<br></br><br></br>
+<tt>Fill all elements of pix with '.' characters.</tt><br></br>
+<tt>For 0 </tt>&lt;=<tt> i </tt>&lt;<tt> N:</tt><br></br>
+<tt>&nbsp;&nbsp;For 0 </tt>&lt;=<tt> x </tt>&lt;<tt> W:</tt><br></br>
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;For 0 </tt>&lt;=<tt> y </tt>&lt;=<tt> Y[i] - |x - X[i]|:</tt><br></br>
+<tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pix[x, y] := i + '0'</tt><br></br>
+<br></br>
+For example, consider three mountains with peaks at (1, 1), (2, 2) and (4, 1). Once these mountains are drawn on a screen with H = 3, W = 6, the resulting picture will look as follows:
+<pre>
+..1...
+.1112.
+111222
+</pre>
+<br></br>
+Manao has recently filled the background with N mountains as described above. After that he wrote down the height of each mountain. Also, for each column he wrote down which mountains were visible at that column. You are given a vector &lt;int&gt; <b>heights</b> containing N elements. Element i of <b>heights</b> gives the height of the i-th mountain in pixels (which is equal to Y[i] + 1). You are also given a vector &lt;string&gt; <b>visibility</b>. It contains N elements and each element is W characters long. The j-th character of <b>visibility</b>[i] is equal to 'X' if the i-th mountain was visible at column j of the screen and '-' otherwise. In other words, the j-th character of <b>visibility</b>[i] is equal 'X' if and only if at least one pixel of column j contained digit i after all mountains were drawn.
+<br></br><br></br>
+Count the number of sequences of exactly N mountains that match the information given by <b>heights</b> and <b>visibility</b>. Return this number modulo 1,000,000,009. It is guaranteed that there exists at least one such sequence.</td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>Mountains</td></tr><tr><td>Method:</td><td>countPlacements</td></tr><tr><td>Parameters:</td><td>vector &lt;int&gt;, vector &lt;string&gt;</td></tr><tr><td>Returns:</td><td>int</td></tr><tr><td>Method signature:</td><td>int countPlacements(vector &lt;int&gt; heights, vector &lt;string&gt; visibility)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td>&#160;&#160;&#160;&#160;</td></tr><tr><td></td></tr><tr><td colspan="2"><h3>Notes</h3></td></tr><tr><td align="center" valign="top">-</td><td>The value of H is not directly given in the input parameters. For the purposes of this problem, you can assume that H is equal to the largest element of <b>heights</b>.</td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>heights</b> will contain between 1 and 10 elements, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>heights</b> will be between 1 and 50, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td><b>visibility</b> will contain the same number of elements as <b>heights</b>.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>visibility</b> will be between 1 and 50 characters long, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>All elements of <b>visibility</b> will be of the same length.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>visibility</b> will consist of 'X' and '-' characters only.</td></tr><tr><td align="center" valign="top">-</td><td>At least one sequence of mountains matching the given information will exist.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{2, 3, 2}</pre></td></tr><tr><td><pre>{&quot;------&quot;,
+ &quot;XXXX--&quot;,
+ &quot;---XXX&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 4</pre></td></tr><tr><td><table><tr><td colspan="2">The given information corresponds to the three mountains from the problem statement. Mountains 1 and 2 are uniquely determined. Mountain 0 can have the peak in each column from 1 to 4.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{4, 3, 4}</pre></td></tr><tr><td><pre>{&quot;XXXXX--------&quot;,
+ &quot;----------XXX&quot;,
+ &quot;----XXXXXXX--&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 4</pre></td></tr><tr><td><table><tr><td colspan="2">The four possible mountain sequences are:
+<ul>
+<li>(2, 3), (10, 2), (7, 3)</li>
+<li>(2, 3), (11, 2), (7, 3)</li>
+<li>(3, 3), (10, 2), (7, 3)</li>
+<li>(3, 3), (11, 2), (7, 3)</li>
+</ul>
+<br></br>
+After drawing these sequences, the following pictures are obtained:<br></br>
+<tt>..0....2.....</tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>..0....2.....</tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>...0...2.....</tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>...0...2.....</tt><br></br>
+<tt>.000..222.1..</tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>.000..222..1.</tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>..000.222.1..</tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>..000.222..1.</tt><br></br>
+<tt>000002222211.</tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>0000022222111</tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>.00002222211.</tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>.000022222111</tt><br></br>
+<tt>0000222222211</tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>0000222222211</tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>0000222222211</tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<tt>0000222222211</tt><br></br></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{13, 2, 3, 2}</pre></td></tr><tr><td><pre>{&quot;XXXXXXXXX&quot;,
+ &quot;-XXX-----&quot;,
+ &quot;----XXXXX&quot;,
+ &quot;-----XXX-&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 9</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{8, 2, 9, 3, 10}</pre></td></tr><tr><td><pre>{&quot;X------&quot;,
+ &quot;-------&quot;,
+ &quot;------X&quot;,
+ &quot;-------&quot;,
+ &quot;XXXXXXX&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 98</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{20, 20, 20, 20, 20, 20, 45, 50, 49, 50}</pre></td></tr><tr><td><pre>{&quot;-------------------&quot;,
+ &quot;-------------------&quot;,
+ &quot;-------------------&quot;,
+ &quot;-------------------&quot;,
+ &quot;-------------------&quot;,
+ &quot;-------------------&quot;,
+ &quot;-------------------&quot;,
+ &quot;------------XXXXXXX&quot;,
+ &quot;XXXXXXX------------&quot;,
+ &quot;XXXXXXXXXXXXXXXXXXX&quot;}
+</pre></td></tr></table></td></tr><tr><td><pre>Returns: 973726691</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>
