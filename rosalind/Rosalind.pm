@@ -80,15 +80,15 @@ EOF
 
 our %mass = split ' ', $mass;
 
-sub mass {
-  my $mass = 0;
+sub mass ($) {
+  my @mass = ();
   for (split //, $_[0]) {
-    $mass += $mass{$_};
+    push @mass, ($mass[-1] // 0) + $mass{$_};
   }
-  $mass;
+  wantarray ? @mass : $mass[-1];
 }
 
-sub spect {
+sub spect ($) {
   my $mass = shift;
   my $eps = 1e10;
   my $ret = undef;
