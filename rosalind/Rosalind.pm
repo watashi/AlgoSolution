@@ -92,7 +92,7 @@ sub spect {
   my $mass = shift;
   my $eps = 1e10;
   my $ret = undef;
-  scalar %mass;
+  keys %mass;
   while (my ($k, $v) = each %mass) {
     if (abs($mass - $v) < $eps) {
       ($eps, $ret) = (abs($mass - $v), $k);
