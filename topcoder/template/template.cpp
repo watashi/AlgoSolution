@@ -22,7 +22,7 @@ using namespace std;
 
 #define ALL(c) (c).begin(), (c).end()
 #define FOR(i, n) for (int i = 0; i < (int)(n); ++i)
-#define FOREACH(i, n) for (typeof(n.begin()) i = n.begin(); i != n.end(); ++i)
+#define FOREACH(i, n) for (__typeof(n.begin()) i = n.begin(); i != n.end(); ++i)
 #define MEMSET(p, c) memset(p, c, sizeof(p))
 typedef long long llint;
 typedef pair<int, int> PII;
