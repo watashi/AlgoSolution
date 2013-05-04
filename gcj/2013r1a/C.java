@@ -3,18 +3,18 @@ import java.util.*;
 
 public class C {
   static long nextLong() throws IOException {
-		int ch = -1;
-		do {
-			ch = System.in.read();
-		} while (!Character.isDigit(ch));
-		long ret = 0;
-		while (Character.isDigit(ch)) {
-			ret *= 10;
-			ret += Character.digit(ch, 10);
-			ch = System.in.read();
-		}
-		return ret;
-	}
+    int ch = -1;
+    do {
+      ch = System.in.read();
+    } while (!Character.isDigit(ch));
+    long ret = 0;
+    while (Character.isDigit(ch)) {
+      ret *= 10;
+      ret += Character.digit(ch, 10);
+      ch = System.in.read();
+    }
+    return ret;
+  }
 
   static final int T = 1;
   static final int R = 8000;
