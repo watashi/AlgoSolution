@@ -227,10 +227,17 @@ struct FragileMirrors {
     clog << "n = " << board.size() << endl;
     clog << "r1 = " << best.size() << endl;
 #endif
-    for (int i = 2; !timeout(); ++i) {
-      search(i);
+    int limit = 32;
+    while (true) {
+      search(limit);
+      if (timeout()) {
+        break;
+      } else {
+        limit *= 2;
+      }
     }
 #ifdef __WATASHI__
+    clog << "limit = " << limit << endl;
     clog << "time = " << (double)clock() / CLOCKS_PER_SEC << endl;
     clog << "score = " << (double)board.size() / best.size() << endl;
 #endif
