@@ -47,14 +47,22 @@ const int dx[4] = {0, -1, 0, 1};
 const int dy[4] = {1, 0, -1, 0};
 
 static char str[MAXN * MAXN];
-static int sz, cc;
+static int sz, sz2, cc;
 static int idx[MAXN][MAXN];
 static int ans[MAXN][MAXN];
 
 static bool mark[MAXN][MAXN];
 
+inline bool valid(int x) {
+  return 0 <= x && x < sz;
+}
+
+inline bool valid(int x, int y) {
+  return valid(x) && valid(y);
+}
+
 void dfs(int x, int y, char z) {
-  if (0 <= x && x < sz && 0 <= y && y < sz && !mark[x][y] && str[idx[x][y]] == z) {
+  if (valid(x, y) && !mark[x][y] && str[idx[x][y]] == z) {
     mark[x][y] = true;
     FOR (k, 4) {
       dfs(x + dx[k], y + dy[k], z);
@@ -92,23 +100,62 @@ void zigzag() {
 }
 
 void circin() {
+  int x = 0, y = 0, z = 0;
+  MEMSET(idx, 0xff);
+  FOR (i, sz2) {
+    idx[x][y] = i;
+    FOR (j, 4) {
+      int xx = x + dx[z];
+      int yy = y + dy[z];
+      if (valid(xx, yy) && idx[xx][yy] == -1) {
+        x = xx;
+        y = yy;
+        break;
+      } else {
+        z = (z + 3) & 3;
+      }
+    }
+  }
+  upd();
 }
 
 void circout() {
+  int x = 0, y = 0, z = 0;
+  MEMSET(idx, 0xff);
+  FOR (i, sz2) {
+    idx[x][y] = sz2 - 1 - i;
+    FOR (j, 4) {
+      int xx = x + dx[z];
+      int yy = y + dy[z];
+      if (valid(xx, yy) && idx[xx][yy] == -1) {
+        x = xx;
+        y = yy;
+        break;
+      } else {
+        z = (z + 3) & 3;
+      }
+    }
+  }
+  upd();
 }
 
 struct StringConnectivity {
   vector<int> placeString(const string& s) {
-    sz = (int)nearbyint(sqrt(s.size()));
-    cc = sz * sz + 1;
+    sz2 = (int)s.size();
+    sz = (int)nearbyint(sqrt(sz2));
+    cc = sz2 + 1;
     copy(ALL(s), str);
 
-    clog << "size   = " << sz << endl;
-    clog << "count  = " << s.size() << endl;
-    clog << "sigma  = " << *max_element(ALL(s)) - 'a' + 1 << endl;
+    clog << "size    = " << sz << endl;
+    clog << "strlen  = " << s.size() << endl;
+    clog << "charset = " << *max_element(ALL(s)) - 'a' + 1 << endl;
     zigzag();
-    clog << "zigzag = " << cc << endl;
-    clog << "time   = " << (double)clock() / CLOCKS_PER_SEC << endl;
+    clog << "zigzag  = " << cc << endl;
+    circin();
+    clog << "circin  = " << cc << endl;
+    circout();
+    clog << "circout = " << cc << endl;
+    clog << "time    = " << (double)clock() / CLOCKS_PER_SEC << endl;
 
     vector<int> ret;
     FOR (i, sz) {
@@ -119,7 +166,7 @@ struct StringConnectivity {
         }
       }
     }
-    for (int x = ret[0], y = ret[1]; ans[x][y] != sz * sz - 1; ) {
+    for (int x = ret[0], y = ret[1]; ans[x][y] != sz2 - 1; ) {
       FOR (k, 4) {
         int xx = x + dx[k];
         int yy = y + dy[k];
@@ -150,4 +197,3 @@ int main() {
 }
 // vim: ft=cpp.doxygen
 #endif
-
