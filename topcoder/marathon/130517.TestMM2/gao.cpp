@@ -25,7 +25,7 @@ typedef long long llint;
 
 namespace timer {
   const llint MSEC_PER_SEC = 1000000LL;
-  const llint TIME_LIMIT = 19500000;
+  const llint TIME_LIMIT = 19000000;
 
   static timeval tv;
   static llint end, now;
@@ -139,22 +139,272 @@ void circout() {
   upd();
 }
 
+struct DisjointSet {
+  int p[MAXN + MAXN];
+
+  void init(int n) {
+    for (int i = 0; i < n; ++i) {
+      p[i] = i;
+    }
+  }
+
+  int getp(int i) {
+    return i == p[i] ? i : (p[i] = getp(p[i]));
+  }
+
+  bool setp(int i, int j) {
+    i = getp(i);
+    j = getp(j);
+    p[i] = j;
+    return i != j;
+  }
+};
+
+struct Solution {
+  vector<int> path;
+  int orig, left, right, fullcc, halfcc;
+  int p[MAXN];
+  char s[MAXN];
+
+  int hash() const {
+    int ret = (fullcc + 7) * (halfcc + 97);
+    FOR (i, sz) {
+      ret = ret * 9 + (p[i] + 1) * (s[i] - '0');
+    }
+    return ret;
+  }
+
+  template<int DY, int DZ>
+  int filln(int n, int y, int z) {
+    FOR (i, n) {
+      s[y] = str[z];
+      y += DY;
+      z += DZ;
+      if (DZ == 1 && z == sz2) {
+        z = 0;
+      }
+      if (DZ == -1 && z == -1) {
+        z = sz2 - 1;
+      }
+    }
+    return z;
+  }
+
+  void calc(const int p0[MAXN], const char s0[MAXN], int fullcc0) {
+    static DisjointSet ds;
+    ds.init(sz + sz);
+    FOR (i, sz) {
+      ds.p[i] = p0[i];
+    }
+    FOR (i, sz) {
+      if (s[i] == s0[i]) {
+        ds.setp(sz + i, i);
+      }
+      if (i > 0 && s[i] == s[i - 1]) {
+        ds.setp(sz + i, sz + i - 1);
+      }
+    }
+
+    static int id[MAXN + MAXN];
+    MEMSET(id, 0xff);
+    fullcc = fullcc0;
+    halfcc = 0;
+    FOR (i, sz) {
+      int j = ds.getp(sz + i);
+      if (id[j] == -1) {
+        id[j] = i;
+        ++halfcc;
+      }
+      p[i] = id[j];
+    }
+    FOR (i, sz) {
+      int j = ds.getp(i);
+      if (id[j] == -1) {
+        id[j] = i;
+        ++fullcc;
+      }
+    }
+  }
+};
+
+template<int DY, int DZ>
+int filln(int n, int* y, int z) {
+  FOR (i, n) {
+    *y = z;
+    y += DY;
+    z += DZ;
+    if (DZ == 1 && z == sz2) {
+      z = 0;
+    }
+    if (DZ == -1 && z == -1) {
+      z = sz2 - 1;
+    }
+  }
+  return z;
+}
+
+const int P0[MAXN] = {0};
+const char S0[MAXN] = {0};
+
+typedef map<pair<int, int>, Solution*> Candidates;
+
+inline void insert(const Solution& sol, int limit, Candidates& mp) {
+  int score = 2 * sol.fullcc + sol.halfcc; // TODO: different coefficient based on $charset$
+  int hash = sol.hash();
+  pair<int, int> key(-score, hash);
+  if (mp.count(key) == 0) {
+    if ((int)mp.size() < limit) {
+      mp[key] = new Solution(sol);
+    } else if (mp.begin()->first < key) {
+      delete mp.begin()->second;
+      mp.erase(mp.begin());
+      mp[key] = new Solution(sol);
+    }
+  }
+}
+
+// O(sz^3*limit)
+void beam(int limit) {
+  // first
+  Candidates mp;
+  if (sz % 2 != 0) {
+    // close
+    Solution sol;
+    sol.orig = 0;
+    sol.path.resize(1);
+    for (int i = 1; i < sz; ++i) {
+      sol.path[0] = i;
+      sol.left = sol.filln<1, 1>(i, 0, 0);
+      sol.right = sol.filln<-1, -1>(sz - i, sz - 1, sz2 - 1);
+      sol.calc(P0, S0, -1);
+      insert(sol, limit, mp);
+    }
+  } else {
+    // open
+    Solution sol;
+    sol.path.push_back(-1);
+    for (int i = 0; i < sz2; ++i) {
+      sol.orig = i;
+      sol.left = (i + 1) % sz2;
+      sol.right = sol.filln<1, -1>(sz, 0, i);
+      sol.calc(P0, S0, -1);
+      insert(sol, limit, mp);
+    }
+  }
+
+  // beam
+  for (int row = 1; row < sz - 1; ++row) {
+    Candidates todo;
+    FOREACH (i, mp) {
+      const Solution& pre = *i->second;
+      if (timer::timeout()) {
+        // TODO: mem leak
+        if (row == sz - 2) {
+          break;
+        } else {
+          return;
+        }
+      }
+      if ((sz - row) % 2 != 0) {
+        // close |-><-|
+        Solution sol;
+        sol.orig = pre.orig;
+        sol.path = pre.path;
+        for (int i = 1; i < sz; ++i) {
+          sol.path.push_back(i);
+          sol.left = sol.filln<1, 1>(i, 0, pre.left);
+          sol.right = sol.filln<-1, -1>(sz - i, sz - 1, pre.right);
+          sol.calc(pre.p, pre.s, pre.fullcc);
+          insert(sol, limit, todo);
+          sol.path.pop_back();
+        }
+      } else {
+        // open <-||->
+        Solution sol = pre;
+        int sep = pre.path.back();
+        sol.path.push_back(-1);
+        sol.left = sol.filln<-1, 1>(sep, sep - 1, pre.left);
+        sol.right = sol.filln<1, -1>(sz - sep, sep, pre.right);
+        sol.calc(pre.p, pre.s, pre.fullcc);
+        insert(sol, limit, todo);
+      }
+      delete i->second;
+    }
+    mp.swap(todo);
+  }
+
+  // last
+  Solution ret;
+  ret.fullcc = cc;
+  FOREACH (i, mp) {
+    // close
+    const Solution& pre = *i->second;
+    Solution sol = pre;
+    sol.path.push_back(sz);
+    sol.left = sol.filln<1, 1>(sz, 0, pre.left);
+    sol.right = sol.filln<-1, -1>(0, sz - 1, pre.right);
+    sol.calc(pre.p, pre.s, pre.fullcc);
+    sol.fullcc += sol.halfcc;
+    if (ret.fullcc > sol.fullcc) {
+      ret = sol;
+    }
+    delete i->second;
+  }
+
+  // upd
+  if (cc > ret.fullcc) {
+    int left, right;
+    if (sz % 2 != 0) {
+      left = 0;
+      right = sz2 - 1;
+    } else {
+      left = (ret.orig + 1) % sz2;
+      right = ret.orig;
+    }
+    FOR (row, sz) {
+      if (ret.path[row] != -1) {
+        // close
+        int sep = ret.path[row];
+        left = filln<1, 1>(sep, idx[row], left);
+        right = filln<-1, -1>(sz - sep, idx[row] + sz - 1, right);
+      } else {
+        // open
+        int sep = row > 0 ? ret.path[row - 1] : 0;
+        left = filln<-1, 1>(sep, idx[row] + sep - 1, left);
+        right = filln<1, -1>(sz - sep, idx[row] + sep, right);
+      }
+    }
+    upd();
+#ifdef __WATASHI__
+    assert(cc == ret.fullcc);
+#endif
+  }
+}
+
 struct StringConnectivity {
   vector<int> placeString(const string& s) {
+    timer::start();
+
     sz2 = (int)s.size();
     sz = (int)nearbyint(sqrt(sz2));
     cc = sz2 + 1;
     copy(ALL(s), str);
+    FOR (i, sz2) {
+      str[i] = str[i] - 'a' + '1';
+    }
 
     clog << "size    = " << sz << endl;
     clog << "strlen  = " << s.size() << endl;
-    clog << "charset = " << *max_element(ALL(s)) - 'a' + 1 << endl;
+    clog << "charset = " << *max_element(str, str + sz2) << endl;
     zigzag();
     clog << "zigzag  = " << cc << endl;
     circin();
     clog << "circin  = " << cc << endl;
     circout();
     clog << "circout = " << cc << endl;
+
+    beam(100);
+    clog << "beam100 = " << cc << endl;
     clog << "time    = " << (double)clock() / CLOCKS_PER_SEC << endl;
 
     vector<int> ret;
