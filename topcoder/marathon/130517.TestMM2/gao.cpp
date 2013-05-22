@@ -403,8 +403,10 @@ struct StringConnectivity {
     circout();
     clog << "circout = " << cc << endl;
 
-    beam(100);
-    clog << "beam100 = " << cc << endl;
+    for (int i = sz; !timer::timeout(); i <<= 1) {
+      beam(i);
+      clog << "beam[" << i << "] = " << cc << endl;
+    }
     clog << "time    = " << (double)clock() / CLOCKS_PER_SEC << endl;
 
     vector<int> ret;
