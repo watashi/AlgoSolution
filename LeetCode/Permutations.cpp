@@ -1,18 +1,24 @@
+/**
+ Given a collection of numbers, return all possible permutations.
+
+ For example,
+ [1,2,3] have the following permutations:
+ [1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], and [3,2,1].
+ */
+ 
 class Solution {
 public:
     vector<vector<int> > ans;
     
-    void recursivePermute(vector<int> & curr, int pos, vector<int> &num) {
-        if (curr.size() == num.size() || pos >= num.size()) {
-            ans.push_back(curr);
+    void recursivePermute(vector<int> & num, int pos) {
+        if (pos >= num.size()) {
+            ans.push_back(num);
             return;
         }
         
         for (int i = pos; i < num.size(); i ++) {
             swap(num[pos], num[i]);
-            curr.push_back(num[pos]);
-            recursivePermute(curr, pos + 1, num);
-            curr.pop_back();
+            recursivePermute(num, pos + 1);
             swap(num[pos], num[i]);
         }
     }
@@ -20,9 +26,8 @@ public:
     vector<vector<int> > permute(vector<int> &num) {
         // Start typing your C/C++ solution below
         // DO NOT write int main() function
-        vector<int> curr;
         ans.clear();
-        recursivePermute(curr, 0, num);
+        recursivePermute(num, 0);
         return ans;
     }
 };

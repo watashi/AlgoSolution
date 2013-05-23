@@ -1,11 +1,19 @@
+/**
+ Given a collection of numbers that might contain duplicates, return all possible unique permutations.
+
+ For example,
+ [1,1,2] have the following unique permutations:
+ [1,1,2], [1,2,1], and [2,1,1].
+ */
+ 
 class Solution {
 public:
 
     vector<vector<int> > ans;
     
-    void recursivePermute(vector<int> & curr, int pos, vector<int> &num) {
-        if (curr.size() == num.size() || pos >= num.size()) {
-            ans.push_back(curr);
+    void recursivePermute(vector<int> & num, int pos) {
+        if (pos >= num.size()) {
+            ans.push_back(num);
             return;
         }
         
@@ -17,9 +25,7 @@ public:
             visited[num[i]] = true;
             
             swap(num[pos], num[i]);
-            curr.push_back(num[pos]);
-            recursivePermute(curr, pos + 1, num);
-            curr.pop_back();
+            recursivePermute(num, pos + 1);
             swap(num[pos], num[i]);
         }
     }
@@ -27,9 +33,8 @@ public:
     vector<vector<int> > permuteUnique(vector<int> &num) {
         // Start typing your C/C++ solution below
         // DO NOT write int main() function
-        vector<int> curr;
         ans.clear();
-        recursivePermute(curr, 0, num);
+        recursivePermute(num, 0);
         return ans;
     }
 };
