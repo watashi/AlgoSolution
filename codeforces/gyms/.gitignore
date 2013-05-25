@@ -1,0 +1,5 @@
+*.pdf
+refactor.pl
+checkindent.pl
+nonscanner.java
+scanner.java
