@@ -1,18 +1,66 @@
 {-# OPTIONS_GHC -O2 -optc-Ofast -fignore-asserts #-}
 -- | Operations on lists that are not provided Data.List.
 module ProjectEuler.ListUtils (
+  -- * Array operations
+  -- | These functions treat a list @xs@ as a indexed array,
+  -- with indices ranging from 0 to 'length' @xs@ - 1.
+  replace,
+  replaceWith,
+  replaceWithIndex,
+
   -- * Set operations
   -- | These functions treat a /sorted/ list as a set.
   setDifference,
   setIntersection,
   setSymmetricDifference,
   setUnion,
+
   -- ** Generalized set operations
   setDifferenceBy,
   setIntersectionBy,
   setSymmetricDifferenceBy,
   setUnionBy,
   ) where
+
+import Control.Arrow (second)
+import Data.List (sortBy)
+import Data.Function (on)
+
+-- ---------------------------------------------------------------------------
+-- Array operations
+
+-- | The 'replace' function constructs a list identical to the first argument
+-- except that it has been updated by the associations in the second argument.
+-- If there are repeated indices, the last value will be used.
+-- For example,
+--
+-- > [2, 3, 4, 5] `replace` [(2, 5), (3, 6), (3, 7)] = [2, 3, 5, 7]
+replace :: [a] -> [(Int, a)] -> [a]
+replace a b = replaceWithIndex a $ map (second $ const . const) b
+
+-- | The 'replaceWith' function is a generalized version of 'replace', which
+-- maps the associated function over given indices. If there are repeated
+-- indices are, functions will be applied ono by one in the order they are
+-- given as if they are composited. For example,
+--
+-- > [2, 3, 4, 5] `replaceWith` [(2, succ), (3, (*3)), (3, (`quot`2))] = [2, 3, 5, 7]
+replaceWith :: [a] -> [(Int, (a -> a))] -> [a]
+replaceWith a b = replaceWithIndex a $ map (second const) b
+
+-- | The 'replaceWithIndex' function is a generalized version of 'replaceWith',
+-- where the associated function takes the index and the original value and
+-- returns the new value. For example,
+--
+-- > [2, 3, 4, 5] `replaceWithIndex` [(2, const succ), (3, (+)), (3, const pred)] = [2, 3, 5, 7]
+replaceWithIndex :: [a] -> [(Int, (Int -> a -> a))] -> [a]
+replaceWithIndex a b = go 0 a b'
+  where
+    b' = dropWhile ((<0) . fst) $ sortBy (compare `on` fst) $ b
+    go _ [] _ = []
+    go _ x [] = x
+    go i (e:xt) y@((j,f):yt)
+      | i < j     = e: go (succ i) xt y
+      | otherwise = go i (f i e: xt) yt
 
 -- ---------------------------------------------------------------------------
 -- Set operations
