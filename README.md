@@ -20,6 +20,7 @@ This is a public repository for collecting solutions to as many as possible
 problems. If you have something to share, please send your pull request here.
 
 Here are some basic rules to follow:
+
 1. Keep the whole hierarchical structure clean and reasonable. Avoid path
 too deep or single directory with too many files.
 2. Name your solutions in a meaningful and consistent way. For example,
