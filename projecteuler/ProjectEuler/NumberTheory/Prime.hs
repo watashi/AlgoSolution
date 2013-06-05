@@ -1,10 +1,10 @@
 {-# OPTIONS_GHC -O2 -optc-Ofast -fignore-asserts #-}
-module ProjectEuler.NumberTheory.Primes (
+module ProjectEuler.NumberTheory.Prime (
   primesTo,
   primesFromTo
   ) where
 
-import ProjectEuler.NumberTheory.Powers (isqrt)
+import ProjectEuler.NumberTheory.Power (isqrt)
 
 import Control.Monad (forM_, when)
 import Control.Monad.ST (ST)
