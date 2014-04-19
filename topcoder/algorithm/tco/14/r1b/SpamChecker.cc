@@ -25,7 +25,7 @@ using namespace std;
 #define MEMSET(p, c) memset(p, c, sizeof(p))
 typedef long long llint;
 typedef pair<int, int> PII;
-$BEGINCUT$
+/// BEGIN CUT HERE
 // <errf>
 inline void errf(const char *fmt, ...) {
   va_list args;
@@ -43,20 +43,31 @@ inline void errf(const char *fmt, const vector<T>& v) {
   errf("}\n");
 }
 // </errf>
-$ENDCUT$
+/// END CUT HERE
 #ifndef __WATASHI__
 #define errf(fmt, ...) do { } while (false)
 #endif
 
-struct $CLASSNAME$ {
-  $RC$ $METHODNAME$($METHODPARMS$);
+struct SpamChecker {
+  string spamCheck(string judgeLog, int good, int bad);
 };
 
-$RC$ $CLASSNAME$::$METHODNAME$($METHODPARMS$) {
-
+string SpamChecker::spamCheck(string s, int good, int bad) {
+  int score = 0;
+  for (int i = 0; i < (int)s.size(); ++i) {
+    if (s[i] == 'o') {
+      score += good;
+    } else {
+      score -= bad;
+    }
+    if (score < 0) {
+      return "SPAM";
+    }
+  }
+  return "NOT SPAM";
 }
 
-$BEGINCUT$
+/// BEGIN CUT HERE
 // <main>
 #define ARRSIZE(x) (sizeof(x)/sizeof(x[0]))
 
@@ -96,7 +107,30 @@ int main(int argc, char *argv[]) {
   (void)argc;
   (void)argv;
 
-  $MAINBODY$
+      {
+        SpamChecker theObject;
+        eq(0, theObject.spamCheck("ooooxxxo", 2, 3),"SPAM");
+    }
+    {
+        SpamChecker theObject;
+        eq(1, theObject.spamCheck("ooooxxxo", 3, 4),"NOT SPAM");
+    }
+    {
+        SpamChecker theObject;
+        eq(2, theObject.spamCheck("xooooooooooooooooooooooooooo", 1000, 1),"SPAM");
+    }
+    {
+        SpamChecker theObject;
+        eq(3, theObject.spamCheck("oxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 1000, 1),"NOT SPAM");
+    }
+    {
+        SpamChecker theObject;
+        eq(4, theObject.spamCheck("ooxoxoxooxoxxoxoxooxoxoxoxxoxx", 15, 17),"SPAM");
+    }
+    {
+        SpamChecker theObject;
+        eq(5, theObject.spamCheck("oooxoxoxoxoxoxooxooxoxooxo", 16, 18),"NOT SPAM");
+    }
 
   int __pass__ = count(ALL(__eq__), true);
   int __fail__ = count(ALL(__eq__), false);
@@ -127,4 +161,4 @@ int main(int argc, char *argv[]) {
  * vim: ft=cpp.doxygen
  */
 // </main>
-$ENDCUT$
+/// END CUT HERE
