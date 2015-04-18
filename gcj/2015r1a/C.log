@@ -1,0 +1,60 @@
+# In my virtualbox
+      34,726,292 bytes allocated in the heap
+     107,066,820 bytes copied during GC
+       6,522,288 bytes maximum residency (2 sample(s))
+          43,292 bytes maximum slop
+             142 MB total memory in use (0 MB lost due to fragmentation)
+
+                                     Tot time (elapsed)  Avg pause  Max pause
+  Gen  0       513 colls,     0 par    0.800s   0.812s     0.0016s    0.0738s
+  Gen  1         2 colls,     0 par    0.050s   0.053s     0.0265s    0.0526s
+
+  INIT    time    0.006s  (  0.002s elapsed)
+  MUT     time  641.334s  (667.246s elapsed)
+  GC      time    0.850s  (  0.865s elapsed)
+  EXIT    time    0.000s  (  0.001s elapsed)
+  Total   time  642.191s  (668.114s elapsed)
+
+  %GC     time       0.1%  (0.1% elapsed)
+
+  Alloc rate    54,146 bytes per MUT second
+
+  Productivity  99.9% of total user, 96.0% of total elapsed
+
+./Cl +RTS -A128M -s < C-large.in  639.97s user 2.22s system 96% cpu 11:08.12 total
+
+# In devserver
+ 129,701,176,896 bytes allocated in the heap
+      37,896,296 bytes copied during GC
+       3,409,984 bytes maximum residency (2 sample(s))
+         239,552 bytes maximum slop
+           16651 MB total memory in use (0 MB lost due to fragmentation)
+
+                                    Tot time (elapsed)  Avg pause  Max pause
+  Gen  0        26 colls,    26 par    0.51s    0.03s     0.0012s    0.0034s
+  Gen  1         2 colls,     1 par    0.04s    0.00s     0.0014s    0.0023s
+
+  Parallel GC work balance: 15.61% (serial 0%, perfect 100%)
+
+  TASKS: 34 (1 bound, 33 peak workers (33 total), using -N16)
+
+  SPARKS: 14 (13 converted, 0 overflowed, 0 dud, 0 GC'd, 1 fizzled)
+
+  INIT    time    0.28s  (  0.28s elapsed)
+  MUT     time   90.82s  ( 17.34s elapsed)
+  GC      time    0.55s  (  0.03s elapsed)
+  EXIT    time    0.00s  (  0.00s elapsed)
+  Total   time   91.66s  ( 17.65s elapsed)
+
+  Alloc rate    1,428,070,572 bytes per MUT second
+
+  Productivity  99.1% of total user, 514.6% of total elapsed
+
+gc_alloc_block_sync: 29493
+whitehole_spin: 0
+gen[0].sync: 537
+gen[1].sync: 18
+
+real    0m18.736s
+user    1m24.979s
+sys     0m7.742s
