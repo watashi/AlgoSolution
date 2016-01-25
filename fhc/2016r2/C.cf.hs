@@ -1,10 +1,12 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MagicHash #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE UnboxedTuples #-}
 
+import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.State.Strict
-import Control.Parallel.Strategies
 import Data.Array.IArray
 import Data.Array.Unboxed
 import Data.Bits
@@ -12,12 +14,14 @@ import Data.List
 import Data.Maybe
 import Data.Int (Int64)
 import qualified Data.ByteString.Char8 as C
+import GHC.Prim
+import GHC.Types
 
 -- -----------------------------------------------------------------------------
 -- MInt
 
 newtype MInt = MInt Int64
-  deriving (Enum, NFData)
+  deriving (Enum)
 
 z :: Int64
 z = 1000000007
@@ -43,8 +47,16 @@ data RMQ a = RMQ
   , rmqVal :: Array Int a
   }
 
+-- https://downloads.haskell.org/~ghc/7.8.3/docs/html/libraries/
 logBase2 :: Int -> Int
-logBase2 n = finiteBitSize n - 1 - countLeadingZeros n
+logBase2 (I# x) = I# ret
+  where
+  (# _, ret #) = go 1# (go 2# (go 4# (go 8# (go 16# (# x, 0# #)))))
+
+  go :: Int# -> (# Int#, Int# #) -> (# Int#, Int# #)
+  go k (# n, m #) = case uncheckedIShiftRA# n k of
+    0# -> (# n, m #)
+    n' -> (# n', m +# k #)
 
 rmqFromList :: (a -> a -> Bool) -> [a] -> RMQ a
 rmqFromList rmqCmp a = RMQ{..}
@@ -95,7 +107,7 @@ solve (n, p0) = go (0, n) `execState` 0
 
   go :: (Int, Int) -> State MInt ()
   go cur@(lo, hi) = when (lo < hi) $ do
-    modify' (+ gao ds)
+    modify (+ gao ds)
     forM_ (zip ((lo-1): is) $ is ++ [hi]) $ \(i, j) ->
       go (i+1, j)
     where
@@ -104,21 +116,17 @@ solve (n, p0) = go (0, n) `execState` 0
     xs = map (x!) is :: [Int]
     is = reverse $ next i0 `execState` []
     next i = do
-      modify' (i:)
+      modify (i:)
       let (i', h') = rmqQuery rmq (i+1, hi)
       when (i < hi - 1 && h == h') $ next i'
 
 main :: IO ()
 main = do
   re <- readInt <$> C.getLine
-  inputs <- replicateM re getInput
-  let outputs = runEval $ parList rdeepseq $ map solve inputs
-  forM_ ([1 .. re] `zip` outputs) $ \(ri, ans) -> do
-    putStrLn $ "Case #" ++ show ri ++ ": " ++ show ans
-  where
-  getInput = do
+  forM_ [1 .. re] $ \ri -> do
     n <- readInt <$> C.getLine
     p <- replicateM n $ do
       (x:y:_) <- map readInt . C.words <$> C.getLine
       return (x, y)
-    return (n, p)
+    let ans = solve (n, p)
+    putStrLn $ "Case #" ++ show ri ++ ": " ++ show ans

@@ -1,5 +1,5 @@
+import Control.Applicative
 import Control.Monad
-import Control.Parallel.Strategies
 import Data.Array
 import Data.Maybe
 import qualified Data.ByteString.Char8 as C
@@ -26,7 +26,7 @@ main :: IO ()
 main = do
   re <- readInt <$> C.getLine
   inputs <- replicateM re getInput
-  let outputs = runEval $ parList rdeepseq $ map solve inputs
+  let outputs = map solve inputs
   forM_ ([1 .. re] `zip` outputs) $ \(ri, ans) -> do
     putStrLn $ "Case #" ++ show ri ++ ": " ++ show ans
   where
