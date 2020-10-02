@@ -6,7 +6,7 @@
 using namespace std;
 
 const int MAXL = 10;
-const int MAXN = 5050;
+const int MAXN = 5060;
 
 set<vector<int> > done;
 vector<int> best[MAXN];
@@ -38,10 +38,10 @@ int main() {
 
     for (int i = MAXN - 1; i > 0; --i) {
         if (best[i].empty()) {
-            continue;
+            continue;//continue till loop ends
         }
         if ((int)best[i].size() == __builtin_popcount(i) + (31 - __builtin_clz(i))) {
-            best[i].clear();
+            best[i].clear();//clear array value
         }
     }
     /*
@@ -66,7 +66,7 @@ int main() {
         if (!best[i].empty()) {
             printf("[%d", i);
             best[i].pop_back();
-            reverse(best[i].begin(), best[i].end());
+            reverse(best[i].begin(), best[i].end());// reverse array
             for (int j: best[i]) {
                 printf(", %d", j);
             }
