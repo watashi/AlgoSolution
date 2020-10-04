@@ -96,7 +96,7 @@ public class Main {
     }
 
     static ArrayList<BigInteger> gao(BigInteger n, int m) {
-        ArrayList<BigInteger> ret = new ArrayList<BigInteger>(ans.size());
+        ArrayList<BigInteger> ret = new ArrayList<BigInteger>(ans.size()) ; 
         ret.add(n);
         while (ret.size() < ans.size() && n.compareTo(TWO) > 0) {
             int k = -1;
