@@ -14,7 +14,7 @@ fn read_vec<T: str::FromStr>() -> Vec<T> {
 }
 
 fn main() {
-    const LCM: u64 = 720720;  // lcm(1..16)
+    const LCM: u64 = 720720; // lcm(1..16)
     const MOD: u64 = 998244353;
     let [n, mut a, x, y, k, m]: [u64; 6] = read_vec::<u64>().try_into().unwrap();
     let mut dp = (0..LCM).collect::<Vec<_>>();
