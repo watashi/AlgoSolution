@@ -1,31 +1,14 @@
-#include <cassert>
-#include <cctype>
-#include <cmath>
-#include <cstdarg>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <set>
-#include <map>
-#include <list>
-#include <queue>
-#include <stack>
-#include <vector>
-#include <string>
-#include <utility>
-#include <numeric>
-#include <sstream>
-#include <iostream>
-#include <algorithm>
-#include <functional>
+#include "bits/stdc++.h"
+
 using namespace std;
 
 #define ALL(c) (c).begin(), (c).end()
 #define FOR(i, n) for (int i = 0; i < (int)(n); ++i)
 #define MEMSET(p, c) memset(p, c, sizeof(p))
-typedef long long llint;
-typedef pair<int, int> PII;
+using llint = long long;
+using PII = pair<int, int>;
 $BEGINCUT$
+#define __WATASHI__
 // <errf>
 inline void errf(const char *fmt, ...) {
   va_list args;
