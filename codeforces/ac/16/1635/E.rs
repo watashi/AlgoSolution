@@ -1,12 +1,12 @@
 use std::*;
- 
+
 pub struct ExtDisjointSet(Vec<i32>);
- 
+
 impl ExtDisjointSet {
     pub fn new(n: usize) -> Self {
         Self((0..n as i32).collect())
     }
- 
+
     pub fn getp(&mut self, x: i32) -> i32 {
         if x < 0 {
             !self.getp(!x)
@@ -20,7 +20,7 @@ impl ExtDisjointSet {
             }
         }
     }
- 
+
     pub fn setp(&mut self, x: i32, y: i32) -> Result<(i32, i32), bool> {
         let x = self.getp(x);
         let y = self.getp(y);
@@ -35,20 +35,20 @@ impl ExtDisjointSet {
         }
     }
 }
- 
+
 fn read_line() -> String {
     let mut line = String::new();
     io::stdin().read_line(&mut line).unwrap();
     line
 }
- 
+
 fn read_vec<T: str::FromStr>() -> Vec<T> {
     read_line()
         .split_whitespace()
         .filter_map(|i| i.parse().ok())
         .collect()
 }
- 
+
 fn main() {
     const DIR: [&str; 2] = ["R", "L"];
     let [n, m]: [usize; 2] = read_vec::<usize>().try_into().unwrap();
@@ -66,7 +66,7 @@ fn main() {
             v.push((t, i, j));
         }
     }
- 
+
     let mut d = vec![0; n];
     let mut e = vec![vec![]; n];
     for (t, i, j) in v {
@@ -78,7 +78,7 @@ fn main() {
             e[j].push(i);
         }
     }
- 
+
     let mut x = 0;
     let mut q = d
         .iter()

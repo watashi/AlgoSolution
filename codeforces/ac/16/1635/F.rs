@@ -1,10 +1,10 @@
 use std::*;
- 
+
 pub struct RMQ<T> {
     index: Vec<Vec<usize>>,
     value: Vec<T>,
 }
- 
+
 impl<T: Ord> RMQ<T> {
     fn min(v: &Vec<T>, i: usize, j: usize) -> usize {
         if v[i].cmp(&v[j]).is_le() {
@@ -13,7 +13,7 @@ impl<T: Ord> RMQ<T> {
             j
         }
     }
- 
+
     pub fn new(value: Vec<T>) -> Self {
         let mut index = vec![];
         let mut prev = (0..value.len()).collect::<Vec<_>>();
@@ -33,7 +33,7 @@ impl<T: Ord> RMQ<T> {
             value: value,
         }
     }
- 
+
     pub fn index(&self, start: usize, end: usize) -> usize {
         let n = (usize::BITS - (end - start).leading_zeros() - 1) as usize;
         Self::min(
@@ -42,25 +42,25 @@ impl<T: Ord> RMQ<T> {
             self.index[n][end - (1 << n)],
         )
     }
- 
+
     pub fn value(&self, start: usize, end: usize) -> &T {
         &self.value[self.index(start, end)]
     }
 }
- 
+
 fn read_line() -> String {
     let mut line = String::new();
     io::stdin().read_line(&mut line).unwrap();
     line
 }
- 
+
 fn read_vec<T: str::FromStr>() -> Vec<T> {
     read_line()
         .split_whitespace()
         .filter_map(|i| i.parse().ok())
         .collect()
 }
- 
+
 fn segtree_build(pairs: Vec<Vec<(usize, i64)>>) -> (usize, Vec<Vec<(usize, i64)>>) {
     let mut n = 1;
     while n < pairs.len() {
@@ -78,7 +78,7 @@ fn segtree_build(pairs: Vec<Vec<(usize, i64)>>) -> (usize, Vec<Vec<(usize, i64)>
     }
     (n, v)
 }
- 
+
 fn segtree_query(
     v: &Vec<Vec<(usize, i64)>>,
     p: usize,
@@ -105,7 +105,7 @@ fn segtree_query(
     }
     ret
 }
- 
+
 fn main() {
     let [n, q]: [usize; 2] = read_vec::<usize>().try_into().unwrap();
     let mut v = Vec::with_capacity(n);
@@ -116,7 +116,7 @@ fn main() {
     }
     let v = v;
     let rmq = RMQ::new(v.iter().map(|i| i.1).collect());
- 
+
     let mut pairs = vec![vec![]; n];
     let mut dfs = vec![(0, n)];
     while let Some((l, r)) = dfs.pop() {
@@ -131,7 +131,7 @@ fn main() {
         dfs.push((l, m + 1));
         dfs.push((m, r));
     }
- 
+
     let (nt, t) = segtree_build(pairs);
     let mut ans = vec![];
     for _ in 0..q {
