@@ -7,7 +7,7 @@ using namespace std;
 #define MEMSET(p, c) memset(p, c, sizeof(p))
 using llint = long long;
 using PII = pair<int, int>;
-$BEGINCUT$
+// BEGIN CUT HERE
 #define __WATASHI__
 // <errf>
 inline void errf(const char *fmt, ...) {
@@ -17,20 +17,8 @@ inline void errf(const char *fmt, ...) {
   va_end(args);
 }
 
-template <typename, typename = void>
-constexpr bool is_iterable{};
-
-template <typename T>
-constexpr bool is_iterable<
-  T,
-  std::void_t<
-    decltype(std::declval<T>().begin()),
-    decltype(std::declval<T>().end())
-  >
-> = true;
-
-template<typename T, typename = enable_if_t<is_iterable<T>>>
-inline void errf(const char* fmt, const T& v) {
+template<typename T>
+inline void errf(const char *fmt, const vector<T>& v) {
   errf("{");
   for (const auto& i: v) {
     errf(fmt, i);
@@ -38,20 +26,32 @@ inline void errf(const char* fmt, const T& v) {
   errf("}\n");
 }
 // </errf>
-$ENDCUT$
+// END CUT HERE
 #ifndef __WATASHI__
 #define errf(fmt, ...) do { } while (false)
 #endif
 
-struct $CLASSNAME$ {
-  $RC$ $METHODNAME$($METHODPARMS$);
+struct RPSMagicTrick {
+  string guess(string exampleGuess, string exampleResponse, string volunteersActions);
 };
 
-$RC$ $CLASSNAME$::$METHODNAME$($METHODPARMS$) {
-
+string RPSMagicTrick::guess(string exampleGuess, string exampleResponse, string volunteersActions) {
+  if (exampleResponse[0] != 'R') {
+    reverse(ALL(exampleGuess));
+  }
+  string ret;
+  for (char c : volunteersActions) {
+    if (c == '?') {
+      ret += exampleGuess;
+    }
+    else {
+      reverse(ALL(exampleGuess));
+    }
+  }
+  return ret;
 }
 
-$BEGINCUT$
+// BEGIN CUT HERE
 // <main>
 #define ARRSIZE(x) (sizeof(x)/sizeof(x[0]))
 
@@ -91,7 +91,14 @@ int main(int argc, char *argv[]) {
   (void)argc;
   (void)argv;
 
-  $MAINBODY$
+      {
+        RPSMagicTrick theObject;
+        eq(0, theObject.guess("BA", "Right.", "W?S??W??SS??WS?W??"),"ABBAACBCCAABABABBACB");
+    }
+    {
+        RPSMagicTrick theObject;
+        eq(1, theObject.guess("BA", "Wrong.", "?S?WS?SW?WSWWS-???S??WWW?"),"ABCBCBBACBBACBCBABCA");
+    }
 
   int __pass__ = count(ALL(__eq__), true);
   int __fail__ = count(ALL(__eq__), false);
@@ -106,7 +113,7 @@ int main(int argc, char *argv[]) {
     }
   }
   errf("\033[1;33mPress any key to continue...\033[0m\n");
-  (void)getchar();
+  getchar();
 
   return 0;
 }
@@ -122,4 +129,4 @@ int main(int argc, char *argv[]) {
  * vim: ft=cpp.doxygen
  */
 // </main>
-$ENDCUT$
+// END CUT HERE
